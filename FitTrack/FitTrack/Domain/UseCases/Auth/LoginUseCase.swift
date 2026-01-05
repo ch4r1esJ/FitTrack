@@ -20,12 +20,12 @@ class DefaultUseCase: LoginUseCase {
     
     func execute(email: String, password: String) -> AnyPublisher<User, Error> {
         guard email.contains("@") && email.contains(".") else {
-            return Fail(error: AuthError.invalidEmail)
+            return Fail(error: AuthError.invalidEmailFormat)
                 .eraseToAnyPublisher()
         }
         
         guard password.count >= 6 else {
-            return Fail(error: AuthError.weakPassword)
+            return Fail(error: AuthError.passwordTooShort)
                 .eraseToAnyPublisher()
         }
         

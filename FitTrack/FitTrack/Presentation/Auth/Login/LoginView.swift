@@ -43,6 +43,14 @@ struct LoginView: View {
             .padding(20)
         }
         .ignoresSafeArea()
+        .alert("Login Error", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { _ in viewModel.errorMessage = nil }
+        )) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(viewModel.errorMessage ?? "Unknown Error")
+        }
         .onTapGesture {
             hideKeyboard()
             withAnimation {

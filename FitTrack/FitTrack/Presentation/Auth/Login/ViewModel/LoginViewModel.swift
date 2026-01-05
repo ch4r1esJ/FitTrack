@@ -18,7 +18,7 @@ class LoginViewModel: ObservableObject {
     
     private let loginUseCase: LoginUseCase
     private var cancellables = Set<AnyCancellable>()
-    
+        
     init(loginUseCase: LoginUseCase) {
         self.loginUseCase = loginUseCase
     }
@@ -37,7 +37,7 @@ class LoginViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] user in
                 print("Login success: \(user.name)")
-                self?.loginFinished.send()  // Tell coordinator!
+                self?.loginFinished.send()
             }
             .store(in: &cancellables)
     }
