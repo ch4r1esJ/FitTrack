@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct SignInButtonsView: View {
+    @ObservedObject var viewModel: LoginViewModel
+    
     var body: some View {
         VStack(spacing: 20) {
             CustomButton(image: "emptyicon", title: "Sign In", isVisible: true) {
-                print("Sign In")
+                viewModel.singInTapped()
             }
             .padding(.top, 5)
             
@@ -49,7 +51,7 @@ struct OptionView: View {
     }
 }
 
-#Preview {
-    SignInButtonsView()
-    
-}
+//#Preview {
+//    SignInButtonsView(viewModel: LoginViewModel())
+//    
+//}

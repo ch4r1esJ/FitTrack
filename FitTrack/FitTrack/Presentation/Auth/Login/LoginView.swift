@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var email: String = ""
-    @State private var password: String = ""
     @FocusState private var isEmailChosen: Bool
     @FocusState private var isPasswordChosen: Bool
+    @ObservedObject var viewModel: LoginViewModel
     
     var body: some View {
         VStack(spacing: 0) {
@@ -23,7 +22,7 @@ struct LoginView: View {
                     title: "Email Address",
                     placeholder: "Enter your email",
                     icon: "envelope",
-                    text: $email,
+                    text: $viewModel.email,
                     isFocused: $isEmailChosen
                 )
                 
@@ -31,12 +30,12 @@ struct LoginView: View {
                     title: "Password",
                     placeholder: "Enter your password",
                     icon: "lock",
-                    text: $password,
+                    text: $viewModel.password,
                     isSecure: true,
                     isFocused: $isPasswordChosen
                 )
                 
-                SignInButtonsView()
+                SignInButtonsView(viewModel: viewModel)
                 FooterView()
                 
                 Spacer() // TODO: Try deleting
@@ -54,6 +53,6 @@ struct LoginView: View {
     }
 }
 
-#Preview {
-    LoginView()
-}
+//#Preview {
+//    LoginView(viewModel: LoginViewModel(loginUseCase: DefaultUseCase(repository: AuthRepository())))
+//}

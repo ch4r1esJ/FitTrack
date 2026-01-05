@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Combine
 
 protocol AuthRepository {
-    func signIn(password: String, email: String) async throws -> User
-    func singUp(password: String, email: String, name: String) async throws -> User
-    func singOut() throws
+    func signIn(password: String, email: String) -> AnyPublisher<User, Error>
+//    func signUp(email: String, password: String, name: String) -> AnyPublisher<User, Error>
+//    func singOut() throws
 }
