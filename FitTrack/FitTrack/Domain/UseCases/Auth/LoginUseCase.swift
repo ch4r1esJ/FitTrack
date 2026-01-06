@@ -9,6 +9,7 @@ import Combine
 
 protocol LoginUseCase {
     func execute(email: String, password: String) -> AnyPublisher<User, Error>
+    func executeGoogle() -> AnyPublisher<User, Error>
 }
 
 class DefaultUseCase: LoginUseCase {
@@ -30,5 +31,9 @@ class DefaultUseCase: LoginUseCase {
         }
         
         return repository.signIn(password: password, email: email)
+    }
+    
+    func executeGoogle() -> AnyPublisher<User, Error> {
+        return repository.signInWithGoogle()
     }
 }

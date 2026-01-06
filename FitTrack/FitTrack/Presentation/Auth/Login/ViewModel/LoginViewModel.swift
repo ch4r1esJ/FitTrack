@@ -36,7 +36,21 @@ class LoginViewModel: ObservableObject {
                     self?.errorMessage = error.localizedDescription
                 }
             } receiveValue: { [weak self] user in
-                print("Login success: \(user.name)")
+                self?.loginFinished.send()
+            }
+            .store(in: &cancellables)
+    }
+    
+    func googleSignInTapped() {
+        isLoading = true
+        loginUseCase.executeGoogle()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                self?.isLoading = false
+                if case .failure(let error) = completion {
+                    self?.errorMessage = error.localizedDescription
+                }
+            } receiveValue: { [weak self] user in
                 self?.loginFinished.send()
             }
             .store(in: &cancellables)

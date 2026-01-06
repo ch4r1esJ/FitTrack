@@ -9,6 +9,15 @@ import Combine
 import Foundation
 
 class MockAuthRepository: AuthRepository {
+    func signInWithGoogle() -> AnyPublisher<User, any Error> {
+        let fakeUser = User(id: "01", email: "Gmail", name: "Test User")
+        
+        return Just(fakeUser)
+            .setFailureType(to: Error.self)
+            .delay(for: .seconds(1), scheduler: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+    
     func signIn(password: String, email: String) -> AnyPublisher<User, Error> {
         let fakeUser = User(id: "01", email: email, name: "Test User")
         

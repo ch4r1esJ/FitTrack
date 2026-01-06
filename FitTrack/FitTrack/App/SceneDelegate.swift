@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowsScene)
         
-        let authRepository = MockAuthRepository()
+        let authRepository = FirebaseAuthRepository()
         let loginUseCase = DefaultUseCase(repository: authRepository)
         
         let navController = UINavigationController()

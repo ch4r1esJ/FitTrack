@@ -20,7 +20,7 @@ struct SignInButtonsView: View {
             OptionView()
             
             CustomButton(image: "google", title: "Continue with Google") {
-                print("Continue with Google")
+                viewModel.googleSignInTapped()
             }
             
             CustomButton(image: "apple", title: "Continue with Apple") {
