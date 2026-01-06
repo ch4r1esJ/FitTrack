@@ -18,7 +18,7 @@ class MockAuthRepository: AuthRepository {
             .eraseToAnyPublisher()
     }
     
-    func signIn(password: String, email: String) -> AnyPublisher<User, Error> {
+    func signIn(email: String, password: String) -> AnyPublisher<User, Error> {
         let fakeUser = User(id: "01", email: email, name: "Test User")
         
         return Just(fakeUser)

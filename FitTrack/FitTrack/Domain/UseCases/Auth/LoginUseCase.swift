@@ -30,7 +30,7 @@ class DefaultUseCase: LoginUseCase {
                 .eraseToAnyPublisher()
         }
         
-        return repository.signIn(password: password, email: email)
+        return repository.signIn(email: email, password: password)
     }
     
     func executeGoogle() -> AnyPublisher<User, Error> {
