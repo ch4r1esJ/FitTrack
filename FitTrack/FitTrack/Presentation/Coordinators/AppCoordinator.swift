@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import Combine
+import FirebaseAuth
 
 class AppCoordinator: Coordinator {
     var navigationController: UINavigationController
@@ -21,12 +22,16 @@ class AppCoordinator: Coordinator {
     }
     
     func start() {
-        showLogin()
+        if Auth.auth().currentUser != nil {
+            showHome()
+        } else {
+            showAuth()
+        }
     }
     
-    private func showLogin() {        
+    private func showAuth() {
         let viewModel = LoginViewModel(loginUseCase: loginUseCase)
-                
+        
         viewModel.loginFinished
             .sink { [weak self] _ in // TODO: weakself
                 self?.showHome()
