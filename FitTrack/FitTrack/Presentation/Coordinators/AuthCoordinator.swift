@@ -45,6 +45,8 @@ class AuthCoordinator: Coordinator {
     }
     
     private func showLogin() {
+        cancellables.removeAll()
+        
         let viewModel = LoginViewModel(loginUseCase: loginUseCase)
         
         viewModel.loginFinished

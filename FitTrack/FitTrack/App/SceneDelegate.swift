@@ -20,14 +20,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowsScene)
         
-        let authRepository = FirebaseAuthRepository()
-        let loginUseCase = DefaultUseCase(repository: authRepository)
+        let repository = FirebaseAuthRepository()
+        let loginUseCase = DefaultUseCase(repository: repository)
+        let logoutUseCase = DefaultLogoutUseCase(repository: repository)
         
         let navController = UINavigationController()
         
         appCoordinator = AppCoordinator(
             navigationController: navController,
-            loginUseCase: loginUseCase
+            loginUseCase: loginUseCase,
+            logoutUseCase: logoutUseCase
         )
                 
         window?.rootViewController = navController

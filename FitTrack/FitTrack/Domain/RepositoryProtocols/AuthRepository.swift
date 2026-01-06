@@ -11,6 +11,6 @@ import Combine
 protocol AuthRepository {
     func signIn(email: String, password: String) -> AnyPublisher<User, Error>
     func signInWithGoogle() -> AnyPublisher<User, Error>
-//    func signUp(email: String, password: String, name: String) -> AnyPublisher<User, Error>
-//    func singOut() throws
+    func signOut() throws
+    //    func signUp(email: String, password: String, name: String) -> AnyPublisher<User, Error>z
 }

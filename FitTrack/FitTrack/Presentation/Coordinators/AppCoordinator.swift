@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SwiftUI
 import Combine
 import FirebaseAuth
 
@@ -15,12 +14,17 @@ class AppCoordinator: Coordinator {
     
     private var cancellables = Set<AnyCancellable>()
     private let loginUseCase: LoginUseCase
+    private let logoutUseCase: LogoutUseCase
     
     private var authCoordinator: AuthCoordinator?
+    private var tabBarCoordinator: TabBarCoordinator?
     
-    init(navigationController: UINavigationController, loginUseCase: LoginUseCase) {
+    init(navigationController: UINavigationController,
+         loginUseCase: LoginUseCase,
+         logoutUseCase: LogoutUseCase) {
         self.navigationController = navigationController
         self.loginUseCase = loginUseCase
+        self.logoutUseCase = logoutUseCase
     }
     
     func start() {
@@ -31,7 +35,9 @@ class AppCoordinator: Coordinator {
         }
     }
     
-    private func showAuth() {
+    func showAuth() {
+        tabBarCoordinator = nil
+        
         let authCoordinator = AuthCoordinator(
             navigationController: navigationController,
             loginUseCase: loginUseCase
@@ -44,10 +50,16 @@ class AppCoordinator: Coordinator {
     }
     
     func showHome() {
-        self.authCoordinator = nil
-        let tabBarController = UITabBarController()
+        authCoordinator = nil
         
+        let tabBarCoordinator = TabBarCoordinator(
+            navigationController: navigationController,
+            logoutUseCase: logoutUseCase
+        )
         
-        navigationController.setViewControllers([tabBarController], animated: true)
+        tabBarCoordinator.parentCoordinator = self
+        self.tabBarCoordinator = tabBarCoordinator
+        
+        tabBarCoordinator.start()
     }
 }

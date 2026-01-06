@@ -11,7 +11,6 @@ import FirebaseAuth
 import GoogleSignIn
 
 class FirebaseAuthRepository: AuthRepository {
-    
     func signIn(email: String, password: String) -> AnyPublisher<User, Error> {
         return Future<User, Error> { [weak self] promise in
             Auth.auth().signIn(withEmail: email, password: password) { result, error in
@@ -20,6 +19,10 @@ class FirebaseAuthRepository: AuthRepository {
         }
         .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
+    }
+    
+    func signOut() throws {
+        try Auth.auth().signOut()
     }
     
     func signInWithGoogle() -> AnyPublisher<User, Error> {

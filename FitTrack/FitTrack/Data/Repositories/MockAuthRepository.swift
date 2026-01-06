@@ -26,4 +26,8 @@ class MockAuthRepository: AuthRepository {
             .delay(for: .seconds(1), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
+    
+    func signOut() throws {
+        print("Sign out")
+    }
 }
