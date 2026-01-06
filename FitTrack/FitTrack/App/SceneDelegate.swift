@@ -24,6 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let loginUseCase = DefaultUseCase(repository: authRepository)
         
         let navController = UINavigationController()
+        
         appCoordinator = AppCoordinator(
             navigationController: navController,
             loginUseCase: loginUseCase

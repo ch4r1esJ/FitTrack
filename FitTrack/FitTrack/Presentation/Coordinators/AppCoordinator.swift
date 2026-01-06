@@ -13,8 +13,10 @@ import FirebaseAuth
 class AppCoordinator: Coordinator {
     var navigationController: UINavigationController
     
-    private var cancellables = Set<AnyCancellable>() // TODO: Syntax
+    private var cancellables = Set<AnyCancellable>()
     private let loginUseCase: LoginUseCase
+    
+    private var authCoordinator: AuthCoordinator?
     
     init(navigationController: UINavigationController, loginUseCase: LoginUseCase) {
         self.navigationController = navigationController
@@ -30,25 +32,21 @@ class AppCoordinator: Coordinator {
     }
     
     private func showAuth() {
-        let viewModel = LoginViewModel(loginUseCase: loginUseCase)
+        let authCoordinator = AuthCoordinator(
+            navigationController: navigationController,
+            loginUseCase: loginUseCase
+        )
         
-        viewModel.loginFinished
-            .sink { [weak self] _ in // TODO: weakself
-                self?.showHome()
-            }
-            .store(in: &cancellables)
+        authCoordinator.parentCoordinator = self
+        self.authCoordinator = authCoordinator
         
-        let loginView = LoginView(viewModel: viewModel)
-        
-        let hostingController = UIHostingController(rootView: loginView)
-        
-        navigationController.setViewControllers([hostingController], animated: false)
+        authCoordinator.start()
     }
     
     func showHome() {
-        print("Home")
-        
+        self.authCoordinator = nil
         let tabBarController = UITabBarController()
+        
         
         navigationController.setViewControllers([tabBarController], animated: true)
     }
