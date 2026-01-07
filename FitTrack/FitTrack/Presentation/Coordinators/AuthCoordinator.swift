@@ -12,14 +12,14 @@ import FirebaseAuth
 
 class AuthCoordinator: Coordinator {
     var navigationController: UINavigationController
-    
     weak var parentCoordinator: AppCoordinator?
-    private var cancellables = Set<AnyCancellable>() 
-    private let loginUseCase: LoginUseCase
     
-    init(navigationController: UINavigationController, loginUseCase: LoginUseCase) {
+    private let diContainer: AuthDIContainer
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(navigationController: UINavigationController, diContainer: AuthDIContainer) {
         self.navigationController = navigationController
-        self.loginUseCase = loginUseCase
+        self.diContainer = diContainer
     }
     
     func start() {
@@ -45,13 +45,17 @@ class AuthCoordinator: Coordinator {
     }
     
     private func showLogin() {
-        cancellables.removeAll()
-        
-        let viewModel = LoginViewModel(loginUseCase: loginUseCase)
+        let viewModel = diContainer.makeLoginViewModel()
         
         viewModel.loginFinished
             .sink { [weak self] _ in
                 self?.didFinishAuth()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.navigateToRegister
+            .sink { [weak self] _ in
+                self?.showRegister()
             }
             .store(in: &cancellables)
         
@@ -61,14 +65,30 @@ class AuthCoordinator: Coordinator {
         navigationController.setViewControllers([hostingController], animated: true)
     }
     
-    private func didFinishAuth() {
-            markOnboardingAsSeen()
-            
-            parentCoordinator?.showHome()
-        }
-    
     private func showRegister() {
-        print("Register screen")
+        let viewModel = diContainer.makeRegisterViewModel()
+        
+        viewModel.registerFinished
+            .sink { [weak self] _ in
+                self?.didFinishAuth()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.navigateToLogin
+            .sink { [weak self] _ in
+                self?.showLogin()
+            }
+            .store(in: &cancellables)
+        
+        let registerView = RegisterView(viewModel: viewModel)
+        let hostingController = UIHostingController(rootView: registerView)
+        
+        navigationController.setViewControllers([hostingController], animated: true)
+    }
+    
+    private func didFinishAuth() {
+        markOnboardingAsSeen()
+        parentCoordinator?.showHome()
     }
     
     private func isFirstLaunch() -> Bool {

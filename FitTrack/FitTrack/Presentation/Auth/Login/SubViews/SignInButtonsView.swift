@@ -22,10 +22,6 @@ struct SignInButtonsView: View {
             CustomButton(image: "google", title: "Continue with Google") {
                 viewModel.googleSignInTapped()
             }
-            
-            CustomButton(image: "apple", title: "Continue with Apple") {
-                print("Continue with Google")
-            }
         }
     }
 }
@@ -50,8 +46,3 @@ struct OptionView: View {
             .frame(height: 1)
     }
 }
-
-//#Preview {
-//    SignInButtonsView(viewModel: LoginViewModel())
-//    
-//}

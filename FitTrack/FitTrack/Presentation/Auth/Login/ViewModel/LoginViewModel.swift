@@ -15,44 +15,55 @@ class LoginViewModel: ObservableObject {
     @Published var isLoading = false
     
     let loginFinished = PassthroughSubject<Void, Never>()
+    let navigateToRegister = PassthroughSubject<Void, Never>()
     
-    private let loginUseCase: LoginUseCase
+    private let authService: AuthServiceProtocol
     private var cancellables = Set<AnyCancellable>()
-        
-    init(loginUseCase: LoginUseCase) {
-        self.loginUseCase = loginUseCase
+    
+    init(authService: AuthServiceProtocol) {
+        self.authService = authService
     }
     
     func singInTapped() {
         isLoading = true
         errorMessage = nil
         
-        loginUseCase.execute(email: email, password: password)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                self?.isLoading = false
-                
-                if case .failure(let error) = completion {
-                    self?.errorMessage = error.localizedDescription
+        Task {
+            do {
+                _ = try await authService.signIn(email: email, password: password)
+                await MainActor.run {
+                    isLoading = false
+                    loginFinished.send()
                 }
-            } receiveValue: { [weak self] user in
-                self?.loginFinished.send()
+            } catch {
+                await MainActor.run {
+                    isLoading = false
+                    errorMessage = error.localizedDescription
+                }
             }
-            .store(in: &cancellables)
+        }
     }
     
     func googleSignInTapped() {
         isLoading = true
-        loginUseCase.executeGoogle()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion {
-                    self?.errorMessage = error.localizedDescription
+        
+        Task {
+            do {
+                _ = try await authService.signInWithGoogle()
+                await MainActor.run {
+                    isLoading = false
+                    loginFinished.send()
                 }
-            } receiveValue: { [weak self] user in
-                self?.loginFinished.send()
+            } catch {
+                await MainActor.run {
+                    isLoading = false
+                    errorMessage = error.localizedDescription
+                }
             }
-            .store(in: &cancellables)
+        }
+    }
+    
+    func signUpTapped() {
+        navigateToRegister.send()
     }
 }

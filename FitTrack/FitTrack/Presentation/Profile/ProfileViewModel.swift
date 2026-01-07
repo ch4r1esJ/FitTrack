@@ -14,15 +14,16 @@ class ProfileViewModel: ObservableObject {
     
     let logoutFinished = PassthroughSubject<Void, Never>()
     
-    private let logoutUseCase: LogoutUseCase
+    private let authService: AuthServiceProtocol
+    private var cancellables = Set<AnyCancellable>()
     
-    init(logoutUseCase: LogoutUseCase) {
-        self.logoutUseCase = logoutUseCase
+    init(authService: AuthServiceProtocol) {
+        self.authService = authService
     }
     
     func logoutTapped() {
         do {
-            try logoutUseCase.execute()
+            try authService.signOut()
             logoutFinished.send()
         } catch {
             errorMessage = error.localizedDescription

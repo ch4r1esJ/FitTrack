@@ -1,5 +1,5 @@
 //
-//  HeaderView.swift
+//  LoginHeaderView.swift
 //  FitTrack
 //
 //  Created by Charles Janjgava on 1/4/26.
@@ -7,12 +7,13 @@
 
 import SwiftUI
 
-struct HeaderView: View {
+struct LoginHeaderView: View {
     var body: some View {
         ZStack(alignment: .top) {
             Image("background")
                 .resizable()
                 .scaledToFit()
+                .ignoresSafeArea()
             
             VStack(spacing: 10) {
                 Image("icon")
@@ -35,5 +36,5 @@ struct HeaderView: View {
 }
 
 #Preview {
-    HeaderView()
+    LoginHeaderView()
 }

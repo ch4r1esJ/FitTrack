@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct FooterView: View {
+    @ObservedObject var viewModel: LoginViewModel
+    
     var body: some View {
         VStack(spacing: 10) {
             HStack {
                 Text("Don't have an account?")
                 
                 Button {
-                    print("Sign Up")
+                    viewModel.signUpTapped()
                 } label: {
                     Text("Sign Up")
                         .foregroundStyle(.blue)
@@ -34,6 +36,3 @@ struct FooterView: View {
     }
 }
 
-#Preview {
-    FooterView()
-}

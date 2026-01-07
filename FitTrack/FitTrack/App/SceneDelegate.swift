@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseCore
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -18,20 +19,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowsScene = (scene as? UIWindowScene) else { return }
         
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
+        
         window = UIWindow(windowScene: windowsScene)
         
-        let repository = FirebaseAuthRepository()
-        let loginUseCase = DefaultUseCase(repository: repository)
-        let logoutUseCase = DefaultLogoutUseCase(repository: repository)
+        let authDIContainer = AuthDIContainer()
         
         let navController = UINavigationController()
+        navController.setNavigationBarHidden(true, animated: false)
         
         appCoordinator = AppCoordinator(
             navigationController: navController,
-            loginUseCase: loginUseCase,
-            logoutUseCase: logoutUseCase
+            authDIContainer: authDIContainer 
         )
-                
+        
         window?.rootViewController = navController
         window?.makeKeyAndVisible()
         

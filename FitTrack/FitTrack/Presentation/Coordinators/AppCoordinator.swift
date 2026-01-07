@@ -13,18 +13,15 @@ class AppCoordinator: Coordinator {
     var navigationController: UINavigationController
     
     private var cancellables = Set<AnyCancellable>()
-    private let loginUseCase: LoginUseCase
-    private let logoutUseCase: LogoutUseCase
     
+    private let authDIContainer: AuthDIContainer
     private var authCoordinator: AuthCoordinator?
+    
     private var tabBarCoordinator: TabBarCoordinator?
     
-    init(navigationController: UINavigationController,
-         loginUseCase: LoginUseCase,
-         logoutUseCase: LogoutUseCase) {
+    init(navigationController: UINavigationController, authDIContainer: AuthDIContainer) {
         self.navigationController = navigationController
-        self.loginUseCase = loginUseCase
-        self.logoutUseCase = logoutUseCase
+        self.authDIContainer = authDIContainer
     }
     
     func start() {
@@ -36,11 +33,9 @@ class AppCoordinator: Coordinator {
     }
     
     func showAuth() {
-        tabBarCoordinator = nil
-        
         let authCoordinator = AuthCoordinator(
             navigationController: navigationController,
-            loginUseCase: loginUseCase
+            diContainer: authDIContainer 
         )
         
         authCoordinator.parentCoordinator = self
@@ -54,12 +49,18 @@ class AppCoordinator: Coordinator {
         
         let tabBarCoordinator = TabBarCoordinator(
             navigationController: navigationController,
-            logoutUseCase: logoutUseCase
+            authService: authDIContainer.authService
         )
         
         tabBarCoordinator.parentCoordinator = self
         self.tabBarCoordinator = tabBarCoordinator
         
         tabBarCoordinator.start()
+    }
+    
+    func logout() {
+        try? Auth.auth().signOut()
+        tabBarCoordinator = nil
+        showAuth()
     }
 }
