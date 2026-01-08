@@ -12,10 +12,12 @@ class LoginViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
     @Published var errorMessage: String?
-    @Published var isLoading = false
+    @Published var isLoadingEmail = false
+    @Published var isLoadingGoogle = false
     
     let loginFinished = PassthroughSubject<Void, Never>()
     let navigateToRegister = PassthroughSubject<Void, Never>()
+    let showForgotPassword = PassthroughSubject<Void, Never>()
     
     private let authService: AuthServiceProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -25,19 +27,19 @@ class LoginViewModel: ObservableObject {
     }
     
     func singInTapped() {
-        isLoading = true
+        isLoadingEmail = true
         errorMessage = nil
         
         Task {
             do {
                 _ = try await authService.signIn(email: email, password: password)
                 await MainActor.run {
-                    isLoading = false
+                    isLoadingEmail = false
                     loginFinished.send()
                 }
             } catch {
                 await MainActor.run {
-                    isLoading = false
+                    isLoadingEmail = false
                     errorMessage = error.localizedDescription
                 }
             }
@@ -45,18 +47,18 @@ class LoginViewModel: ObservableObject {
     }
     
     func googleSignInTapped() {
-        isLoading = true
+        isLoadingGoogle = true
         
         Task {
             do {
                 _ = try await authService.signInWithGoogle()
                 await MainActor.run {
-                    isLoading = false
+                    isLoadingGoogle = false
                     loginFinished.send()
                 }
             } catch {
                 await MainActor.run {
-                    isLoading = false
+                    isLoadingGoogle = false
                     errorMessage = error.localizedDescription
                 }
             }
@@ -65,5 +67,9 @@ class LoginViewModel: ObservableObject {
     
     func signUpTapped() {
         navigateToRegister.send()
+    }
+    
+    func forgotPasswordTapped() {
+        showForgotPassword.send()
     }
 }

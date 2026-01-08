@@ -21,7 +21,8 @@ struct ProfileView: View {
             CustomButton(
                 image: "emptyicon",
                 title: "Log Out",
-                isVisible: true) {
+                isVisible: true
+            ) {
                     viewModel.logoutTapped()
                 }
         }

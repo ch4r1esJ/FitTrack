@@ -9,7 +9,6 @@ import Foundation
 import Combine
 
 final class MockAuthService: AuthServiceProtocol {
-    
     var currentUser: User? = nil
     
     var isAuthenticated: Bool {
@@ -51,5 +50,9 @@ final class MockAuthService: AuthServiceProtocol {
     
     func signOut() throws {
         currentUser = nil
+    }
+    
+    func sendPasswordReset(email: String) async throws {
+        print("Reset PAssword")
     }
 }

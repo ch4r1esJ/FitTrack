@@ -35,7 +35,7 @@ struct OnboardingView: View {
         .tabViewStyle(.page)
         .overlay(alignment: .bottom) {
             VStack(spacing: 16) {
-                CustomButton(image: "emptyicon", title: "Get Started", isVisible: true) {
+                CustomButton(image: "emptyicon", title: "Get Started", isVisible: true, isLoading: true) {
                     onGetStarted()
                 }
                 

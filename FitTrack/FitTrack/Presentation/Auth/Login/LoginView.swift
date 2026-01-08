@@ -10,7 +10,9 @@ import SwiftUI
 struct LoginView: View {
     @FocusState private var isEmailChosen: Bool
     @FocusState private var isPasswordChosen: Bool
+    @State private var showForgotPassword = false
     @ObservedObject var viewModel: LoginViewModel
+    
     
     var body: some View {
         VStack(spacing: 0) {
@@ -42,6 +44,14 @@ struct LoginView: View {
             .padding(20)
         }
         .ignoresSafeArea()
+        .sheet(isPresented: $showForgotPassword) {
+            ForgotPasswordView(viewModel: ForgotPasswordViewModel())
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
+        .onReceive(viewModel.showForgotPassword) { _ in
+            showForgotPassword = true
+        }
         .alert("Login Error", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { _ in viewModel.errorMessage = nil }

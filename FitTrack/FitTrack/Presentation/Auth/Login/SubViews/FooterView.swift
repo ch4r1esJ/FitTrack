@@ -25,7 +25,7 @@ struct FooterView: View {
                 }
             }
             Button {
-                print("Forgot Password")
+                viewModel.forgotPasswordTapped()
             } label: {
                 Text("Forgot Password")
                     .foregroundStyle(.blue)

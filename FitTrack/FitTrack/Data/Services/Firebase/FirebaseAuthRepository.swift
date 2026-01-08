@@ -102,6 +102,10 @@ class FirebaseAuthService: AuthServiceProtocol {
         )
     }
     
+    func sendPasswordReset(email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
+    
     private func mapFirebaseError(_ error: NSError) -> AuthError {
         guard let errorCode = AuthErrorCode(rawValue: error.code) else {
             return .unknownError(error.localizedDescription)

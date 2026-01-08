@@ -12,14 +12,23 @@ struct SignInButtonsView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            CustomButton(image: "emptyicon", title: "Sign In", isVisible: true) {
+            CustomButton(
+                image: "emptyicon",
+                title: "Sign In",
+                isVisible: true,
+                isLoading: viewModel.isLoadingEmail
+            ) {
                 viewModel.singInTapped()
             }
             .padding(.top, 5)
             
             OptionView()
             
-            CustomButton(image: "google", title: "Continue with Google") {
+            CustomButton(
+                image: "google",
+                title: "Continue with Google",
+                isLoading: viewModel.isLoadingGoogle
+            ) {
                 viewModel.googleSignInTapped()
             }
         }
