@@ -6,6 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		567829352F0C57EB00744C8E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 567829342F0C57EB00744C8E /* FirebaseAnalytics */; };
+		567829372F0C57EB00744C8E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 567829362F0C57EB00744C8E /* FirebaseAuth */; };
+		567829392F0C57EB00744C8E /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 567829382F0C57EB00744C8E /* FirebaseCore */; };
+		5678293B2F0C57EC00744C8E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 5678293A2F0C57EC00744C8E /* FirebaseFirestore */; };
+		5678293D2F0C57EC00744C8E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5678293C2F0C57EC00744C8E /* FirebaseStorage */; };
+		567829442F0CF2BB00744C8E /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 567829432F0CF2BB00744C8E /* GoogleSignIn */; };
+		567829462F0CF2BB00744C8E /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 567829452F0CF2BB00744C8E /* GoogleSignInSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		567828192F09A5F800744C8E /* FitTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +46,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				567829352F0C57EB00744C8E /* FirebaseAnalytics in Frameworks */,
+				5678293B2F0C57EC00744C8E /* FirebaseFirestore in Frameworks */,
+				567829462F0CF2BB00744C8E /* GoogleSignInSwift in Frameworks */,
+				567829392F0C57EB00744C8E /* FirebaseCore in Frameworks */,
+				5678293D2F0C57EC00744C8E /* FirebaseStorage in Frameworks */,
+				567829372F0C57EB00744C8E /* FirebaseAuth in Frameworks */,
+				567829442F0CF2BB00744C8E /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +95,13 @@
 			);
 			name = FitTrack;
 			packageProductDependencies = (
+				567829342F0C57EB00744C8E /* FirebaseAnalytics */,
+				567829362F0C57EB00744C8E /* FirebaseAuth */,
+				567829382F0C57EB00744C8E /* FirebaseCore */,
+				5678293A2F0C57EC00744C8E /* FirebaseFirestore */,
+				5678293C2F0C57EC00744C8E /* FirebaseStorage */,
+				567829432F0CF2BB00744C8E /* GoogleSignIn */,
+				567829452F0CF2BB00744C8E /* GoogleSignInSwift */,
 			);
 			productName = FitTrack;
 			productReference = 567828192F09A5F800744C8E /* FitTrack.app */;
@@ -107,6 +131,10 @@
 			);
 			mainGroup = 567828102F09A5F800744C8E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				567829332F0C57EB00744C8E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				567829422F0CF2BB00744C8E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5678281A2F09A5F800744C8E /* Products */;
 			projectDirPath = "";
@@ -152,6 +180,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -183,6 +212,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -341,6 +371,63 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		567829332F0C57EB00744C8E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.7.0;
+			};
+		};
+		567829422F0CF2BB00744C8E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		567829342F0C57EB00744C8E /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 567829332F0C57EB00744C8E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		567829362F0C57EB00744C8E /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 567829332F0C57EB00744C8E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		567829382F0C57EB00744C8E /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 567829332F0C57EB00744C8E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		5678293A2F0C57EC00744C8E /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 567829332F0C57EB00744C8E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		5678293C2F0C57EC00744C8E /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 567829332F0C57EB00744C8E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		567829432F0CF2BB00744C8E /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 567829422F0CF2BB00744C8E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		567829452F0CF2BB00744C8E /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 567829422F0CF2BB00744C8E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 567828112F09A5F800744C8E /* Project object */;
 }
