@@ -32,6 +32,13 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "house.fill")
         )
         
+        let exercisesVC = ExerciesViewController()
+        exercisesVC.tabBarItem = UITabBarItem(
+            title: "Workouts",
+            image: UIImage(systemName: "figure.strengthtraining.traditional"),
+            selectedImage: UIImage(systemName: "figure.strengthtraining")
+        )
+        
         let profileViewModel = ProfileViewModel(authService: authService)
         profileViewModel.logoutFinished
             .sink { [weak self] _ in
@@ -47,7 +54,7 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "person.circle.fill")
         )
         
-        tabBarController.viewControllers = [homeVC, profileVC]
+        tabBarController.viewControllers = [homeVC, exercisesVC, profileVC]
         navigationController.setViewControllers([tabBarController], animated: true)
     }
     
