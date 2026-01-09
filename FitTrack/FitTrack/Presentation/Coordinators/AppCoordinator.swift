@@ -14,14 +14,14 @@ class AppCoordinator: Coordinator {
     
     private var cancellables = Set<AnyCancellable>()
     
-    private let authDIContainer: AuthDIContainer
+    private let diContainer: AppDIContainer
     private var authCoordinator: AuthCoordinator?
     
     private var tabBarCoordinator: TabBarCoordinator?
     
-    init(navigationController: UINavigationController, authDIContainer: AuthDIContainer) {
+    init(navigationController: UINavigationController, authDIContainer: AppDIContainer) {
         self.navigationController = navigationController
-        self.authDIContainer = authDIContainer
+        self.diContainer = authDIContainer
     }
     
     func start() {
@@ -35,7 +35,7 @@ class AppCoordinator: Coordinator {
     func showAuth() {
         let authCoordinator = AuthCoordinator(
             navigationController: navigationController,
-            diContainer: authDIContainer 
+            diContainer: diContainer 
         )
         
         authCoordinator.parentCoordinator = self
@@ -49,7 +49,8 @@ class AppCoordinator: Coordinator {
         
         let tabBarCoordinator = TabBarCoordinator(
             navigationController: navigationController,
-            authService: authDIContainer.authService
+            authService: diContainer.authService,
+            diContainer: diContainer
         )
         
         tabBarCoordinator.parentCoordinator = self

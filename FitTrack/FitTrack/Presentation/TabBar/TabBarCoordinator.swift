@@ -15,11 +15,13 @@ class TabBarCoordinator: Coordinator {
     
     private let authService: AuthServiceProtocol
     private var cancellables = Set<AnyCancellable>()
+    private let diContainer: AppDIContainer
     private var tabBarController: MainTabBarController!
     
-    init(navigationController: UINavigationController, authService: AuthServiceProtocol) { 
+    init(navigationController: UINavigationController, authService: AuthServiceProtocol, diContainer: AppDIContainer) {
         self.navigationController = navigationController
         self.authService = authService
+        self.diContainer = diContainer
     }
     
     func start() {
@@ -32,11 +34,12 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "house.fill")
         )
         
-        let exercisesVC = ExerciesViewController()
-        exercisesVC.tabBarItem = UITabBarItem(
+        let exerciseVC = diContainer.makeExerciseViewController()
+        let exerciseNav = UINavigationController(rootViewController: exerciseVC)
+        exerciseVC.tabBarItem = UITabBarItem(
             title: "Workouts",
             image: UIImage(systemName: "figure.strengthtraining.traditional"),
-            selectedImage: UIImage(systemName: "figure.strengthtraining")
+            selectedImage: UIImage(systemName: "figure.strengthtraining.traditional")
         )
         
         let profileViewModel = ProfileViewModel(authService: authService)
@@ -54,7 +57,7 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "person.circle.fill")
         )
         
-        tabBarController.viewControllers = [homeVC, exercisesVC, profileVC]
+        tabBarController.viewControllers = [homeVC, exerciseNav, profileVC]
         navigationController.setViewControllers([tabBarController], animated: true)
     }
     

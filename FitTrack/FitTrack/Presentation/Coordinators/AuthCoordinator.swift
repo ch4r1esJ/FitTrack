@@ -14,10 +14,10 @@ class AuthCoordinator: Coordinator {
     var navigationController: UINavigationController
     weak var parentCoordinator: AppCoordinator?
     
-    private let diContainer: AuthDIContainer
+    private let diContainer: AppDIContainer
     private var cancellables = Set<AnyCancellable>()
     
-    init(navigationController: UINavigationController, diContainer: AuthDIContainer) {
+    init(navigationController: UINavigationController, diContainer: AppDIContainer) {
         self.navigationController = navigationController
         self.diContainer = diContainer
     }
