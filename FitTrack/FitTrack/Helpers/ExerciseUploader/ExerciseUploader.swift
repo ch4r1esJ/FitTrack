@@ -103,7 +103,7 @@ class ExerciseUploader {
                let photos = json["photos"] as? [[String: Any]],
                let firstPhoto = photos.first,
                let src = firstPhoto["src"] as? [String: Any],
-               let imageUrl = src["medium"] as? String {
+               let imageUrl = src["tiny"] as? String {
                 return imageUrl
             }
         } catch {

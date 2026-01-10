@@ -15,7 +15,6 @@ class ExerciseCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
-        imageView.backgroundColor = .systemGray5
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -137,6 +136,6 @@ class ExerciseCell: UICollectionViewCell {
         muscleTagLabel.text = exercise.muscleGroup
         equipmentTagLabel.text = exercise.equipment
         
-        exerciseImageView.loadImages(url: exercise.imageUrl)
+        exerciseImageView.loadImage(from: exercise.imageUrl)
     }
 }

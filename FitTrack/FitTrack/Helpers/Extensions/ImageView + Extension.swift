@@ -9,11 +9,24 @@ import UIKit
 
 extension UIImageView {
     
-    func loadImages(url: String) {
-        self.image = nil
+    private static var imageCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 30
+        return cache
+    }()
+    
+    func loadImage(from urlString: String, placeholder: UIImage? = UIImage(systemName: "photo")) {
         
-        guard let url = URL(string: url) else {
-            print("Invalid URL")
+        self.image = placeholder
+        
+        guard let url = URL(string: urlString), !urlString.isEmpty else {
+            return
+        }
+        
+        let cacheKey = urlString as NSString
+        
+        if let cachedImage = Self.imageCache.object(forKey: cacheKey) {
+            self.image = cachedImage
             return
         }
         
@@ -22,14 +35,19 @@ extension UIImageView {
                 let (data, _) = try await URLSession.shared.data(from: url)
                 
                 guard let loadedImage = UIImage(data: data) else {
-                    print("It's not an image")
                     return
                 }
-                DispatchQueue.main.async {
-                    self.image = loadedImage
+                
+                guard let smallImage = loadedImage.preparingThumbnail(of: CGSize(width: 200, height: 200)) else { return }
+                
+                Self.imageCache.setObject(smallImage, forKey: cacheKey)
+                
+                await MainActor.run {
+                    self.image = smallImage
                 }
+                
             } catch {
-                print("Can't load an image \(error.localizedDescription)")
+                print("Failed to load image: \(error)")
             }
         }
     }
