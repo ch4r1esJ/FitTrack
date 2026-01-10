@@ -67,7 +67,7 @@ class ExerciesViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
         navigationItem.titleView = titleLabel
-        
+//        runOneTimeUpload()
         setupSearchController()
         setupBackgroundImage()
         setupView()
@@ -83,6 +83,14 @@ class ExerciesViewController: UIViewController {
     }
     
     // MARK: - Methods
+    
+    func runOneTimeUpload() {
+        let uploader = ExerciseUploader()
+        uploader.uploadAllExercises()
+        
+        print("⏳ Upload started. Check console for progress.")
+        print("⏳ This will take ~10 minutes for 30 exercises (rate limit)")
+    }
     
     private func showError(_ message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
