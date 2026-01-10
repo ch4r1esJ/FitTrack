@@ -1,0 +1,875 @@
+[
+  {
+    "id": "barbell-bench-press",
+    "name": "Barbell Bench Press",
+    "muscleGroup": "chest",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Lie flat on bench with feet on floor\nGrip bar slightly wider than shoulder width\nLower bar to mid-chest with control\nPress bar back up until arms fully extended\nKeep shoulder blades retracted throughout",
+    "searchQuery": "barbell bench press gym"
+  },
+  {
+    "id": "incline-dumbbell-press",
+    "name": "Incline Dumbbell Press",
+    "muscleGroup": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Set bench to 30-45 degree incline\nHold dumbbells at shoulder level\nPress dumbbells up and slightly together\nLower with control to starting position\nKeep core engaged throughout",
+    "searchQuery": "incline dumbbell press exercise"
+  },
+  {
+    "id": "cable-chest-fly",
+    "name": "Cable Chest Fly",
+    "muscleGroup": "chest",
+    "equipment": "cable",
+    "difficulty": "intermediate",
+    "instructions": "Set cables to chest height\nGrab handles with arms extended\nSlight bend in elbows\nBring hands together in front of chest\nControl return to starting position",
+    "searchQuery": "cable chest fly gym"
+  },
+  {
+    "id": "push-up",
+    "name": "Push-Up",
+    "muscleGroup": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "instructions": "Start in plank position\nHands slightly wider than shoulders\nLower body until chest nearly touches floor\nKeep core tight and back straight\nPush back up to starting position",
+    "searchQuery": "push up exercise gym"
+  },
+  {
+    "id": "dumbbell-chest-press",
+    "name": "Dumbbell Chest Press",
+    "muscleGroup": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Lie flat on bench holding dumbbells\nStart with dumbbells at chest level\nPress dumbbells up until arms extended\nLower with control back to chest\nKeep wrists straight throughout",
+    "searchQuery": "dumbbell chest press gym"
+  },
+  {
+    "id": "decline-bench-press",
+    "name": "Decline Bench Press",
+    "muscleGroup": "chest",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Set bench to decline angle\nSecure feet under pad\nGrip bar slightly wider than shoulders\nLower bar to lower chest\nPress back up to starting position",
+    "searchQuery": "decline bench press gym"
+  },
+  {
+    "id": "chest-dips",
+    "name": "Chest Dips",
+    "muscleGroup": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "instructions": "Grip parallel bars with arms extended\nLean forward slightly\nLower body by bending elbows\nGo down until shoulders below elbows\nPress back up to starting position",
+    "searchQuery": "chest dips exercise gym"
+  },
+  {
+    "id": "machine-chest-press",
+    "name": "Machine Chest Press",
+    "muscleGroup": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "instructions": "Adjust seat so handles at chest level\nGrab handles with firm grip\nPress handles forward until arms extended\nReturn with control to starting position\nKeep back against pad",
+    "searchQuery": "chest press machine gym"
+  },
+  {
+    "id": "barbell-squat",
+    "name": "Barbell Squat",
+    "muscleGroup": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Bar on upper back across shoulders\nFeet shoulder width apart\nLower by bending knees and hips\nGo down until thighs parallel to floor\nDrive through heels to stand",
+    "searchQuery": "barbell squat gym"
+  },
+  {
+    "id": "leg-press",
+    "name": "Leg Press",
+    "muscleGroup": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "instructions": "Sit in machine with back against pad\nFeet shoulder width on platform\nLower weight by bending knees\nStop before knees go past 90 degrees\nPress back up through heels",
+    "searchQuery": "leg press machine gym"
+  },
+  {
+    "id": "romanian-deadlift",
+    "name": "Romanian Deadlift",
+    "muscleGroup": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Stand with barbell at thigh level\nSlight bend in knees\nHinge at hips pushing them back\nLower bar along shins\nFeel stretch in hamstrings then return",
+    "searchQuery": "romanian deadlift gym"
+  },
+  {
+    "id": "walking-lunge",
+    "name": "Walking Lunge",
+    "muscleGroup": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Hold dumbbells at sides\nStep forward into lunge position\nLower back knee toward floor\nPush off front foot to step forward\nAlternate legs while moving forward",
+    "searchQuery": "walking lunge dumbbell gym"
+  },
+  {
+    "id": "leg-curl",
+    "name": "Leg Curl",
+    "muscleGroup": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "instructions": "Lie face down on machine\nAnkles under pad\nCurl legs up toward glutes\nSqueeze hamstrings at top\nLower with control",
+    "searchQuery": "leg curl machine gym"
+  },
+  {
+    "id": "leg-extension",
+    "name": "Leg Extension",
+    "muscleGroup": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "instructions": "Sit in machine with back against pad\nShins behind pad\nExtend legs until fully straight\nSqueeze quads at top\nLower with control",
+    "searchQuery": "leg extension machine gym"
+  },
+  {
+    "id": "goblet-squat",
+    "name": "Goblet Squat",
+    "muscleGroup": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "instructions": "Hold dumbbell at chest level\nFeet shoulder width apart\nSquat down keeping chest up\nElbows inside knees at bottom\nDrive through heels to stand",
+    "searchQuery": "goblet squat dumbbell gym"
+  },
+  {
+    "id": "bulgarian-split-squat",
+    "name": "Bulgarian Split Squat",
+    "muscleGroup": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Place back foot on bench behind you\nHold dumbbells at sides\nLower into lunge position\nFront knee over ankle\nPush through front heel to stand",
+    "searchQuery": "bulgarian split squat gym"
+  },
+  {
+    "id": "calf-raise",
+    "name": "Calf Raise",
+    "muscleGroup": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "instructions": "Stand on calf raise machine\nShoulders under pads\nRaise heels as high as possible\nSqueeze calves at top\nLower with control",
+    "searchQuery": "calf raise machine gym"
+  },
+  {
+    "id": "front-squat",
+    "name": "Front Squat",
+    "muscleGroup": "legs",
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "instructions": "Bar rests on front shoulders\nElbows high pointing forward\nSquat down keeping torso upright\nGo as low as mobility allows\nDrive up through heels",
+    "searchQuery": "front squat barbell gym"
+  },
+  {
+    "id": "deadlift",
+    "name": "Deadlift",
+    "muscleGroup": "back",
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "instructions": "Feet hip width under bar\nGrip bar just outside knees\nChest up back flat\nDrive through heels extending hips and knees\nStand fully erect at top",
+    "searchQuery": "deadlift barbell gym"
+  },
+  {
+    "id": "pull-up",
+    "name": "Pull-Up",
+    "muscleGroup": "back",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "instructions": "Hang from bar with overhand grip\nHands slightly wider than shoulders\nPull body up until chin over bar\nEngage back and squeeze shoulder blades\nLower with control",
+    "searchQuery": "pull up exercise gym"
+  },
+  {
+    "id": "bent-over-row",
+    "name": "Bent Over Barbell Row",
+    "muscleGroup": "back",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Bend at hips with back flat\nGrip bar with hands shoulder width\nPull bar to lower chest\nSqueeze shoulder blades together\nLower bar with control",
+    "searchQuery": "bent over barbell row gym"
+  },
+  {
+    "id": "lat-pulldown",
+    "name": "Lat Pulldown",
+    "muscleGroup": "back",
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "instructions": "Sit at lat pulldown machine\nGrip bar wider than shoulders\nPull bar down to upper chest\nSqueeze back at bottom\nControl bar back up",
+    "searchQuery": "lat pulldown machine gym"
+  },
+  {
+    "id": "seated-cable-row",
+    "name": "Seated Cable Row",
+    "muscleGroup": "back",
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "instructions": "Sit at cable row machine\nFeet on platform knees slightly bent\nPull handles to torso\nSqueeze shoulder blades together\nExtend arms back to start",
+    "searchQuery": "seated cable row gym"
+  },
+  {
+    "id": "dumbbell-row",
+    "name": "Single Arm Dumbbell Row",
+    "muscleGroup": "back",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "instructions": "Place one knee and hand on bench\nHold dumbbell in other hand\nPull dumbbell to hip\nKeep back flat throughout\nLower with control",
+    "searchQuery": "single arm dumbbell row gym"
+  },
+  {
+    "id": "t-bar-row",
+    "name": "T-Bar Row",
+    "muscleGroup": "back",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Straddle bar with feet shoulder width\nBend at hips keeping back flat\nGrip handles and pull to chest\nSqueeze back at top\nLower with control",
+    "searchQuery": "t bar row gym"
+  },
+  {
+    "id": "face-pull",
+    "name": "Face Pull",
+    "muscleGroup": "back",
+    "equipment": "cable",
+    "difficulty": "intermediate",
+    "instructions": "Set cable to face height with rope\nGrip rope ends with thumbs up\nPull rope toward face\nElbows high flaring out\nSqueeze shoulder blades together",
+    "searchQuery": "face pull cable gym"
+  },
+  {
+    "id": "overhead-press",
+    "name": "Barbell Overhead Press",
+    "muscleGroup": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Bar at shoulder level\nFeet shoulder width apart\nPress bar straight overhead\nFully extend arms at top\nLower with control to shoulders",
+    "searchQuery": "overhead press barbell gym"
+  },
+  {
+    "id": "dumbbell-shoulder-press",
+    "name": "Dumbbell Shoulder Press",
+    "muscleGroup": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Sit with dumbbells at shoulder level\nPress dumbbells overhead\nExtend arms fully at top\nLower with control to start\nKeep core engaged",
+    "searchQuery": "dumbbell shoulder press gym"
+  },
+  {
+    "id": "lateral-raise",
+    "name": "Lateral Raise",
+    "muscleGroup": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "instructions": "Stand with dumbbells at sides\nSlight bend in elbows\nRaise arms out to sides\nStop at shoulder height\nLower with control",
+    "searchQuery": "lateral raise dumbbell gym"
+  },
+  {
+    "id": "front-raise",
+    "name": "Front Raise",
+    "muscleGroup": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "instructions": "Stand with dumbbells in front of thighs\nRaise arms straight forward\nStop at shoulder height\nKeep slight bend in elbows\nLower with control",
+    "searchQuery": "front raise dumbbell gym"
+  },
+  {
+    "id": "rear-delt-fly",
+    "name": "Rear Delt Fly",
+    "muscleGroup": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Bend at hips chest toward floor\nArms hanging with dumbbells\nRaise arms out to sides\nSqueeze shoulder blades\nLower with control",
+    "searchQuery": "rear delt fly dumbbell gym"
+  },
+  {
+    "id": "arnold-press",
+    "name": "Arnold Press",
+    "muscleGroup": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Start with dumbbells at chest palms facing you\nRotate palms forward while pressing up\nExtend arms overhead\nReverse motion on way down\nEnd with palms facing you",
+    "searchQuery": "arnold press dumbbell gym"
+  },
+  {
+    "id": "upright-row",
+    "name": "Upright Row",
+    "muscleGroup": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Hold bar with narrow overhand grip\nPull bar straight up along body\nElbows lead the movement\nRaise to chest height\nLower with control",
+    "searchQuery": "upright row barbell gym"
+  },
+  {
+    "id": "bicep-curl",
+    "name": "Barbell Bicep Curl",
+    "muscleGroup": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "instructions": "Stand with bar at arm's length\nGrip bar with underhand grip\nCurl bar up to shoulders\nKeep elbows stationary\nLower with control",
+    "searchQuery": "barbell bicep curl gym"
+  },
+  {
+    "id": "dumbbell-curl",
+    "name": "Dumbbell Curl",
+    "muscleGroup": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "instructions": "Stand with dumbbells at sides\nCurl both dumbbells up\nRotate palms to face shoulders\nSqueeze biceps at top\nLower with control",
+    "searchQuery": "dumbbell curl gym"
+  },
+  {
+    "id": "hammer-curl",
+    "name": "Hammer Curl",
+    "muscleGroup": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "instructions": "Hold dumbbells with palms facing each other\nKeep palms neutral throughout\nCurl dumbbells up\nSqueeze at top\nLower with control",
+    "searchQuery": "hammer curl dumbbell gym"
+  },
+  {
+    "id": "tricep-dips",
+    "name": "Tricep Dips",
+    "muscleGroup": "arms",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "instructions": "Grip parallel bars or bench\nBody upright elbows back\nLower body by bending elbows\nGo down until 90 degree angle\nPress back up",
+    "searchQuery": "tricep dips exercise gym"
+  },
+  {
+    "id": "tricep-pushdown",
+    "name": "Tricep Pushdown",
+    "muscleGroup": "arms",
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "instructions": "Stand at cable machine\nGrip bar with overhand grip\nElbows at sides push bar down\nFully extend arms at bottom\nReturn with control",
+    "searchQuery": "tricep pushdown cable gym"
+  },
+  {
+    "id": "overhead-tricep-extension",
+    "name": "Overhead Tricep Extension",
+    "muscleGroup": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Hold one dumbbell with both hands overhead\nLower behind head bending elbows\nKeep elbows pointing up\nExtend arms back overhead\nControl throughout movement",
+    "searchQuery": "overhead tricep extension dumbbell gym"
+  },
+  {
+    "id": "preacher-curl",
+    "name": "Preacher Curl",
+    "muscleGroup": "arms",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Sit at preacher bench\nArms extended over pad\nCurl bar up toward shoulders\nSqueeze biceps at top\nLower with control",
+    "searchQuery": "preacher curl gym"
+  },
+  {
+    "id": "close-grip-bench",
+    "name": "Close Grip Bench Press",
+    "muscleGroup": "arms",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "instructions": "Lie on bench with narrow grip\nHands about shoulder width\nLower bar to lower chest\nKeep elbows tucked in\nPress back up",
+    "searchQuery": "close grip bench press gym"
+  },
+  {
+    "id": "plank",
+    "name": "Plank",
+    "muscleGroup": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "instructions": "Support body on forearms and toes\nBody in straight line\nEngage core and glutes\nKeep hips level\nHold position",
+    "searchQuery": "plank exercise gym"
+  },
+  {
+    "id": "russian-twist",
+    "name": "Russian Twist",
+    "muscleGroup": "core",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "instructions": "Sit with knees bent feet off floor\nLean back slightly\nHold weight at chest\nRotate torso side to side\nTouch weight to floor each side",
+    "searchQuery": "russian twist exercise gym"
+  },
+  {
+    "id": "bicycle-crunch",
+    "name": "Bicycle Crunch",
+    "muscleGroup": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "instructions": "Lie on back hands behind head\nBring opposite elbow to opposite knee\nExtend other leg straight\nAlternate sides in pedaling motion\nKeep core engaged",
+    "searchQuery": "bicycle crunch exercise gym"
+  },
+  {
+    "id": "hanging-leg-raise",
+    "name": "Hanging Leg Raise",
+    "muscleGroup": "core",
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "instructions": "Hang from pull up bar\nKeep legs together\nRaise legs up toward chest\nControl movement\nLower with control",
+    "searchQuery": "hanging leg raise gym"
+  },
+  {
+    "id": "ab-wheel-rollout",
+    "name": "Ab Wheel Rollout",
+    "muscleGroup": "core",
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "instructions": "Kneel holding ab wheel\nRoll wheel forward extending body\nKeep core tight\nGo as far as control allows\nRoll back to start",
+    "searchQuery": "ab wheel rollout gym"
+  },
+  {
+    "id": "cable-crunch",
+    "name": "Cable Crunch",
+    "muscleGroup": "core",
+    "equipment": "cable",
+    "difficulty": "intermediate",
+    "instructions": "Kneel in front of cable machine\nGrip rope attachment overhead\nCrunch down bringing elbows to knees\nSqueeze abs at bottom\nReturn with control",
+    "searchQuery": "cable crunch gym"
+  },
+  {
+    "id": "mountain-climber",
+    "name": "Mountain Climber",
+    "muscleGroup": "core",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "instructions": "Start in push up position\nBring one knee toward chest\nQuickly switch legs\nMaintain plank position\nKeep core engaged",
+    "searchQuery": "mountain climber exercise gym"
+  },
+  {
+    "id": "side-plank",
+    "name": "Side Plank",
+    "muscleGroup": "core",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "instructions": "Lie on side supported on forearm\nStack feet and hips\nLift hips off ground\nBody in straight line\nHold position",
+    "searchQuery": "side plank exercise gym"
+  },
+  {
+    "id": "deadbug",
+    "name": "Dead Bug",
+    "muscleGroup": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "instructions": "Lie on back arms extended up\nKnees bent at 90 degrees\nLower opposite arm and leg\nReturn to start\nAlternate sides",
+    "searchQuery": "dead bug exercise gym"
+  },
+  {
+      "id": "cable-crossover",
+      "name": "Cable Crossover",
+      "muscleGroup": "chest",
+      "equipment": "cable",
+      "difficulty": "intermediate",
+      "instructions": "Set cables to high position\nGrab handles with arms extended\nStep forward with staggered stance\nBring handles down and across body\nSqueeze chest at bottom",
+      "searchQuery": "cable crossover gym"
+    },
+    {
+      "id": "incline-barbell-press",
+      "name": "Incline Barbell Press",
+      "muscleGroup": "chest",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Set bench to 30-45 degree incline\nGrip bar slightly wider than shoulders\nLower bar to upper chest\nPress back up to full extension\nKeep feet planted on floor",
+      "searchQuery": "incline barbell press gym"
+    },
+    {
+      "id": "pec-deck-fly",
+      "name": "Pec Deck Fly",
+      "muscleGroup": "chest",
+      "equipment": "machine",
+      "difficulty": "beginner",
+      "instructions": "Sit with back against pad\nGrab handles at chest level\nBring handles together in front\nSqueeze chest at peak contraction\nReturn arms to starting position",
+      "searchQuery": "pec deck fly machine gym"
+    },
+    {
+      "id": "diamond-push-up",
+      "name": "Diamond Push-Up",
+      "muscleGroup": "chest",
+      "equipment": "bodyweight",
+      "difficulty": "intermediate",
+      "instructions": "Get in push up position\nPlace hands together forming diamond\nLower chest toward hands\nKeep elbows close to body\nPress back up to start",
+      "searchQuery": "diamond push up exercise"
+    },
+    {
+      "id": "landmine-press",
+      "name": "Landmine Press",
+      "muscleGroup": "chest",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Stand holding end of barbell at chest\nPress barbell up and forward\nExtend arm fully at top\nControl weight back to chest\nKeep core engaged throughout",
+      "searchQuery": "landmine press gym"
+    },
+    {
+      "id": "svend-press",
+      "name": "Svend Press",
+      "muscleGroup": "chest",
+      "equipment": "dumbbell",
+      "difficulty": "beginner",
+      "instructions": "Hold weight plates together at chest\nSqueeze plates hard together\nPress plates straight forward\nFully extend arms\nBring back to chest maintaining squeeze",
+      "searchQuery": "svend press exercise"
+    },
+    {
+      "id": "hack-squat",
+      "name": "Hack Squat",
+      "muscleGroup": "legs",
+      "equipment": "machine",
+      "difficulty": "intermediate",
+      "instructions": "Stand in hack squat machine\nFeet shoulder width on platform\nRelease safety and lower body\nGo down until thighs parallel\nDrive through heels to stand",
+      "searchQuery": "hack squat machine gym"
+    },
+    {
+      "id": "sissy-squat",
+      "name": "Sissy Squat",
+      "muscleGroup": "legs",
+      "equipment": "bodyweight",
+      "difficulty": "advanced",
+      "instructions": "Stand with feet hip width\nHold onto support for balance\nLean back while bending knees\nLower body keeping thighs and torso aligned\nRise back up using quads",
+      "searchQuery": "sissy squat exercise"
+    },
+    {
+      "id": "nordic-curl",
+      "name": "Nordic Hamstring Curl",
+      "muscleGroup": "legs",
+      "equipment": "bodyweight",
+      "difficulty": "advanced",
+      "instructions": "Kneel with ankles secured\nLower torso forward with control\nKeep body straight from knees to head\nGo as far as control allows\nPush back up using hamstrings",
+      "searchQuery": "nordic hamstring curl gym"
+    },
+    {
+      "id": "sumo-deadlift",
+      "name": "Sumo Deadlift",
+      "muscleGroup": "legs",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Stance wider than shoulders toes out\nGrip bar inside knees\nChest up back flat\nDrive through heels extending hips\nStand fully erect squeezing glutes",
+      "searchQuery": "sumo deadlift gym"
+    },
+    {
+      "id": "box-jump",
+      "name": "Box Jump",
+      "muscleGroup": "legs",
+      "equipment": "bodyweight",
+      "difficulty": "intermediate",
+      "instructions": "Stand facing sturdy box or platform\nSwing arms and jump explosively\nLand softly on box with both feet\nStand fully on box\nStep down carefully",
+      "searchQuery": "box jump exercise gym"
+    },
+    {
+      "id": "glute-bridge",
+      "name": "Barbell Glute Bridge",
+      "muscleGroup": "legs",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Lie on back with barbell over hips\nFeet flat on floor knees bent\nDrive hips up squeezing glutes\nRaise until body forms straight line\nLower with control",
+      "searchQuery": "barbell glute bridge gym"
+    },
+    {
+      "id": "step-up",
+      "name": "Dumbbell Step-Up",
+      "muscleGroup": "legs",
+      "equipment": "dumbbell",
+      "difficulty": "beginner",
+      "instructions": "Hold dumbbells at sides\nPlace one foot on bench or box\nDrive through heel to step up\nBring other foot to platform\nStep down and alternate legs",
+      "searchQuery": "dumbbell step up gym"
+    },
+    {
+      "id": "hip-thrust",
+      "name": "Hip Thrust",
+      "muscleGroup": "legs",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Upper back on bench with barbell over hips\nFeet flat on floor\nDrive hips up squeezing glutes\nRaise until thighs parallel to floor\nLower hips back down",
+      "searchQuery": "hip thrust barbell gym"
+    },
+    {
+      "id": "pendlay-row",
+      "name": "Pendlay Row",
+      "muscleGroup": "back",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Bend at hips torso parallel to floor\nGrip bar with arms extended\nPull bar explosively to chest\nReturn bar to floor between reps\nReset position each rep",
+      "searchQuery": "pendlay row gym"
+    },
+    {
+      "id": "chest-supported-row",
+      "name": "Chest Supported Row",
+      "muscleGroup": "back",
+      "equipment": "dumbbell",
+      "difficulty": "beginner",
+      "instructions": "Lie chest down on incline bench\nHold dumbbells hanging down\nPull dumbbells to sides\nSqueeze shoulder blades together\nLower with control",
+      "searchQuery": "chest supported row gym"
+    },
+    {
+      "id": "inverted-row",
+      "name": "Inverted Row",
+      "muscleGroup": "back",
+      "equipment": "bodyweight",
+      "difficulty": "intermediate",
+      "instructions": "Hang under bar body straight\nFeet on ground heels down\nPull chest to bar\nKeep body in straight line\nLower back to start",
+      "searchQuery": "inverted row bodyweight gym"
+    },
+    {
+      "id": "cable-pullover",
+      "name": "Cable Pullover",
+      "muscleGroup": "back",
+      "equipment": "cable",
+      "difficulty": "intermediate",
+      "instructions": "Stand facing high cable with rope\nGrip rope with arms extended overhead\nPull rope down to thighs\nKeep arms relatively straight\nReturn with control",
+      "searchQuery": "cable pullover gym"
+    },
+    {
+      "id": "meadows-row",
+      "name": "Meadows Row",
+      "muscleGroup": "back",
+      "equipment": "barbell",
+      "difficulty": "advanced",
+      "instructions": "Stand perpendicular to landmine\nGrip end of bar with one hand\nRow bar to hip\nRotate torso slightly\nLower with control",
+      "searchQuery": "meadows row landmine gym"
+    },
+    {
+      "id": "rack-pull",
+      "name": "Rack Pull",
+      "muscleGroup": "back",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Set bar on rack at knee height\nGrip bar just outside knees\nDrive through heels extending hips\nPull until standing fully erect\nLower bar back to rack",
+      "searchQuery": "rack pull gym"
+    },
+    {
+      "id": "wide-grip-pulldown",
+      "name": "Wide Grip Lat Pulldown",
+      "muscleGroup": "back",
+      "equipment": "cable",
+      "difficulty": "beginner",
+      "instructions": "Grip bar wider than shoulders\nSit with thighs under pad\nPull bar to upper chest\nLean back slightly\nControl bar back up",
+      "searchQuery": "wide grip lat pulldown gym"
+    },
+    {
+      "id": "hyperextension",
+      "name": "Back Hyperextension",
+      "muscleGroup": "back",
+      "equipment": "bodyweight",
+      "difficulty": "beginner",
+      "instructions": "Position body on hyperextension bench\nCross arms over chest\nLower torso toward floor\nRaise back up to parallel\nSqueeze glutes and lower back",
+      "searchQuery": "back hyperextension gym"
+    },
+    {
+      "id": "military-press",
+      "name": "Standing Military Press",
+      "muscleGroup": "shoulders",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Stand with bar at shoulders\nFeet shoulder width apart\nPress bar strictly overhead\nNo leg drive or lean\nLower back to shoulders",
+      "searchQuery": "military press standing gym"
+    },
+    {
+      "id": "cable-lateral-raise",
+      "name": "Cable Lateral Raise",
+      "muscleGroup": "shoulders",
+      "equipment": "cable",
+      "difficulty": "intermediate",
+      "instructions": "Stand sideways to low cable\nGrab handle with far hand\nRaise arm out to side\nStop at shoulder height\nLower with control",
+      "searchQuery": "cable lateral raise gym"
+    },
+    {
+      "id": "behind-neck-press",
+      "name": "Behind the Neck Press",
+      "muscleGroup": "shoulders",
+      "equipment": "barbell",
+      "difficulty": "advanced",
+      "instructions": "Bar rests on upper back\nGrip wider than shoulders\nPress bar overhead from behind\nFully extend arms\nLower back to starting position",
+      "searchQuery": "behind neck press gym"
+    },
+    {
+      "id": "pike-push-up",
+      "name": "Pike Push-Up",
+      "muscleGroup": "shoulders",
+      "equipment": "bodyweight",
+      "difficulty": "intermediate",
+      "instructions": "Start in downward dog position\nHips high forming inverted V\nLower head toward floor\nKeep elbows tracking back\nPress back up to start",
+      "searchQuery": "pike push up exercise"
+    },
+    {
+      "id": "reverse-pec-deck",
+      "name": "Reverse Pec Deck",
+      "muscleGroup": "shoulders",
+      "equipment": "machine",
+      "difficulty": "beginner",
+      "instructions": "Sit facing pec deck machine\nGrab handles with arms forward\nPull handles back squeezing shoulders\nSqueeze rear delts\nReturn with control",
+      "searchQuery": "reverse pec deck gym"
+    },
+    {
+      "id": "bradford-press",
+      "name": "Bradford Press",
+      "muscleGroup": "shoulders",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Start with bar at front shoulders\nPress bar up and over to back\nLower to back of neck\nPress back up and over to front\nContinue alternating",
+      "searchQuery": "bradford press exercise"
+    },
+    {
+      "id": "bus-driver",
+      "name": "Bus Driver",
+      "muscleGroup": "shoulders",
+      "equipment": "dumbbell",
+      "difficulty": "intermediate",
+      "instructions": "Hold weight plate out at shoulder height\nGrip like steering wheel\nRotate plate clockwise then counterclockwise\nKeep arms extended throughout\nMaintain shoulder height",
+      "searchQuery": "bus driver shoulder exercise"
+    },
+    {
+      "id": "ez-bar-curl",
+      "name": "EZ Bar Curl",
+      "muscleGroup": "arms",
+      "equipment": "barbell",
+      "difficulty": "beginner",
+      "instructions": "Grip EZ bar at natural angle\nStand with bar at arm's length\nCurl bar up to shoulders\nKeep elbows stationary\nLower with control",
+      "searchQuery": "ez bar curl gym"
+    },
+    {
+      "id": "concentration-curl",
+      "name": "Concentration Curl",
+      "muscleGroup": "arms",
+      "equipment": "dumbbell",
+      "difficulty": "beginner",
+      "instructions": "Sit with elbow braced on inner thigh\nHold dumbbell with arm extended\nCurl weight up to shoulder\nSqueeze bicep at top\nLower with control",
+      "searchQuery": "concentration curl dumbbell gym"
+    },
+    {
+      "id": "skull-crusher",
+      "name": "Skull Crusher",
+      "muscleGroup": "arms",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Lie on bench holding bar overhead\nLower bar by bending elbows\nBring bar toward forehead\nKeep upper arms stationary\nExtend arms back to start",
+      "searchQuery": "skull crusher exercise gym"
+    },
+    {
+      "id": "cable-curl",
+      "name": "Cable Bicep Curl",
+      "muscleGroup": "arms",
+      "equipment": "cable",
+      "difficulty": "beginner",
+      "instructions": "Stand at low cable with bar\nGrip bar with underhand grip\nCurl bar up to shoulders\nKeep elbows at sides\nLower with control",
+      "searchQuery": "cable bicep curl gym"
+    },
+    {
+      "id": "rope-pushdown",
+      "name": "Rope Tricep Pushdown",
+      "muscleGroup": "arms",
+      "equipment": "cable",
+      "difficulty": "beginner",
+      "instructions": "Attach rope to high cable\nGrip rope ends with neutral grip\nPush down spreading rope at bottom\nKeep elbows at sides\nReturn with control",
+      "searchQuery": "rope tricep pushdown gym"
+    },
+    {
+      "id": "zottman-curl",
+      "name": "Zottman Curl",
+      "muscleGroup": "arms",
+      "equipment": "dumbbell",
+      "difficulty": "intermediate",
+      "instructions": "Curl dumbbells up with palms up\nRotate wrists at top to palms down\nLower dumbbells with palms down\nRotate back at bottom\nRepeat movement",
+      "searchQuery": "zottman curl exercise"
+    },
+    {
+      "id": "kickback",
+      "name": "Tricep Kickback",
+      "muscleGroup": "arms",
+      "equipment": "dumbbell",
+      "difficulty": "beginner",
+      "instructions": "Bend forward with elbow bent 90 degrees\nExtend arm back straightening elbow\nSqueeze tricep at full extension\nReturn to bent position\nKeep upper arm stationary",
+      "searchQuery": "tricep kickback dumbbell gym"
+    },
+    {
+      "id": "incline-curl",
+      "name": "Incline Dumbbell Curl",
+      "muscleGroup": "arms",
+      "equipment": "dumbbell",
+      "difficulty": "intermediate",
+      "instructions": "Sit on incline bench 45 degrees\nArms hang straight down\nCurl dumbbells up together\nKeep elbows back throughout\nLower with control",
+      "searchQuery": "incline dumbbell curl gym"
+    },
+    {
+      "id": "tate-press",
+      "name": "Tate Press",
+      "muscleGroup": "arms",
+      "equipment": "dumbbell",
+      "difficulty": "intermediate",
+      "instructions": "Lie on bench with dumbbells over chest\nElbows out to sides palms facing feet\nLower dumbbells to chest\nPress back up keeping elbows out\nFocus on tricep contraction",
+      "searchQuery": "tate press exercise"
+    },
+    {
+      "id": "hollow-hold",
+      "name": "Hollow Body Hold",
+      "muscleGroup": "core",
+      "equipment": "bodyweight",
+      "difficulty": "intermediate",
+      "instructions": "Lie on back arms overhead\nPress lower back into floor\nLift shoulders and legs off ground\nHold body in curved hollow position\nMaintain tension throughout",
+      "searchQuery": "hollow body hold exercise"
+    },
+    {
+      "id": "v-up",
+      "name": "V-Up",
+      "muscleGroup": "core",
+      "equipment": "bodyweight",
+      "difficulty": "intermediate",
+      "instructions": "Lie flat on back arms overhead\nSimultaneously raise arms and legs\nTouch hands to feet at top\nForm V shape with body\nLower back to start",
+      "searchQuery": "v up exercise gym"
+    },
+    {
+      "id": "pallof-press",
+      "name": "Pallof Press",
+      "muscleGroup": "core",
+      "equipment": "cable",
+      "difficulty": "intermediate",
+      "instructions": "Stand sideways to cable at chest height\nHold handle at chest with both hands\nPress hands straight forward\nResist cable rotation\nReturn to chest",
+      "searchQuery": "pallof press cable gym"
+    },
+    {
+      "id": "dragon-flag",
+      "name": "Dragon Flag",
+      "muscleGroup": "core",
+      "equipment": "bodyweight",
+      "difficulty": "advanced",
+      "instructions": "Lie on bench gripping behind head\nRaise entire body up keeping straight\nOnly shoulders touch bench\nLower body with control\nKeep body rigid throughout",
+      "searchQuery": "dragon flag exercise"
+    },
+    {
+      "id": "woodchop",
+      "name": "Cable Woodchop",
+      "muscleGroup": "core",
+      "equipment": "cable",
+      "difficulty": "intermediate",
+      "instructions": "Stand sideways to high cable\nGrip handle with both hands\nRotate torso pulling cable down and across\nPivot on back foot\nReturn with control",
+      "searchQuery": "cable woodchop exercise gym"
+    },
+    {
+      "id": "landmine-rotation",
+      "name": "Landmine Rotation",
+      "muscleGroup": "core",
+      "equipment": "barbell",
+      "difficulty": "intermediate",
+      "instructions": "Hold end of landmine bar at chest\nFeet wider than shoulders\nRotate bar side to side\nPivot on feet\nKeep arms extended",
+      "searchQuery": "landmine rotation exercise"
+    },
+    {
+      "id": "turkish-getup",
+      "name": "Turkish Get-Up",
+      "muscleGroup": "core",
+      "equipment": "dumbbell",
+      "difficulty": "advanced",
+      "instructions": "Lie holding weight overhead\nRise to standing in controlled sequence\nKeep weight overhead throughout\nReverse movement back down\nMaintain stability entire time",
+      "searchQuery": "turkish get up exercise"
+    },
+    {
+      "id": "windmill",
+      "name": "Kettlebell Windmill",
+      "muscleGroup": "core",
+      "equipment": "dumbbell",
+      "difficulty": "advanced",
+      "instructions": "Hold weight overhead with one arm\nFeet wide apart\nBend at waist toward opposite foot\nKeep weight arm vertical\nReturn to standing",
+      "searchQuery": "kettlebell windmill exercise"
+    },
+    {
+      "id": "toe-touch",
+      "name": "Lying Toe Touch",
+      "muscleGroup": "core",
+      "equipment": "bodyweight",
+      "difficulty": "beginner",
+      "instructions": "Lie on back with legs vertical\nReach hands toward toes\nLift shoulders off ground\nTouch toes at top\nLower back down",
+      "searchQuery": "lying toe touch exercise"
+    }
+]
