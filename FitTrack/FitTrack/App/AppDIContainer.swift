@@ -22,7 +22,7 @@ final class AppDIContainer {
     }
     
     lazy var exerciseService: ExerciseServiceProtocol = {
-        return MockExerciseService()
+        return FirebaseExerciseService()
     }()
     
     func makeExerciseViewModel() -> ExerciseViewModel {

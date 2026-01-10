@@ -136,5 +136,7 @@ class ExerciseCell: UICollectionViewCell {
         nameLabel.text = exercise.name
         muscleTagLabel.text = exercise.muscleGroup
         equipmentTagLabel.text = exercise.equipment
+        
+        exerciseImageView.loadImages(url: exercise.imageUrl)
     }
 }

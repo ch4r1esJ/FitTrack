@@ -16,7 +16,7 @@ class ExerciesViewController: UIViewController {
     lazy var filterView = FilterView(viewModel: viewModel)
     
     private let searchController = UISearchController(searchResultsController: nil)
-     
+    
     private let exerciseList: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -31,6 +31,16 @@ class ExerciesViewController: UIViewController {
         view.showsVerticalScrollIndicator = false
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Exercise"
+        label.font = .systemFont(ofSize: 30, weight: .medium)
+        label.textColor = .black
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private var backgroundImage: UIImageView = {
@@ -56,7 +66,7 @@ class ExerciesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
-        title = "Exercises"
+        navigationItem.titleView = titleLabel
         
         setupSearchController()
         setupBackgroundImage()
@@ -81,14 +91,14 @@ class ExerciesViewController: UIViewController {
     }
     
     private func bindViewModel() {
-           viewModel.onExercisesUpdated = { [weak self] in
-               self?.exerciseList.reloadData()
-           }
+        viewModel.onExercisesUpdated = { [weak self] in
+            self?.exerciseList.reloadData()
+        }
         
-           viewModel.onError = { [weak self] message in
-               self?.showError(message)
-           }
-       }
+        viewModel.onError = { [weak self] message in
+            self?.showError(message)
+        }
+    }
     
     private func setupSearchController() {
         searchController.searchResultsUpdater = self
@@ -100,7 +110,7 @@ class ExerciesViewController: UIViewController {
         definesPresentationContext = true
     }
     
-    private func setupBackgroundImage() {
+    private func setupBackgroundImage() { // TODO: Delete
         view.addSubview(backgroundImage)
         backgroundImage.frame = view.bounds
     }
@@ -122,7 +132,7 @@ class ExerciesViewController: UIViewController {
             filterView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             filterView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             filterView.heightAnchor.constraint(equalToConstant: 44),
-             
+            
             exerciseList.topAnchor.constraint(equalTo: filterView.bottomAnchor, constant: 23),
             exerciseList.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             exerciseList.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
