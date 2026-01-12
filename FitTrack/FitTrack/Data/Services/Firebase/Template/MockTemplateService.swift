@@ -7,26 +7,24 @@
 
 import Foundation
 
-
 class MockTemplateService: TemplatesServiceProtocol {
-    
     func fetchAllUserTemplates(userId: String) async throws -> [WorkoutTemplate] {
         return [
             WorkoutTemplate(
                 id: "1",
-                name: "Leg Day",
+                name: "Chest Strength",
                 exercises: [
                     TemplateExercise(
                         id: "e1",
-                        exerciseId: "squat",
-                        exerciseName: "Barbell Squat",
-                        muscleGroup: "legs",
+                        exerciseId: "bench-press",
+                        exerciseName: "Bench Press",
+                        muscleGroup: "chest",
                         equipment: "barbell",
-                        sets: 4,
-                        targetRepsMin: 8,
-                        targetRepsMax: 12,
-                        restSeconds: 180,
-                        notes: nil
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 60, targetReps: 8, restSeconds: 120),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 65, targetReps: 6, restSeconds: 150),
+                            ExerciseSet(setNumber: 3, targetWeightKg: 70, targetReps: 4, restSeconds: 180)
+                        ]
                     )
                 ],
                 createdAt: Date(),
@@ -34,19 +32,18 @@ class MockTemplateService: TemplatesServiceProtocol {
             ),
             WorkoutTemplate(
                 id: "2",
-                name: "Push Day",
+                name: "Upper Push Volume",
                 exercises: [
                     TemplateExercise(
                         id: "e2",
-                        exerciseId: "bench-press",
-                        exerciseName: "Bench Press",
+                        exerciseId: "incline-dumbbell-press",
+                        exerciseName: "Incline Dumbbell Press",
                         muscleGroup: "chest",
-                        equipment: "barbell",
-                        sets: 3,
-                        targetRepsMin: 8,
-                        targetRepsMax: 10,
-                        restSeconds: 120,
-                        notes: nil
+                        equipment: "dumbbell",
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 22, targetReps: 12, restSeconds: 90),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 22, targetReps: 10, restSeconds: 90)
+                        ]
                     )
                 ],
                 createdAt: Date(),
@@ -54,27 +51,7 @@ class MockTemplateService: TemplatesServiceProtocol {
             ),
             WorkoutTemplate(
                 id: "3",
-                name: "Push Day",
-                exercises: [
-                    TemplateExercise(
-                        id: "e2",
-                        exerciseId: "bench-press",
-                        exerciseName: "Bench Press",
-                        muscleGroup: "chest",
-                        equipment: "barbell",
-                        sets: 3,
-                        targetRepsMin: 8,
-                        targetRepsMax: 10,
-                        restSeconds: 120,
-                        notes: nil
-                    )
-                ],
-                createdAt: Date(),
-                userId: userId
-            ),
-            WorkoutTemplate(
-                id: "4",
-                name: "Pull Day",
+                name: "Back Power",
                 exercises: [
                     TemplateExercise(
                         id: "e3",
@@ -82,23 +59,30 @@ class MockTemplateService: TemplatesServiceProtocol {
                         exerciseName: "Deadlift",
                         muscleGroup: "back",
                         equipment: "barbell",
-                        sets: 4,
-                        targetRepsMin: 5,
-                        targetRepsMax: 8,
-                        restSeconds: 180,
-                        notes: nil
-                    ),
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 90, targetReps: 5, restSeconds: 180),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 100, targetReps: 3, restSeconds: 180)
+                        ]
+                    )
+                ],
+                createdAt: Date(),
+                userId: userId
+            ),
+            WorkoutTemplate(
+                id: "4",
+                name: "Vertical Pull",
+                exercises: [
                     TemplateExercise(
                         id: "e4",
                         exerciseId: "pull-up",
                         exerciseName: "Pull-Up",
                         muscleGroup: "back",
                         equipment: "bodyweight",
-                        sets: 3,
-                        targetRepsMin: 6,
-                        targetRepsMax: 10,
-                        restSeconds: 120,
-                        notes: nil
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 0, targetReps: 10, restSeconds: 90),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 0, targetReps: 8, restSeconds: 90),
+                            ExerciseSet(setNumber: 3, targetWeightKg: 0, targetReps: 6, restSeconds: 120)
+                        ]
                     )
                 ],
                 createdAt: Date(),
@@ -106,31 +90,18 @@ class MockTemplateService: TemplatesServiceProtocol {
             ),
             WorkoutTemplate(
                 id: "5",
-                name: "Shoulders",
+                name: "Leg Strength",
                 exercises: [
                     TemplateExercise(
                         id: "e5",
-                        exerciseId: "overhead-press",
-                        exerciseName: "Overhead Press",
-                        muscleGroup: "shoulders",
+                        exerciseId: "back-squat",
+                        exerciseName: "Back Squat",
+                        muscleGroup: "legs",
                         equipment: "barbell",
-                        sets: 4,
-                        targetRepsMin: 6,
-                        targetRepsMax: 10,
-                        restSeconds: 120,
-                        notes: nil
-                    ),
-                    TemplateExercise(
-                        id: "e6",
-                        exerciseId: "lateral-raise",
-                        exerciseName: "Dumbbell Lateral Raise",
-                        muscleGroup: "shoulders",
-                        equipment: "dumbbell",
-                        sets: 3,
-                        targetRepsMin: 12,
-                        targetRepsMax: 15,
-                        restSeconds: 60,
-                        notes: nil
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 80, targetReps: 6, restSeconds: 150),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 85, targetReps: 5, restSeconds: 180)
+                        ]
                     )
                 ],
                 createdAt: Date(),
@@ -138,31 +109,19 @@ class MockTemplateService: TemplatesServiceProtocol {
             ),
             WorkoutTemplate(
                 id: "6",
-                name: "Core",
+                name: "Quad Burn",
                 exercises: [
                     TemplateExercise(
-                        id: "e7",
-                        exerciseId: "plank",
-                        exerciseName: "Plank",
-                        muscleGroup: "core",
-                        equipment: "bodyweight",
-                        sets: 3,
-                        targetRepsMin: 30,
-                        targetRepsMax: 60,
-                        restSeconds: 60,
-                        notes: "Seconds"
-                    ),
-                    TemplateExercise(
-                        id: "e8",
-                        exerciseId: "hanging-leg-raise",
-                        exerciseName: "Hanging Leg Raise",
-                        muscleGroup: "core",
-                        equipment: "bodyweight",
-                        sets: 3,
-                        targetRepsMin: 10,
-                        targetRepsMax: 15,
-                        restSeconds: 90,
-                        notes: nil
+                        id: "e6",
+                        exerciseId: "leg-extension",
+                        exerciseName: "Leg Extension",
+                        muscleGroup: "legs",
+                        equipment: "machine",
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 45, targetReps: 15, restSeconds: 60),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 45, targetReps: 12, restSeconds: 60),
+                            ExerciseSet(setNumber: 3, targetWeightKg: 45, targetReps: 10, restSeconds: 60)
+                        ]
                     )
                 ],
                 createdAt: Date(),
@@ -170,60 +129,81 @@ class MockTemplateService: TemplatesServiceProtocol {
             ),
             WorkoutTemplate(
                 id: "7",
-                name: "Full Body",
+                name: "Shoulder Builder",
+                exercises: [
+                    TemplateExercise(
+                        id: "e7",
+                        exerciseId: "overhead-press",
+                        exerciseName: "Overhead Press",
+                        muscleGroup: "shoulders",
+                        equipment: "barbell",
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 40, targetReps: 8, restSeconds: 120),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 45, targetReps: 6, restSeconds: 150)
+                        ]
+                    )
+                ],
+                createdAt: Date(),
+                userId: userId
+            ),
+            WorkoutTemplate(
+                id: "8",
+                name: "Arm Hypertrophy",
+                exercises: [
+                    TemplateExercise(
+                        id: "e8",
+                        exerciseId: "hammer-curl",
+                        exerciseName: "Hammer Curl",
+                        muscleGroup: "arms",
+                        equipment: "dumbbell",
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 14, targetReps: 12, restSeconds: 60),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 14, targetReps: 10, restSeconds: 60)
+                        ]
+                    )
+                ],
+                createdAt: Date(),
+                userId: userId
+            ),
+            WorkoutTemplate(
+                id: "9",
+                name: "Triceps Focus",
                 exercises: [
                     TemplateExercise(
                         id: "e9",
-                        exerciseId: "front-squat",
-                        exerciseName: "Front Squat",
-                        muscleGroup: "legs",
+                        exerciseId: "skull-crusher",
+                        exerciseName: "Skull Crushers",
+                        muscleGroup: "arms",
                         equipment: "barbell",
-                        sets: 3,
-                        targetRepsMin: 6,
-                        targetRepsMax: 8,
-                        restSeconds: 150,
-                        notes: nil
-                    ),
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 30, targetReps: 10, restSeconds: 75),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 30, targetReps: 8, restSeconds: 75),
+                            ExerciseSet(setNumber: 3, targetWeightKg: 30, targetReps: 6, restSeconds: 90)
+                        ]
+                    )
+                ],
+                createdAt: Date(),
+                userId: userId
+            ),
+            WorkoutTemplate(
+                id: "10",
+                name: "Core Stability",
+                exercises: [
                     TemplateExercise(
                         id: "e10",
-                        exerciseId: "incline-bench-press",
-                        exerciseName: "Incline Bench Press",
-                        muscleGroup: "chest",
-                        equipment: "barbell",
-                        sets: 3,
-                        targetRepsMin: 8,
-                        targetRepsMax: 10,
-                        restSeconds: 120,
-                        notes: nil
-                    ),
-                    TemplateExercise(
-                        id: "e11",
-                        exerciseId: "barbell-row",
-                        exerciseName: "Barbell Row",
-                        muscleGroup: "back",
-                        equipment: "barbell",
-                        sets: 3,
-                        targetRepsMin: 8,
-                        targetRepsMax: 10,
-                        restSeconds: 120,
-                        notes: nil
+                        exerciseId: "plank",
+                        exerciseName: "Plank",
+                        muscleGroup: "core",
+                        equipment: "bodyweight",
+                        sets: [
+                            ExerciseSet(setNumber: 1, targetWeightKg: 0, targetReps: 45, restSeconds: 60),
+                            ExerciseSet(setNumber: 2, targetWeightKg: 0, targetReps: 60, restSeconds: 60)
+                        ]
                     )
                 ],
                 createdAt: Date(),
                 userId: userId
             )
         ]
-    }
-    
-    func createTemplate(_ template: WorkoutTemplate) async throws {
-        print("Mock: Created template \(template.name)")
-    }
-    
-    func updateTemplate(_ template: WorkoutTemplate) async throws {
-        print("Mock: Updated template \(template.name)")
-    }
-    
-    func deleteTemplate(id: String) async throws {
-        print("Mock: Deleted template \(id)")
     }
 }

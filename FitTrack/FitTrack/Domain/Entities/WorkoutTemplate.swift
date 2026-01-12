@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WorkoutTemplate: Identifiable {
+struct WorkoutTemplate: Identifiable, Codable {
     let id: String
     let name: String
     let exercises: [TemplateExercise]
@@ -19,39 +19,31 @@ struct WorkoutTemplate: Identifiable {
     }
     
     var totalSets: Int {
-        exercises.reduce(0) { $0 + $1.sets }
+        exercises.reduce(0) { $0 + $1.sets.count }
     }
 }
 
-struct TemplateExercise: Identifiable {
+struct TemplateExercise: Identifiable, Codable {
     let id: String
     let exerciseId: String
     let exerciseName: String
     let muscleGroup: String
     let equipment: String
-    let sets: Int
-    let targetRepsMin: Int
-    let targetRepsMax: Int
+    let sets: [ExerciseSet]
+}
+
+struct ExerciseSet: Codable {
+    let setNumber: Int
+    let targetWeightKg: Double?
+    let targetReps: Int
     let restSeconds: Int
-    let notes: String?
-    
-    var repsDisplay: String {
-        if targetRepsMin == targetRepsMax {
-            return "\(targetRepsMin) reps"
-        } else {
-            return "\(targetRepsMin)-\(targetRepsMax) reps"
-        }
-    }
     
     var restDisplay: String {
         let minutes = restSeconds / 60
         let seconds = restSeconds % 60
-        if minutes > 0 && seconds > 0 {
+        if minutes > 0 {
             return "\(minutes)m \(seconds)s"
-        } else if minutes > 0 {
-            return "\(minutes)m"
-        } else {
-            return "\(seconds)s"
         }
+        return "\(seconds)s"
     }
 }
