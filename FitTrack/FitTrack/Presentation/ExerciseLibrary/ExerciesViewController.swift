@@ -24,10 +24,10 @@ class ExerciesViewController: UIViewController {
         
         let screenHeight = UIScreen.main.bounds.height
         let screenWidth = UIScreen.main.bounds.width
-        layout.itemSize = CGSize(width: screenWidth * 0.9, height: screenHeight * 0.12)
+        layout.itemSize = CGSize(width: screenWidth * 0.94, height: screenHeight * 0.12)
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.backgroundColor = .clear
+        view.backgroundColor = .systemGray6
         view.showsVerticalScrollIndicator = false
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -35,20 +35,20 @@ class ExerciesViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Exercise"
+        label.text = "Exercise Library"
         label.font = .systemFont(ofSize: 30, weight: .medium)
         label.textColor = .black
-        
+        label.sizeToFit()
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private var backgroundImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "backgroundimageed")
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
+//    private var backgroundImage: UIImageView = {
+//        let imageView = UIImageView()
+//        imageView.image = UIImage(named: "backgroundimageed")
+//        imageView.contentMode = .scaleAspectFill
+//        return imageView
+//    }()
     
     // MARK: - Init
     
@@ -65,15 +65,26 @@ class ExerciesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .systemGray6
         navigationItem.titleView = titleLabel
 //        runOneTimeUpload()
         setupSearchController()
-        setupBackgroundImage()
+//        setupBackgroundImage()
         setupView()
         registerCell()
         bindViewModel()
         viewModel.fetchExercises()
+        
+        view.backgroundColor = .systemGray6
+//        exerciseList.backgroundColor = .systemGray6
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemGray6
+
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -109,16 +120,17 @@ class ExerciesViewController: UIViewController {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search exercises"
+        searchController.searchBar.backgroundImage = UIImage()
         
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
     }
     
-    private func setupBackgroundImage() { // TODO: Delete
-        view.addSubview(backgroundImage)
-        backgroundImage.frame = view.bounds
-    }
+//    private func setupBackgroundImage() { // TODO: Delete
+//        view.addSubview(backgroundImage)
+//        backgroundImage.frame = view.bounds
+//    }
     
     private func registerCell() {
         exerciseList.register(ExerciseCell.self, forCellWithReuseIdentifier: "ExerciseCell")
@@ -139,8 +151,8 @@ class ExerciesViewController: UIViewController {
             filterView.heightAnchor.constraint(equalToConstant: 44),
             
             exerciseList.topAnchor.constraint(equalTo: filterView.bottomAnchor, constant: 23),
-            exerciseList.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            exerciseList.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            exerciseList.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            exerciseList.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
             exerciseList.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -90)
         ])
     }
@@ -148,7 +160,7 @@ class ExerciesViewController: UIViewController {
 
 extension ExerciesViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        let searchText = searchController.searchBar.text ?? "sdasd"
+        let searchText = searchController.searchBar.text ?? ""
         viewModel.updateSearchText(searchText)
     }
 }

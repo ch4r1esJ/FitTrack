@@ -15,11 +15,10 @@ class FilterView: UIView {
     private lazy var bodyPartButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Any Body Part", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .systemGray5
         button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 20
-        button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 20, bottom: 12, right: 20)
+        button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false
         button.showsMenuAsPrimaryAction = true
         button.menu = createBodyPartMenu()
@@ -29,11 +28,10 @@ class FilterView: UIView {
     private lazy var categoryButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Any Category", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .systemGray5
         button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 20
-        button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 20, bottom: 12, right: 20)
+        button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false
         button.showsMenuAsPrimaryAction = true
         button.menu = createCategoryMenu()
@@ -71,9 +69,9 @@ class FilterView: UIView {
         
         NSLayoutConstraint.activate([
             filterStackView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            filterStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            filterStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            filterStackView.heightAnchor.constraint(equalToConstant: 44),
+            filterStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            filterStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            filterStackView.heightAnchor.constraint(equalToConstant: 36),
         ])
     }
     
