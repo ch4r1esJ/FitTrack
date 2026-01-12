@@ -49,7 +49,9 @@ class TemplatesViewModel {
         }
     }
     
-    func deleteTemplate(at index: Int) {
-        templates.remove(at: index)
+    func deleteTemplate(withId id: String) {
+        if let index = templates.firstIndex(where: { $0.id == id }) {
+            templates.remove(at: index)
+        }
     }
 }

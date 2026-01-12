@@ -164,22 +164,25 @@ class TemplatesViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    private func deleteTemplate(at indexPath: IndexPath) {
-            let alert = UIAlertController(
-                title: "Delete Template?",
-                message: "This action cannot be undone.",
-                preferredStyle: .alert
-            )
+    private func confirmDelete(for id: String) {
+        let alert = UIAlertController(
+            title: "Delete Template?",
+            message: "This action cannot be undone.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
             
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-            alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-               
-                self?.viewModel.deleteTemplate(at: indexPath.item)
-                self?.collectionView.deleteItems(at: [indexPath])
-            })
+            guard let index = self?.viewModel.templates.firstIndex(where: { $0.id == id }) else { return }
+            let indexPath = IndexPath(item: index, section: 0)
             
-            present(alert, animated: true)
-        }
+            self?.viewModel.deleteTemplate(withId: id)
+            self?.collectionView.deleteItems(at: [indexPath])
+        })
+        
+        present(alert, animated: true)
+    }
 }
 
 extension TemplatesViewController: UICollectionViewDataSource {
@@ -195,7 +198,7 @@ extension TemplatesViewController: UICollectionViewDataSource {
         
         cell.onDeleteTapped = { [weak self] in
 
-            self?.deleteTemplate(at: indexPath)
+            self?.confirmDelete(for: template.id)
         }
         
         return cell
