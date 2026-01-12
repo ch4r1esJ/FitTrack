@@ -5,7 +5,6 @@
 //  Created by Charles Janjgava on 1/12/26.
 //
 
-
 import FirebaseFirestore
 
 class FirebaseTemplateService: TemplatesServiceProtocol {
@@ -33,10 +32,11 @@ class FirebaseTemplateService: TemplatesServiceProtocol {
                       let exerciseId = exerciseData["exerciseId"] as? String,
                       let exerciseName = exerciseData["exerciseName"] as? String,
                       let muscleGroup = exerciseData["muscleGroup"] as? String,
-                      let equipment = exerciseData["equipment"] as? String,
                       let setsData = exerciseData["sets"] as? [[String: Any]] else {
                     return nil
                 }
+                
+                let equipment = exerciseData["equipment"] as? String ?? "None"
                 
                 let sets = setsData.compactMap { setData -> ExerciseSet? in
                     guard let setNumber = setData["setNumber"] as? Int,

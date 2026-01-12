@@ -45,7 +45,7 @@ final class AppDIContainer {
     }()
     
     func makeTemplatesViewModel() -> TemplatesViewModel {
-        return TemplatesViewModel(templatesService: templatesService)
+        return TemplatesViewModel(templatesService: templatesService, authService: authService)
     }
     
     func makeTemplatesViewController() -> TemplatesViewController {

@@ -16,14 +16,16 @@ class TemplatesViewModel {
     private(set) var errorMessage: String?
     
     private let templatesService: TemplatesServiceProtocol
+    private let authService: AuthServiceProtocol
     
     var onError: ((String) -> Void)?
     var onTemplateUpdated: (() -> Void)?
     
     // MARK: - Init
     
-    init(templatesService: TemplatesServiceProtocol) {
+    init(templatesService: TemplatesServiceProtocol, authService: AuthServiceProtocol) {
         self.templatesService = templatesService
+        self.authService = authService
     }
     
     // MARK: - Methods
@@ -31,9 +33,15 @@ class TemplatesViewModel {
     func fetchExercises() {
         isLoading = true
         
+        guard let userId = authService.currentUser?.id else {
+            self.errorMessage = "No user logged in."
+            self.isLoading = false
+            return
+        }
+        
         Task {
             do {
-                let templates = try await templatesService.fetchAllUserTemplates(userId: "1")
+                let templates = try await templatesService.fetchAllUserTemplates(userId: userId )
                 await MainActor.run {
                     self.templates = templates
                     self.isLoading = false
