@@ -25,17 +25,16 @@ struct WorkoutTemplate: Identifiable {
 
 struct TemplateExercise: Identifiable {
     let id: String
-    let exerciseId: String           // Reference to Exercise
-    let exerciseName: String         // Cached for display
-    let muscleGroup: String          // Cached for display
-    let equipment: String            // Cached for display
-    let sets: Int                    // Number of sets (e.g., 3)
-    let targetRepsMin: Int           // Min reps (e.g., 8)
-    let targetRepsMax: Int           // Max reps (e.g., 12)
-    let restSeconds: Int             // Rest time between sets (e.g., 120)
-    let notes: String?               // Optional notes
+    let exerciseId: String
+    let exerciseName: String
+    let muscleGroup: String
+    let equipment: String
+    let sets: Int
+    let targetRepsMin: Int
+    let targetRepsMax: Int
+    let restSeconds: Int
+    let notes: String?
     
-    // Computed property for display
     var repsDisplay: String {
         if targetRepsMin == targetRepsMax {
             return "\(targetRepsMin) reps"

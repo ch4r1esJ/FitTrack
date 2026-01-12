@@ -10,6 +10,8 @@ import UIKit
 class TemplatesViewController: UIViewController {
     // MARK: - Properties
     
+    private let viewModel: TemplatesViewModel
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Exercise Templates"
@@ -26,7 +28,7 @@ class TemplatesViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         
         let iconConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .medium)
-        let icon = UIImage(systemName: "doc.plaintext", withConfiguration: iconConfig)
+        let icon = UIImage(systemName: "doc.text", withConfiguration: iconConfig)
         
         button.setImage(icon, for: .normal)
         button.setTitle("Create Template", for: .normal)
@@ -72,7 +74,7 @@ class TemplatesViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-
+    
     private let collectionView: UICollectionView =  {
         let layout = UICollectionViewFlowLayout()
         
@@ -80,7 +82,7 @@ class TemplatesViewController: UIViewController {
         layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 10
         
-        layout.sectionInset = UIEdgeInsets(top: 1, left: 14, bottom: 25, right: 14)
+        layout.sectionInset = UIEdgeInsets(top: 2, left: 14, bottom: 25, right: 14)
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = .systemGray6
@@ -92,6 +94,17 @@ class TemplatesViewController: UIViewController {
         return view
     }()
     
+    // MARK: - Init
+    
+    init(viewModel: TemplatesViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Life cycle
     
     override func viewDidLoad() {
@@ -99,23 +112,21 @@ class TemplatesViewController: UIViewController {
         
         navigationItem.titleView = titleLabel
         view.backgroundColor = .systemGray6
-
-        setupUI()
+        
+        setupView()
+        registerCell()
+        bindViewModel()
+        viewModel.fetchExercises()
     }
     
     // MARK: - Methods
     
-    func setupUI() {
+    func setupView() {
         view.addSubview(collectionView)
         view.addSubview(filterStackView)
         
         filterStackView.addArrangedSubview(newTemplateButton)
         filterStackView.addArrangedSubview(exploreButton)
-
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        
-        collectionView.register(TemplatesCell.self, forCellWithReuseIdentifier: TemplatesCell.identifier)
         
         NSLayoutConstraint.activate([
             filterStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
@@ -129,15 +140,63 @@ class TemplatesViewController: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -90)
         ])
     }
+    
+    private func registerCell() {
+        collectionView.register(TemplatesCell.self, forCellWithReuseIdentifier: TemplatesCell.identifier)
+        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+    }
+    
+    private func bindViewModel() {
+        viewModel.onTemplateUpdated = { [weak self] in
+            self?.collectionView.reloadData()
+        }
+        
+        viewModel.onError = { [weak self] message in
+            self?.showError(message)
+        }
+    }
+    
+    private func showError(_ message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    private func deleteTemplate(at indexPath: IndexPath) {
+            let alert = UIAlertController(
+                title: "Delete Template?",
+                message: "This action cannot be undone.",
+                preferredStyle: .alert
+            )
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+               
+                self?.viewModel.deleteTemplate(at: indexPath.item)
+                self?.collectionView.deleteItems(at: [indexPath])
+            })
+            
+            present(alert, animated: true)
+        }
 }
 
 extension TemplatesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        30
+        viewModel.templates.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TemplatesCell.identifier, for: indexPath) as! TemplatesCell
+        
+                let template = viewModel.templates[indexPath.item]
+                cell.configure(with: template)
+        
+        cell.onDeleteTapped = { [weak self] in
+
+            self?.deleteTemplate(at: indexPath)
+        }
         
         return cell
     }

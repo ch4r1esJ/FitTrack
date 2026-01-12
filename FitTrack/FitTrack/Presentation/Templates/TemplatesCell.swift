@@ -80,6 +80,13 @@ class TemplatesCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        onDeleteTapped = nil
+        onStartTapped = nil
+        
+    }
+    
     // MARK: - Setup
     
     private func layoutCardShadow() {

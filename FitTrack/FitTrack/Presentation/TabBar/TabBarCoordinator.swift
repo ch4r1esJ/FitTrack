@@ -34,7 +34,7 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "house.fill")
         )
         
-        let templatesVC = TemplatesViewController()
+        let templatesVC = diContainer.makeTemplatesViewController()
         let templatesNav = UINavigationController(rootViewController: templatesVC)
         templatesVC.tabBarItem = UITabBarItem(
             title: "Home",

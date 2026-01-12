@@ -8,6 +8,8 @@
 import Foundation
 
 final class AppDIContainer {
+    
+    // Auth
     lazy var authService: AuthServiceProtocol = {
         FirebaseAuthService()
         
@@ -21,6 +23,8 @@ final class AppDIContainer {
         return RegisterViewModel(authService: authService)
     }
     
+    // Exercise Librart
+    
     lazy var exerciseService: ExerciseServiceProtocol = {
         return FirebaseExerciseService()
     }()
@@ -32,5 +36,20 @@ final class AppDIContainer {
     func makeExerciseViewController() -> ExerciesViewController {
         let viewModel = makeExerciseViewModel()
         return ExerciesViewController(viewModel: viewModel)
+    }
+    
+    // Templates
+    
+    lazy var templatesService: TemplatesServiceProtocol = {
+        return MockTemplateService()
+    }()
+    
+    func makeTemplatesViewModel() -> TemplatesViewModel {
+        return TemplatesViewModel(templatesService: templatesService)
+    }
+    
+    func makeTemplatesViewController() -> TemplatesViewController {
+        let viewModel = makeTemplatesViewModel()
+        return TemplatesViewController(viewModel: viewModel)
     }
 }
