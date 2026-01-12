@@ -41,7 +41,7 @@ final class AppDIContainer {
     // Templates
     
     lazy var templatesService: TemplatesServiceProtocol = {
-        return MockTemplateService()
+        return FirebaseTemplateService()
     }()
     
     func makeTemplatesViewModel() -> TemplatesViewModel {

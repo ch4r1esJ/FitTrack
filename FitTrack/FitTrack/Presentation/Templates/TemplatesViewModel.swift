@@ -33,7 +33,7 @@ class TemplatesViewModel {
         
         Task {
             do {
-                let templates = try await templatesService.fetchAllUserTemplates(userId: "3")
+                let templates = try await templatesService.fetchAllUserTemplates(userId: "1")
                 await MainActor.run {
                     self.templates = templates
                     self.isLoading = false
