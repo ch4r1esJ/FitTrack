@@ -87,9 +87,6 @@ class ExerciesViewController: UIViewController {
     func runOneTimeUpload() {
         let uploader = ExerciseUploader()
         uploader.uploadAllExercises()
-        
-        print("⏳ Upload started. Check console for progress.")
-        print("⏳ This will take ~10 minutes for 30 exercises (rate limit)")
     }
     
     private func showError(_ message: String) {

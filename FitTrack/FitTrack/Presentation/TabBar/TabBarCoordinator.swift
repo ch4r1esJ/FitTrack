@@ -34,6 +34,14 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "house.fill")
         )
         
+        let templatesVC = TemplatesViewController()
+        let templatesNav = UINavigationController(rootViewController: templatesVC)
+        templatesVC.tabBarItem = UITabBarItem(
+            title: "Home",
+            image: UIImage(systemName: "house"),
+            selectedImage: UIImage(systemName: "house.fill")
+        )
+        
         let exerciseVC = diContainer.makeExerciseViewController()
         let exerciseNav = UINavigationController(rootViewController: exerciseVC)
         exerciseVC.tabBarItem = UITabBarItem(
@@ -57,7 +65,7 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "person.circle.fill")
         )
         
-        tabBarController.viewControllers = [homeVC, exerciseNav, profileVC]
+        tabBarController.viewControllers = [homeVC, templatesNav, exerciseNav, profileVC]
         navigationController.setViewControllers([tabBarController], animated: true)
     }
     
