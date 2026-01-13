@@ -37,9 +37,9 @@ class TabBarCoordinator: Coordinator {
         let templatesVC = diContainer.makeTemplatesViewController()
         let templatesNav = UINavigationController(rootViewController: templatesVC)
         templatesVC.tabBarItem = UITabBarItem(
-            title: "Home",
-            image: UIImage(systemName: "house"),
-            selectedImage: UIImage(systemName: "house.fill")
+            title: "Templates",
+            image: UIImage(systemName: "list.bullet.clipboard"),
+            selectedImage: UIImage(systemName: "list.bullet.clipboard.fill")
         )
         
         let exerciseVC = diContainer.makeExerciseViewController()
