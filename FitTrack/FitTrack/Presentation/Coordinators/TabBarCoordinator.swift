@@ -18,6 +18,8 @@ class TabBarCoordinator: Coordinator {
     private let diContainer: AppDIContainer
     private var tabBarController: MainTabBarController!
     
+    private var childCoordinators = [Coordinator]()
+    
     init(navigationController: UINavigationController, authService: AuthServiceProtocol, diContainer: AppDIContainer) {
         self.navigationController = navigationController
         self.authService = authService
@@ -34,13 +36,20 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "house.fill")
         )
         
-        let templatesVC = diContainer.makeTemplatesViewController()
-        let templatesNav = UINavigationController(rootViewController: templatesVC)
-        templatesVC.tabBarItem = UITabBarItem(
+        let templatesNav = UINavigationController()
+        templatesNav.tabBarItem = UITabBarItem(
             title: "Templates",
             image: UIImage(systemName: "list.bullet.clipboard"),
             selectedImage: UIImage(systemName: "list.bullet.clipboard.fill")
         )
+        
+        let templatesCoordinator = TemplatesCoordinator(
+            navigationController: templatesNav,
+            diContainer: diContainer
+        )
+    
+        templatesCoordinator.start()
+        childCoordinators.append(templatesCoordinator)
         
         let exerciseVC = diContainer.makeExerciseViewController()
         let exerciseNav = UINavigationController(rootViewController: exerciseVC)

@@ -94,6 +94,8 @@ class TemplatesViewController: UIViewController {
         return view
     }()
     
+    var didSelectTemplate: ((WorkoutTemplate) -> Void)?
+    
     // MARK: - Init
     
     init(viewModel: TemplatesViewModel) {
@@ -209,7 +211,8 @@ extension TemplatesViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        let template = viewModel.templates[indexPath.row]
+        didSelectTemplate?(template)
     }
 }
 

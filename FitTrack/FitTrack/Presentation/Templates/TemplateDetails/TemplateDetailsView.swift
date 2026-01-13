@@ -7,12 +7,10 @@
 
 import SwiftUI
 
-struct EditTemplate: View {
+struct TemplateDetailsView: View {
+    let template: WorkoutTemplate
+    
     var body: some View {
         Text("Edit Template")
     }
-}
-
-#Preview {
-    EditTemplate()
 }
