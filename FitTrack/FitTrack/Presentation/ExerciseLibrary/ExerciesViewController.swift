@@ -77,7 +77,7 @@ class ExerciesViewController: UIViewController {
         viewModel.fetchExercises()
         
         view.backgroundColor = .systemGray6
-//        exerciseList.backgroundColor = .systemGray6
+        exerciseList.backgroundColor = .systemGray6
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -145,12 +145,12 @@ class ExerciesViewController: UIViewController {
         filterView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            filterView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            filterView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            filterView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            filterView.heightAnchor.constraint(equalToConstant: 44),
+            filterView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            filterView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            filterView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            filterView.heightAnchor.constraint(equalToConstant: 48),
             
-            exerciseList.topAnchor.constraint(equalTo: filterView.bottomAnchor, constant: 23),
+            exerciseList.topAnchor.constraint(equalTo: filterView.bottomAnchor, constant: 8),
             exerciseList.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             exerciseList.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
             exerciseList.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -90)

@@ -44,7 +44,7 @@ class FilterView: UIView {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.spacing = 10
-        stack.distribution = .fillProportionally // Better for variable text lengths
+        stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -71,8 +71,8 @@ class FilterView: UIView {
         
         NSLayoutConstraint.activate([
             filterStackView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            filterStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            filterStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            filterStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            filterStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             filterStackView.heightAnchor.constraint(equalToConstant: 40),
             filterStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
         ])

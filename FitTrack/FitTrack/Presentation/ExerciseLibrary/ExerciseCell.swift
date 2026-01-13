@@ -27,29 +27,29 @@ class ExerciseCell: UICollectionViewCell {
         return label
     }()
     
-    private let muscleTagLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 12, weight: .semibold)
-        label.textColor = .systemBlue
-        label.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
-        label.layer.cornerRadius = 6
-        label.clipsToBounds = true
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let equipmentTagLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 12, weight: .semibold)
-        label.textColor = .systemGray
-        label.backgroundColor = UIColor.systemGray5
-        label.layer.cornerRadius = 6
-        label.clipsToBounds = true
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    private let muscleTagLabel: PaddingLabel = {
+            let label = PaddingLabel()
+            label.font = .systemFont(ofSize: 12, weight: .semibold)
+            label.textColor = .systemBlue
+            label.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
+            label.layer.cornerRadius = 10
+            label.clipsToBounds = true
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            return label
+        }()
+        
+        private let equipmentTagLabel: PaddingLabel = {
+            let label = PaddingLabel()
+            label.font = .systemFont(ofSize: 12, weight: .semibold)
+            label.textColor = .systemGray
+            label.backgroundColor = UIColor.systemGray5
+            label.layer.cornerRadius = 10
+            label.clipsToBounds = true
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            return label
+        }()
     
     private let arrowImageView: UIImageView = {
         let iv = UIImageView()
@@ -127,13 +127,13 @@ class ExerciseCell: UICollectionViewCell {
             
             muscleTagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             muscleTagLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            muscleTagLabel.widthAnchor.constraint(equalToConstant: 70),
-            muscleTagLabel.heightAnchor.constraint(equalToConstant: 24),
+            
+            muscleTagLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 24),
             
             equipmentTagLabel.centerYAnchor.constraint(equalTo: muscleTagLabel.centerYAnchor),
             equipmentTagLabel.leadingAnchor.constraint(equalTo: muscleTagLabel.trailingAnchor, constant: 8),
-            equipmentTagLabel.widthAnchor.constraint(equalToConstant: 80),
-            equipmentTagLabel.heightAnchor.constraint(equalToConstant: 24),
+            
+            equipmentTagLabel.trailingAnchor.constraint(lessThanOrEqualTo: arrowImageView.leadingAnchor, constant: -8),
             
             arrowImageView.trailingAnchor.constraint(equalTo: containerview.trailingAnchor, constant: -16),
             arrowImageView.centerYAnchor.constraint(equalTo: containerview.centerYAnchor),
