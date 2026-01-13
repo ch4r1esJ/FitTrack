@@ -7,7 +7,6 @@
 
 import UIKit
 import SwiftUI
-import Combine
 
 class TemplatesCoordinator: Coordinator {
     var navigationController: UINavigationController
@@ -39,3 +38,4 @@ class TemplatesCoordinator: Coordinator {
         navigationController.present(hostingController, animated: true)
     }
 }
+
