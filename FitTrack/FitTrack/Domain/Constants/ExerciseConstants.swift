@@ -6,24 +6,25 @@
 //
 
 struct ExerciseConstants {
-    static let muscleGroups: [(title: String, value: String?)] = [
+    static let muscleGroups: [(String, String?)] = [
         ("Any Body Part", nil),
         ("Chest", "chest"),
         ("Back", "back"),
-        ("Legs", "legs"),
-        ("Arms", "arms"),
         ("Shoulders", "shoulders"),
+        ("Arms", "arms"),
+        ("Legs", "legs"),
         ("Core", "core"),
-        ("Full Body", "fullbody"),
         ("Cardio", "cardio")
     ]
     
-    static let equipmentTypes: [(title: String, value: String?)] = [
-        ("Any Category", nil),
-        ("Barbell", "barbell"),
+    static let equipmentTypes: [(String, String?)] = [
+        ("Any Equipment", nil),
+        ("Body Only", "Bodyweight"),
         ("Dumbbell", "dumbbell"),
+        ("Barbell", "barbell"),
         ("Cable", "cable"),
-        ("Bodyweight", "bodyweight"),
-        ("Machine", "machine")
+        ("Machine", "machine"),
+        ("Kettlebell", "kettlebell"),
+        ("Bands", "bands")
     ]
 }

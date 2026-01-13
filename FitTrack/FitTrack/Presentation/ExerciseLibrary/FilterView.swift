@@ -11,38 +11,40 @@ class FilterView: UIView {
     // MARK: - Properties
     
     private let viewModel: ExerciseViewModel
-    
+        
     private lazy var bodyPartButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Any Body Part", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .systemGray5
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(.label, for: .normal)
         button.layer.cornerRadius = 12
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.showsMenuAsPrimaryAction = true
         button.menu = createBodyPartMenu()
         return button
     }()
     
-    private lazy var categoryButton: UIButton = {
+    private lazy var equipmentButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Any Category", for: .normal)
+        button.setTitle("Any Equipment", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .systemGray5
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(.label, for: .normal)
         button.layer.cornerRadius = 12
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.showsMenuAsPrimaryAction = true
-        button.menu = createCategoryMenu()
+        button.menu = createEquipmentMenu()
         return button
     }()
     
     private lazy var filterStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 12
-        stack.distribution = .fillEqually
+        stack.spacing = 10
+        stack.distribution = .fillProportionally // Better for variable text lengths
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -65,90 +67,48 @@ class FilterView: UIView {
         addSubview(filterStackView)
         
         filterStackView.addArrangedSubview(bodyPartButton)
-        filterStackView.addArrangedSubview(categoryButton)
+        filterStackView.addArrangedSubview(equipmentButton)
         
         NSLayoutConstraint.activate([
-            filterStackView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            filterStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            filterStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            filterStackView.heightAnchor.constraint(equalToConstant: 36),
+            filterStackView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            filterStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            filterStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            filterStackView.heightAnchor.constraint(equalToConstant: 40),
+            filterStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
         ])
     }
-    
+        
     private func createBodyPartMenu() -> UIMenu {
         let actions = ExerciseConstants.muscleGroups.map { (title, value) in
             UIAction(title: title) { [weak self] _ in
-                self?.updateBodyPartButton(for: value)
+                self?.updateButtonState(self?.bodyPartButton, title: title, isSelected: value != nil)
                 self?.viewModel.selectMuscleGroup(value)
             }
         }
-        
-        return UIMenu(title: "", children: actions)
+        return UIMenu(title: "Select Body Part", children: actions)
     }
     
-    private func createCategoryMenu() -> UIMenu {
+    private func createEquipmentMenu() -> UIMenu {
         let actions = ExerciseConstants.equipmentTypes.map { (title, value) in
             UIAction(title: title) { [weak self] _ in
-                self?.updateCategoryButton(for: value)
+                self?.updateButtonState(self?.equipmentButton, title: title, isSelected: value != nil)
                 self?.viewModel.selectEquipment(value)
             }
         }
-        
-        return UIMenu(title: "", children: actions)
-    }
-    
-    private func updateBodyPartButton(for value: String?) {
-        if let value = value {
-            let title = muscleGroupTitle(for: value)
-            bodyPartButton.setTitle(title, for: .normal)
-            bodyPartButton.backgroundColor = .systemBlue
-            bodyPartButton.setTitleColor(.white, for: .normal)
-        } else {
-            bodyPartButton.setTitle("Any Body Part", for: .normal)
-            bodyPartButton.backgroundColor = .systemGray5
-            bodyPartButton.setTitleColor(.black, for: .normal)
-        }
-    }
-    
-    private func updateCategoryButton(for value: String?) {
-        if let value = value {
-            let title = equipmentTitle(for: value)
-            categoryButton.setTitle(title, for: .normal)
-            categoryButton.backgroundColor = .systemBlue
-            categoryButton.setTitleColor(.white, for: .normal)
-        } else {
-            categoryButton.setTitle("Any Category", for: .normal)
-            categoryButton.backgroundColor = .systemGray5
-            categoryButton.setTitleColor(.black, for: .normal)
-        }
+        return UIMenu(title: "Select Equipment", children: actions)
     }
         
-    private func muscleGroupTitle(for value: String) -> String {
-        switch value.lowercased() {
-        case "chest": return "Chest"
-        case "back": return "Back"
-        case "legs": return "Legs"
-        case "arms": return "Arms"
-        case "shoulders": return "Shoulders"
-        case "core": return "Core"
-        case "fullbody": return "Full Body"
-        case "cardio": return "Cardio"
-        default: return "Any Body Part"
+    private func updateButtonState(_ button: UIButton?, title: String, isSelected: Bool) {
+        guard let button = button else { return }
+        
+        button.setTitle(title, for: .normal)
+        
+        if isSelected {
+            button.backgroundColor = .systemBlue
+            button.setTitleColor(.white, for: .normal)
+        } else {
+            button.backgroundColor = .systemGray5
+            button.setTitleColor(.label, for: .normal)
         }
     }
-    
-    private func equipmentTitle(for value: String) -> String {
-        switch value.lowercased() {
-        case "barbell": return "Barbell"
-        case "dumbbell": return "Dumbbell"
-        case "cable": return "Cable"
-        case "bodyweight": return "Bodyweight"
-        case "machine": return "Machine"
-        default: return "Any Category"
-        }
-    }
-}
-
-#Preview {
-    FilterView(viewModel: ExerciseViewModel(exerciseService: MockExerciseService()))
 }

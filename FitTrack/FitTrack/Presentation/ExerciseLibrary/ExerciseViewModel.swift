@@ -21,7 +21,7 @@ class ExerciseViewModel {
     
     private var allExercises: [Exercise] = []
     private let exerciseService: ExerciseServiceProtocol
-        
+    
     var onExercisesUpdated: (() -> Void)?
     var onError: ((String) -> Void)?
     var onMuscleGroupChanged: ((String?) -> Void)?
@@ -41,6 +41,7 @@ class ExerciseViewModel {
         Task {
             do {
                 let exercises = try await exerciseService.fetchAllExercises()
+                
                 await MainActor.run {
                     self.allExercises = exercises
                     self.filteredExercises = exercises
@@ -79,23 +80,25 @@ class ExerciseViewModel {
         
         if !searchText.isEmpty {
             filtered = filtered.filter { exercise in
-                exercise.name.lowercased().contains(searchText.lowercased())
+                exercise.name.localizedCaseInsensitiveContains(searchText)
             }
         }
         
         if let muscle = selectedMuscleGroup {
             filtered = filtered.filter { exercise in
-                exercise.muscleGroup.lowercased() == muscle.lowercased()
+                return exercise.muscleGroup.localizedCaseInsensitiveContains(muscle) ||
+                exercise.muscleGroup.caseInsensitiveCompare(muscle) == .orderedSame
             }
         }
         
         if let equipment = selectedEquipment {
             filtered = filtered.filter { exercise in
-                exercise.equipment.lowercased() == equipment.lowercased()
+                return exercise.equipment.localizedCaseInsensitiveContains(equipment) ||
+                exercise.equipment.caseInsensitiveCompare(equipment) == .orderedSame
             }
         }
         
-        filteredExercises = filtered
-        onExercisesUpdated?()
+        self.filteredExercises = filtered
+        self.onExercisesUpdated?()
     }
 }

@@ -21,16 +21,18 @@ struct TemplateDetailsView: View {
                         TextField("Template title", text: $templateTitle)
                             .font(.title3)
                         
-                        if !templateTitle.isEmpty {
-                            Button(action: {
-                                templateTitle = ""
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.gray.opacity(0.4))
-                                    .font(.system(size: 20))
-                            }
-                            .padding(.trailing, 5)
+                        Button(action: {
+                            templateTitle = ""
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.gray.opacity(0.4))
+                                .font(.system(size: 20))
                         }
+                        .padding(.trailing, 5)
+                        
+                        .opacity(templateTitle.isEmpty ? 0 : 1)
+                        
+                        .disabled(templateTitle.isEmpty)
                     }
                     .padding(.horizontal)
                     .padding(.top, 15)

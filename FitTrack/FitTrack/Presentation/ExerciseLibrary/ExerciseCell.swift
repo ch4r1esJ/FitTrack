@@ -81,6 +81,17 @@ class ExerciseCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        exerciseImageView.image = nil
+        nameLabel.text = nil
+        muscleTagLabel.text = nil
+        equipmentTagLabel.text = nil
+    }
+    
     // MARK: - Methods
     
     private func setupView() {
@@ -133,9 +144,11 @@ class ExerciseCell: UICollectionViewCell {
     
     func configure(with exercise: Exercise) {
         nameLabel.text = exercise.name
-        muscleTagLabel.text = exercise.muscleGroup
+        
+        muscleTagLabel.text = exercise.primaryMuscles.first?.capitalized ?? exercise.muscleGroup
+        
         equipmentTagLabel.text = exercise.equipment
         
-        exerciseImageView.loadImage(from: exercise.imageUrl)
+        exerciseImageView.loadImage(from: exercise.thumbnailURL)
     }
 }
