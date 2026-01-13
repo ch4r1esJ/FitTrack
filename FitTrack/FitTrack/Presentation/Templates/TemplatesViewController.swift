@@ -39,8 +39,9 @@ class TemplatesViewController: UIViewController {
         button.layer.cornerRadius = 12
         
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
-        
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(newTemplateButtonTapped), for: .touchUpInside)
+        
         return button
     }()
     
@@ -94,7 +95,8 @@ class TemplatesViewController: UIViewController {
         return view
     }()
     
-    var didSelectTemplate: ((WorkoutTemplate) -> Void)?
+//    var didSelectTemplate: ((WorkoutTemplate) -> Void)?
+    var didTapCreateTemplate: (() -> Void)?
     
     // MARK: - Init
     
@@ -141,6 +143,10 @@ class TemplatesViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -90)
         ])
+    }
+    
+    @objc func newTemplateButtonTapped() {
+        didTapCreateTemplate?()
     }
     
     private func registerCell() {
@@ -212,7 +218,8 @@ extension TemplatesViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let template = viewModel.templates[indexPath.row]
-        didSelectTemplate?(template)
+        
+        print("\(template.name) Template Tapped")
     }
 }
 

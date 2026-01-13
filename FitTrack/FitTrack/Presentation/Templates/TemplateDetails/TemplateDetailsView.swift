@@ -8,9 +8,34 @@
 import SwiftUI
 
 struct TemplateDetailsView: View {
-    let template: WorkoutTemplate
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        Text("Edit Template")
+        NavigationStack {
+            VStack {
+                Text("Content")
+                Spacer()
+            }
+            .navigationTitle("Create Template")
+            .navigationBarTitleDisplayMode(.inline)
+            
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        // TODO: Save Logic
+                        dismiss()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.blue)
+                    .cornerRadius(20)
+                }
+            }
+        }
     }
 }

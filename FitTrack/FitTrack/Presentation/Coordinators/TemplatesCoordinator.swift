@@ -22,21 +22,20 @@ class TemplatesCoordinator: Coordinator {
     func start() {
         let templatesVC = diContainer.makeTemplatesViewController()
         
-        templatesVC.didSelectTemplate = { [weak self] template in
-            self?.showTemplateDetails(for: template)
+        templatesVC.didTapCreateTemplate = { [weak self] in
+            self?.showTemplateDetails()
         }
         
         navigationController.pushViewController(templatesVC, animated: false)
     }
     
-    private func showTemplateDetails(for template: WorkoutTemplate) {
-        let detailView = TemplateDetailsView(template: template)
+    private func showTemplateDetails() {
+        let detailView = TemplateDetailsView()
         
         let hostingController = UIHostingController(rootView: detailView)
         
-        hostingController.title = template.name
-        hostingController.hidesBottomBarWhenPushed = true
+        hostingController.modalPresentationStyle = .fullScreen
         
-        navigationController.pushViewController(hostingController, animated: true)
+        navigationController.present(hostingController, animated: true)
     }
 }
