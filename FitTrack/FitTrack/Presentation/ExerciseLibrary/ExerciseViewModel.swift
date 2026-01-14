@@ -11,6 +11,7 @@ class ExerciseViewModel {
     
     // MARK: - Properties
     
+    private(set) var selectedExercises: Set<String> = []
     private(set) var filteredExercises: [Exercise] = []
     private(set) var isLoading: Bool = false
     private(set) var errorMessage: String?
@@ -26,6 +27,7 @@ class ExerciseViewModel {
     var onError: ((String) -> Void)?
     var onMuscleGroupChanged: ((String?) -> Void)?
     var onEquipmentChanged: ((String?) -> Void)?
+    var onSelectionUpdated: ((Int) -> Void)?
     
     // MARK: - Init
     
@@ -34,6 +36,24 @@ class ExerciseViewModel {
     }
     
     // MARK: - Methods
+    
+    func isSelected(_ exercise: Exercise) -> Bool {
+        return selectedExercises.contains(exercise.id)
+    }
+    
+    func toggleSelection(for exercise: Exercise) {
+        if selectedExercises.contains(exercise.id) {
+            selectedExercises.remove(exercise.id)
+        } else {
+            selectedExercises.insert(exercise.id)
+        }
+        
+        onSelectionUpdated?(selectedExercises.count)
+    }
+    
+    func getSelectedExercises() -> [Exercise] {
+        return allExercises.filter { selectedExercises.contains($0.id) }
+    }
     
     func fetchExercises() {
         isLoading = true

@@ -54,6 +54,10 @@ class TemplatesCoordinator: Coordinator {
     private func showExerciseSelection() {
         let exerciseVC = diContainer.makeExerciseViewController()
         
+        exerciseVC.onAddExerciseTapped = { [weak self] in
+            self?.createTemplateNavController?.popViewController(animated: true)
+        }
+        
         createTemplateNavController?.setNavigationBarHidden(false, animated: false)
         createTemplateNavController?.pushViewController(exerciseVC, animated: true)
     }

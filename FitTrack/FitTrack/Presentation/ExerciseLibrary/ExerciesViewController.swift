@@ -14,6 +14,7 @@ class ExerciesViewController: UIViewController {
     
     private let viewModel: ExerciseViewModel
     lazy var filterView = FilterView(viewModel: viewModel)
+    var onAddExerciseTapped: (() -> Void)?
     
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -68,7 +69,7 @@ class ExerciesViewController: UIViewController {
     }()
     
     @objc private func didTapBack() {
-        navigationController?.popViewController(animated: true)
+        onAddExerciseTapped?()
     }
     
     private let addedExerciseCount: UILabel = {
@@ -105,18 +106,23 @@ class ExerciesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
-        
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        
+                
         setupView()
         registerCell()
         bindViewModel()
         viewModel.fetchExercises()
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     // MARK: - Methods
@@ -142,6 +148,10 @@ class ExerciesViewController: UIViewController {
         
         viewModel.onError = { [weak self] message in
             self?.showError(message)
+        }
+        
+        viewModel.onSelectionUpdated = { [weak self] count in
+            self?.updateCount(count)
         }
     }
     
@@ -175,7 +185,7 @@ class ExerciesViewController: UIViewController {
             addedExerciseCount.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 8),
             
             addButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
             searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
@@ -189,7 +199,7 @@ class ExerciesViewController: UIViewController {
             exerciseList.topAnchor.constraint(equalTo: filterView.bottomAnchor, constant: 8),
             exerciseList.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             exerciseList.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
-            exerciseList.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            exerciseList.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
         ])
     }
 }
@@ -216,18 +226,29 @@ extension ExerciesViewController: UICollectionViewDataSource, UICollectionViewDe
         }
         
         let exercise = viewModel.filteredExercises[indexPath.item]
-        cell.configure(with: exercise)
+        let isSelected = viewModel.isSelected(exercise)
         
+        cell.configure(with: exercise, isSelected: isSelected)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let exercise = viewModel.filteredExercises[indexPath.item]
         print("Selected: \(exercise.name)")
-        searchBar.resignFirstResponder() 
+        
+        viewModel.toggleSelection(for: exercise)
+        collectionView.reloadItems(at: [indexPath])
+        
+        searchBar.resignFirstResponder()
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         searchBar.resignFirstResponder()
+    }
+}
+
+extension ExerciesViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return navigationController?.viewControllers.count ?? 0 > 1
     }
 }

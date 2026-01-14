@@ -28,36 +28,53 @@ class ExerciseCell: UICollectionViewCell {
     }()
     
     private let muscleTagLabel: PaddingLabel = {
-            let label = PaddingLabel()
-            label.font = .systemFont(ofSize: 12, weight: .semibold)
-            label.textColor = .systemBlue
-            label.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
-            label.layer.cornerRadius = 10
-            label.clipsToBounds = true
-            label.textAlignment = .center
-            label.translatesAutoresizingMaskIntoConstraints = false
-            return label
-        }()
-        
-        private let equipmentTagLabel: PaddingLabel = {
-            let label = PaddingLabel()
-            label.font = .systemFont(ofSize: 12, weight: .semibold)
-            label.textColor = .systemGray
-            label.backgroundColor = UIColor.systemGray5
-            label.layer.cornerRadius = 10
-            label.clipsToBounds = true
-            label.textAlignment = .center
-            label.translatesAutoresizingMaskIntoConstraints = false
-            return label
-        }()
+        let label = PaddingLabel()
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.textColor = .systemBlue
+        label.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
+        label.layer.cornerRadius = 10
+        label.clipsToBounds = true
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
-    private let arrowImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.image = UIImage(systemName: "chevron.right")
-        iv.tintColor = .systemGray3
-        iv.contentMode = .scaleAspectFit
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
+    private let equipmentTagLabel: PaddingLabel = {
+        let label = PaddingLabel()
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.textColor = .systemGray
+        label.backgroundColor = UIColor.systemGray5
+        label.layer.cornerRadius = 10
+        label.clipsToBounds = true
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+//    private let arrowImageView: UIImageView = {
+//        let iv = UIImageView()
+//        iv.image = UIImage(systemName: "chevron.right")
+//        iv.tintColor = .systemGray3
+//        iv.contentMode = .scaleAspectFit
+//        iv.translatesAutoresizingMaskIntoConstraints = false
+//        return iv
+//    }()
+    
+    private lazy var checkButton: UIButton = {
+        let button = UIButton(type: .custom)
+        
+        let image = UIImage(named: "backButton")
+        button.setImage(image, for: .normal)
+        button.tintColor = .darkGray
+
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        
+        button.imageView?.contentMode = .scaleAspectFit
+
+//        button.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     private let containerview: UIView = {
@@ -108,7 +125,7 @@ class ExerciseCell: UICollectionViewCell {
         containerview.addSubview(nameLabel)
         containerview.addSubview(muscleTagLabel)
         containerview.addSubview(equipmentTagLabel)
-        containerview.addSubview(arrowImageView)
+        containerview.addSubview(checkButton)
         
         NSLayoutConstraint.activate([
             containerview.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -123,7 +140,7 @@ class ExerciseCell: UICollectionViewCell {
             
             nameLabel.topAnchor.constraint(equalTo: exerciseImageView.topAnchor, constant: 4),
             nameLabel.leadingAnchor.constraint(equalTo: exerciseImageView.trailingAnchor, constant: 16),
-            nameLabel.trailingAnchor.constraint(equalTo: arrowImageView.leadingAnchor, constant: -8),
+            nameLabel.trailingAnchor.constraint(equalTo: checkButton.leadingAnchor, constant: -8),
             
             muscleTagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             muscleTagLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
@@ -133,22 +150,32 @@ class ExerciseCell: UICollectionViewCell {
             equipmentTagLabel.centerYAnchor.constraint(equalTo: muscleTagLabel.centerYAnchor),
             equipmentTagLabel.leadingAnchor.constraint(equalTo: muscleTagLabel.trailingAnchor, constant: 8),
             
-            equipmentTagLabel.trailingAnchor.constraint(lessThanOrEqualTo: arrowImageView.leadingAnchor, constant: -8),
+            equipmentTagLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkButton.leadingAnchor, constant: -8),
             
-            arrowImageView.trailingAnchor.constraint(equalTo: containerview.trailingAnchor, constant: -16),
-            arrowImageView.centerYAnchor.constraint(equalTo: containerview.centerYAnchor),
-            arrowImageView.widthAnchor.constraint(equalToConstant: 20),
-            arrowImageView.heightAnchor.constraint(equalToConstant: 20)
+            checkButton.trailingAnchor.constraint(equalTo: containerview.trailingAnchor, constant: -16),
+            checkButton.centerYAnchor.constraint(equalTo: containerview.centerYAnchor),
+            checkButton.widthAnchor.constraint(equalToConstant: 20),
+            checkButton.heightAnchor.constraint(equalToConstant: 20)
         ])
     }
     
-    func configure(with exercise: Exercise) {
+    func configure(with exercise: Exercise, isSelected: Bool) {
         nameLabel.text = exercise.name
-        
         muscleTagLabel.text = exercise.primaryMuscles.first?.capitalized ?? exercise.muscleGroup
-        
         equipmentTagLabel.text = exercise.equipment
-        
         exerciseImageView.loadImage(from: exercise.thumbnailURL)
+        changeAppearance(isSelected)
+    }
+    
+    private func changeAppearance(_ isSelected: Bool) {
+        if isSelected {
+            let checkedImage = UIImage(systemName: "checkmark.circle.fill")
+            checkButton.setImage(checkedImage, for: .normal)
+            checkButton.tintColor = .systemBlue
+        } else {
+            let uncheckedImage = UIImage(systemName: "circle")
+            checkButton.setImage(uncheckedImage, for: .normal)
+            checkButton.tintColor = .systemGray
+        }
     }
 }
