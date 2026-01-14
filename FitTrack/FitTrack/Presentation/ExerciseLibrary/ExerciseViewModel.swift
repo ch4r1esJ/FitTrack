@@ -55,6 +55,15 @@ class ExerciseViewModel {
         return allExercises.filter { selectedExercises.contains($0.id) }
     }
     
+    var isAddButtonVisible: Bool {
+        return !selectedExercises.isEmpty
+    }
+    
+    var addButtonTitle: String {
+        let count = selectedExercises.count
+        return "Add \(count) Exercise\(count == 1 ? "" : "s")"
+    }
+    
     func fetchExercises() {
         isLoading = true
         

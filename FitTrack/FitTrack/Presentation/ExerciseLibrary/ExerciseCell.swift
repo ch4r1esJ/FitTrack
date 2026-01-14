@@ -51,15 +51,6 @@ class ExerciseCell: UICollectionViewCell {
         return label
     }()
     
-//    private let arrowImageView: UIImageView = {
-//        let iv = UIImageView()
-//        iv.image = UIImage(systemName: "chevron.right")
-//        iv.tintColor = .systemGray3
-//        iv.contentMode = .scaleAspectFit
-//        iv.translatesAutoresizingMaskIntoConstraints = false
-//        return iv
-//    }()
-    
     private lazy var checkButton: UIButton = {
         let button = UIButton(type: .custom)
         
@@ -72,7 +63,7 @@ class ExerciseCell: UICollectionViewCell {
         
         button.imageView?.contentMode = .scaleAspectFit
 
-//        button.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapCheck), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -81,8 +72,6 @@ class ExerciseCell: UICollectionViewCell {
         let view = UIView()
         view.backgroundColor = .systemGray6
         view.layer.cornerRadius = 16
-        view.layer.masksToBounds = true
-        
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -110,6 +99,10 @@ class ExerciseCell: UICollectionViewCell {
     }
     
     // MARK: - Methods
+    
+    @objc private func didTapCheck() {
+        print("check")
+    }
     
     private func setupView() {
         backgroundColor = .clear
@@ -169,13 +162,41 @@ class ExerciseCell: UICollectionViewCell {
     
     private func changeAppearance(_ isSelected: Bool) {
         if isSelected {
-            let checkedImage = UIImage(systemName: "checkmark.circle.fill")
+            containerview.backgroundColor = UIColor(
+                    red: 235/255.0,
+                    green: 245/255.0,
+                    blue: 255/255.0,
+                    alpha: 1.0
+                )
+            containerview.layer.borderColor = UIColor(
+                    red: 170/255.0,
+                    green: 210/255.0,
+                    blue: 255/255.0,
+                    alpha: 1.0
+                ).cgColor
+            
+            containerview.layer.borderWidth = 2
+          
+            layer.masksToBounds = false
+            layer.shadowOpacity = 0.5
+            
+            let checkedImage = UIImage(systemName: "checkmark")
             checkButton.setImage(checkedImage, for: .normal)
             checkButton.tintColor = .systemBlue
+            
+            checkButton.isUserInteractionEnabled = false
         } else {
-            let uncheckedImage = UIImage(systemName: "circle")
+            containerview.backgroundColor = .white
+            containerview.layer.borderColor = UIColor.clear.cgColor
+            containerview.layer.borderWidth = 0
+            layer.masksToBounds = false
+            layer.shadowOpacity = 0.5
+            
+            let uncheckedImage = UIImage(systemName: "questionmark.circle.fill")
             checkButton.setImage(uncheckedImage, for: .normal)
             checkButton.tintColor = .systemGray
+            
+            checkButton.isUserInteractionEnabled = true
         }
     }
 }

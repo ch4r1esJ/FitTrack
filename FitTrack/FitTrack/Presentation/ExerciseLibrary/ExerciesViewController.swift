@@ -82,10 +82,30 @@ class ExerciesViewController: UIViewController {
     
     private lazy var addButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Add", for: .normal)
+        button.setTitle("Create", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
         button.setTitleColor(.systemBlue, for: .normal)
         button.addTarget(self, action: #selector(didTapAdd), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var floatingAddButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+        button.layer.cornerRadius = 25
+        
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowRadius = 6
+        
+        button.alpha = 0
+        button.transform = CGAffineTransform(translationX: 0, y: 50)
+        
+        button.addTarget(self, action: #selector(didTapFloatingAdd), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -153,6 +173,37 @@ class ExerciesViewController: UIViewController {
         viewModel.onSelectionUpdated = { [weak self] count in
             self?.updateCount(count)
         }
+        
+        viewModel.onSelectionUpdated = { [weak self] _ in
+            self?.updateFloatingButton()
+        }
+    }
+    
+    private func updateFloatingButton() {
+        let title = viewModel.addButtonTitle
+        let isVisible = viewModel.isAddButtonVisible
+        
+        floatingAddButton.setTitle(title, for: .normal)
+        
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            usingSpringWithDamping: 0.8,
+            initialSpringVelocity: 0.5,
+            options: .curveEaseInOut
+        ) {
+            if isVisible {
+                self.floatingAddButton.alpha = 1
+                self.floatingAddButton.transform = .identity
+            } else {
+                self.floatingAddButton.alpha = 0
+                self.floatingAddButton.transform = CGAffineTransform(translationX: 0, y: 50)
+            }
+        }
+    }
+    
+    @objc private func didTapFloatingAdd() {
+        let selectedExercises = viewModel.getSelectedExercises()
     }
     
     private func registerCell() {
@@ -169,6 +220,7 @@ class ExerciesViewController: UIViewController {
         view.addSubview(searchBar)
         view.addSubview(filterView)
         view.addSubview(exerciseList)
+        view.addSubview(floatingAddButton)
         
         filterView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -199,8 +251,15 @@ class ExerciesViewController: UIViewController {
             exerciseList.topAnchor.constraint(equalTo: filterView.bottomAnchor, constant: 8),
             exerciseList.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             exerciseList.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
-            exerciseList.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            exerciseList.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            
+            floatingAddButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            floatingAddButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            floatingAddButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            floatingAddButton.heightAnchor.constraint(equalToConstant: 50)
         ])
+        
+        exerciseList.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
     }
 }
 
