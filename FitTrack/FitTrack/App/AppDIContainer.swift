@@ -52,4 +52,13 @@ final class AppDIContainer {
         let viewModel = makeTemplatesViewModel()
         return TemplatesViewController(viewModel: viewModel)
     }
+    
+    // Template Details
+    
+    func makeTemplateDetailsViewModel() -> TemplateDetailsViewModel {
+        return TemplateDetailsViewModel(
+            templatesService: templatesService,
+            authService: authService
+        )
+    }
 }

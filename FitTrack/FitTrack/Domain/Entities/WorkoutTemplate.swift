@@ -24,26 +24,26 @@ struct WorkoutTemplate: Identifiable, Codable {
 }
 
 struct TemplateExercise: Identifiable, Codable {
-    let id: String
-    let exerciseId: String
-    let exerciseName: String
-    let muscleGroup: String
-    let equipment: String
-    let sets: [ExerciseSet]
+    var id: String
+    var exerciseId: String
+    var exerciseName: String
+    var muscleGroup: String
+    var equipment: String
+    var sets: [ExerciseSet]
 }
 
-struct ExerciseSet: Codable {
-    let setNumber: Int
-    let targetWeightKg: Double?
-    let targetReps: Int
-    let restSeconds: Int
+struct ExerciseSet: Identifiable, Codable {
+    var id: String = UUID().uuidString  
     
-    var restDisplay: String {
-        let minutes = restSeconds / 60
-        let seconds = restSeconds % 60
-        if minutes > 0 {
-            return "\(minutes)m \(seconds)s"
-        }
-        return "\(seconds)s"
+    var setNumber: Int
+    var targetWeightKg: Double?
+    var targetReps: Int
+    var restSeconds: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case setNumber
+        case targetWeightKg
+        case targetReps
+        case restSeconds
     }
 }

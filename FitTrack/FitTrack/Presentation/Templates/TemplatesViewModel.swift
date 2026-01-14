@@ -57,10 +57,23 @@ class TemplatesViewModel {
         }
     }
     
-    func deleteTemplate(withId id: String) {
-        if let index = templates.firstIndex(where: { $0.id == id }) {
-            templates.remove(at: index)
+    func deleteTemplate(with id: String) {
+        guard let index = templates.firstIndex(where: { $0.id == id }) else { return }
+        let templateToDelete = templates[index]
+        
+        templates.remove(at: index)
+        
+        Task {
+            do {
+                try await templatesService.deleteTemplate(templateId: id)
+            } catch {
+                await MainActor.run {
+                    self.templates.insert(templateToDelete, at: index)
+                    self.errorMessage = "Failed to delete: \(error.localizedDescription)"
+                    
+                    self.onTemplateUpdated?()
+                }
+            }
         }
     }
 }
-

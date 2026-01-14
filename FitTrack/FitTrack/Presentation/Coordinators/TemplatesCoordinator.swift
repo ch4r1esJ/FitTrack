@@ -29,11 +29,18 @@ class TemplatesCoordinator: Coordinator {
         navigationController.pushViewController(templatesVC, animated: false)
     }
     
+    
     private func showTemplateDetails() {
-        var detailView = TemplateDetailsView()
+        let viewModel = diContainer.makeTemplateDetailsViewModel()
+        
+        var detailView = TemplateDetailsView(viewModel: viewModel)
         
         detailView.onAddExerciseTapped = { [weak self] in
-            self?.showExerciseSelection()
+            self?.showExerciseSelection { selectedExercises in
+                Task { @MainActor in
+                    viewModel.addExercises(selectedExercises)
+                }
+            }
         }
         
         detailView.onDismiss = { [weak self] in
@@ -42,19 +49,22 @@ class TemplatesCoordinator: Coordinator {
         }
         
         let hostingController = UIHostingController(rootView: detailView)
-        
         let navWrapper = UINavigationController(rootViewController: hostingController)
         navWrapper.modalPresentationStyle = .fullScreen
-        
         self.createTemplateNavController = navWrapper
         
         navigationController.present(navWrapper, animated: true)
     }
     
-    private func showExerciseSelection() {
+    private func showExerciseSelection(completion: @escaping ([Exercise]) -> Void) {
         let exerciseVC = diContainer.makeExerciseViewController()
         
         exerciseVC.onAddExerciseTapped = { [weak self] in
+            self?.createTemplateNavController?.popViewController(animated: true)
+        }
+        
+        exerciseVC.didSelectExercises = { [weak self] exercises in
+            completion(exercises)
             self?.createTemplateNavController?.popViewController(animated: true)
         }
         

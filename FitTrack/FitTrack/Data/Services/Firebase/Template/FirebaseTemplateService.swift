@@ -74,4 +74,14 @@ class FirebaseTemplateService: TemplatesServiceProtocol {
         
         return templates
     }
+    
+    func createTemplate(_ template: WorkoutTemplate) async throws {
+        let docRef = db.collection("templates").document(template.id)
+        
+        try docRef.setData(from: template)
+    }
+    
+    func deleteTemplate(templateId: String) async throws {
+        try await db.collection("templates").document(templateId).delete()
+    }
 }

@@ -15,6 +15,7 @@ class ExerciesViewController: UIViewController {
     private let viewModel: ExerciseViewModel
     lazy var filterView = FilterView(viewModel: viewModel)
     var onAddExerciseTapped: (() -> Void)?
+    var didSelectExercises: (([Exercise]) -> Void)?
     
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -204,6 +205,7 @@ class ExerciesViewController: UIViewController {
     
     @objc private func didTapFloatingAdd() {
         let selectedExercises = viewModel.getSelectedExercises()
+        didSelectExercises?(selectedExercises)
     }
     
     private func registerCell() {

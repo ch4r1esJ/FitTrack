@@ -95,7 +95,7 @@ class TemplatesViewController: UIViewController {
         return view
     }()
     
-//    var didSelectTemplate: ((WorkoutTemplate) -> Void)?
+    //    var didSelectTemplate: ((WorkoutTemplate) -> Void)?
     var didTapCreateTemplate: (() -> Void)?
     
     // MARK: - Init
@@ -120,6 +120,12 @@ class TemplatesViewController: UIViewController {
         setupView()
         registerCell()
         bindViewModel()
+        viewModel.fetchExercises()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         viewModel.fetchExercises()
     }
     
@@ -181,12 +187,14 @@ class TemplatesViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
             
-            guard let index = self?.viewModel.templates.firstIndex(where: { $0.id == id }) else { return }
+            guard let index = self.viewModel.templates.firstIndex(where: { $0.id == id }) else { return }
             let indexPath = IndexPath(item: index, section: 0)
             
-            self?.viewModel.deleteTemplate(withId: id)
-            self?.collectionView.deleteItems(at: [indexPath])
+            self.viewModel.deleteTemplate(with: id)
+            
+            self.collectionView.deleteItems(at: [indexPath])
         })
         
         present(alert, animated: true)
@@ -201,11 +209,11 @@ extension TemplatesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TemplatesCell.identifier, for: indexPath) as! TemplatesCell
         
-                let template = viewModel.templates[indexPath.item]
-                cell.configure(with: template)
+        let template = viewModel.templates[indexPath.item]
+        cell.configure(with: template)
         
         cell.onDeleteTapped = { [weak self] in
-
+            
             self?.confirmDelete(for: template.id)
         }
         

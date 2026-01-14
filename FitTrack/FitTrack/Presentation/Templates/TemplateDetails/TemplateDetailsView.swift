@@ -11,77 +11,51 @@ struct TemplateDetailsView: View {
     var onDismiss: (() -> Void)?
     var onAddExerciseTapped: (() -> Void)?
     
-    @State private var templateTitle: String = ""
+    @ObservedObject var viewModel: TemplateDetailsViewModel
     
     var body: some View {
-        VStack {
-            Divider()
-            VStack {
+        VStack(spacing: 0) {
+            VStack(spacing: 0) {
                 HStack {
-                    TextField("Template title", text: $templateTitle)
+                    TextField("Template title", text: $viewModel.title)
                         .font(.title3)
                     
                     Button(action: {
-                        templateTitle = ""
+                        viewModel.title = ""
                     }) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.gray.opacity(0.4))
                             .font(.system(size: 20))
                     }
-                    .padding(.trailing, 5)
-                    
-                    .opacity(templateTitle.isEmpty ? 0 : 1)
-                    
-                    .disabled(templateTitle.isEmpty)
+                    .opacity(viewModel.title.isEmpty ? 0 : 1)
+                    .disabled(viewModel.title.isEmpty)
                 }
-                .padding(.horizontal)
-                .padding(.top, 15)
+                .padding()
                 
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(.gray.opacity(0.1))
-                    .padding(.horizontal)
-                    .padding(.top, 5)
+                Divider()
             }
+            .background(Color(uiColor: .systemBackground))
             
-            VStack(spacing: 25) {
-                VStack(spacing: 16) {
-                    Image(systemName: "dumbbell")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(.gray.opacity(0.5))
-                    
-                    Text("Get started by adding an exercise to your template.")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
-                }
-                
-                Button(action: {
-                    onAddExerciseTapped?()
-                }) {
-                    HStack {
-                        Image(systemName: "plus")
-                        Text("Add exercise")
+            ScrollView {
+                VStack(spacing: 20) {
+                    if viewModel.exercises.isEmpty {
+                        emptyStateView
+                            .padding(.top, 50)
+                    } else {
+                        ForEach($viewModel.exercises) { $exercise in
+                            WorkoutExerciseCard(exercise: $exercise)
+                        }
                     }
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(Color.blue)
-                    .cornerRadius(12)
+                    
+                    addExerciseButton
+                        .padding(.vertical)
                 }
-                .padding(.horizontal)
+                .padding()
             }
-            .padding(.top, 50)
-            
-            Spacer()
+            .background(Color(uiColor: .systemGroupedBackground))
         }
         .navigationTitle("Create Template")
         .navigationBarTitleDisplayMode(.inline)
-        
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Cancel") {
@@ -90,18 +64,66 @@ struct TemplateDetailsView: View {
             }
             
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
-                    // TODO: Save Logic
-                    onDismiss?()
+                Button {
+                    Task {
+                        let success = await viewModel.saveTemplate()
+                        if success {
+                            onDismiss?()
+                        }
+                    }
+                } label: {
+                    if viewModel.isLoading {
+                        ProgressView().tint(.white)
+                    } else {
+                        Text("Save")
+                    }
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.blue)
                 .cornerRadius(20)
+                .disabled(viewModel.title.isEmpty || viewModel.exercises.isEmpty || viewModel.isLoading)
             }
         }
+        .alert("Error", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { _ in viewModel.errorMessage = nil }
+        )) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
     }
-}
-
-#Preview {
-    TemplateDetailsView()
+    
+    var emptyStateView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "dumbbell")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 50, height: 50)
+                .foregroundColor(.gray.opacity(0.5))
+            
+            Text("Get started by adding an exercise to your template.")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+        }
+    }
+    
+    var addExerciseButton: some View {
+        Button(action: {
+            onAddExerciseTapped?()
+        }) {
+            HStack {
+                Image(systemName: "plus")
+                Text("Add exercise")
+            }
+            .font(.headline)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: 50)
+            .background(Color.blue)
+            .cornerRadius(12)
+        }
+    }
 }
