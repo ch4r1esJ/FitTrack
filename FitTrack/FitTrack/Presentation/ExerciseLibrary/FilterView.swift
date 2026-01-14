@@ -15,7 +15,7 @@ class FilterView: UIView {
     private lazy var bodyPartButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Any Body Part", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         button.backgroundColor = .systemGray5
         button.setTitleColor(.label, for: .normal)
         button.layer.cornerRadius = 12
@@ -29,7 +29,7 @@ class FilterView: UIView {
     private lazy var equipmentButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Any Equipment", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         button.backgroundColor = .systemGray5
         button.setTitleColor(.label, for: .normal)
         button.layer.cornerRadius = 12
@@ -73,7 +73,7 @@ class FilterView: UIView {
             filterStackView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
             filterStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             filterStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            filterStackView.heightAnchor.constraint(equalToConstant: 40),
+            filterStackView.heightAnchor.constraint(equalToConstant: 45),
             filterStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
         ])
     }

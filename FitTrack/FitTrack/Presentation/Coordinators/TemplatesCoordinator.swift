@@ -10,8 +10,9 @@ import SwiftUI
 
 class TemplatesCoordinator: Coordinator {
     var navigationController: UINavigationController
-    
     private let diContainer: AppDIContainer
+    
+    private weak var createTemplateNavController: UINavigationController?
     
     init(navigationController: UINavigationController, diContainer: AppDIContainer) {
         self.navigationController = navigationController
@@ -29,13 +30,31 @@ class TemplatesCoordinator: Coordinator {
     }
     
     private func showTemplateDetails() {
-        let detailView = TemplateDetailsView()
+        var detailView = TemplateDetailsView()
+        
+        detailView.onAddExerciseTapped = { [weak self] in
+            self?.showExerciseSelection()
+        }
+        
+        detailView.onDismiss = { [weak self] in
+            self?.createTemplateNavController?.dismiss(animated: true)
+            self?.createTemplateNavController = nil
+        }
         
         let hostingController = UIHostingController(rootView: detailView)
         
-        hostingController.modalPresentationStyle = .fullScreen
+        let navWrapper = UINavigationController(rootViewController: hostingController)
+        navWrapper.modalPresentationStyle = .fullScreen
         
-        navigationController.present(hostingController, animated: true)
+        self.createTemplateNavController = navWrapper
+        
+        navigationController.present(navWrapper, animated: true)
+    }
+    
+    private func showExerciseSelection() {
+        let exerciseVC = diContainer.makeExerciseViewController()
+        
+        createTemplateNavController?.setNavigationBarHidden(false, animated: false)
+        createTemplateNavController?.pushViewController(exerciseVC, animated: true)
     }
 }
-

@@ -15,12 +15,37 @@ class ExerciesViewController: UIViewController {
     private let viewModel: ExerciseViewModel
     lazy var filterView = FilterView(viewModel: viewModel)
     
-    private let searchController = UISearchController(searchResultsController: nil)
+    private lazy var backButton: UIButton = {
+        let button = UIButton(type: .custom)
+        
+        let image = UIImage(named: "backButton")
+        button.setImage(image, for: .normal)
+        button.tintColor = .darkGray
+
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        
+        button.imageView?.contentMode = .scaleAspectFit
+
+        button.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var searchBar: UISearchBar = {
+        let sb = UISearchBar()
+        sb.placeholder = "Search exercises"
+        sb.backgroundImage = UIImage()
+        sb.searchBarStyle = .minimal
+        sb.delegate = self
+        sb.translatesAutoresizingMaskIntoConstraints = false
+        return sb
+    }()
     
     private let exerciseList: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 5
+        layout.minimumLineSpacing = 10
         
         let screenHeight = UIScreen.main.bounds.height
         let screenWidth = UIScreen.main.bounds.width
@@ -32,23 +57,37 @@ class ExerciesViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+        
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Exercise Library"
-        label.font = .systemFont(ofSize: 30, weight: .medium)
+        label.font = .systemFont(ofSize: 24, weight: .bold)
         label.textColor = .black
-        label.sizeToFit()
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-//    private var backgroundImage: UIImageView = {
-//        let imageView = UIImageView()
-//        imageView.image = UIImage(named: "backgroundimageed")
-//        imageView.contentMode = .scaleAspectFill
-//        return imageView
-//    }()
+    @objc private func didTapBack() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    private let addedExerciseCount: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.textColor = .systemGray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var addButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Add", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.addTarget(self, action: #selector(didTapAdd), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
     
     // MARK: - Init
     
@@ -65,39 +104,29 @@ class ExerciesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = .systemGray6
-        navigationItem.titleView = titleLabel
-//        runOneTimeUpload()
-        setupSearchController()
-//        setupBackgroundImage()
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        
         setupView()
         registerCell()
         bindViewModel()
         viewModel.fetchExercises()
-        
-        view.backgroundColor = .systemGray6
-        exerciseList.backgroundColor = .systemGray6
-
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .systemGray6
-
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: false)
-        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     // MARK: - Methods
     
-    func runOneTimeUpload() {
-        let uploader = ExerciseUploader()
-        uploader.uploadAllExercises()
+    func updateCount(_ count: Int) {
+        addedExerciseCount.text = "(\(count))"
+    }
+    
+    @objc private func didTapAdd() {
+        print("Add button tapped")
     }
     
     private func showError(_ message: String) {
@@ -116,22 +145,6 @@ class ExerciesViewController: UIViewController {
         }
     }
     
-    private func setupSearchController() {
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search exercises"
-        searchController.searchBar.backgroundImage = UIImage()
-        
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = true
-    }
-    
-//    private func setupBackgroundImage() { // TODO: Delete
-//        view.addSubview(backgroundImage)
-//        backgroundImage.frame = view.bounds
-//    }
-    
     private func registerCell() {
         exerciseList.register(ExerciseCell.self, forCellWithReuseIdentifier: "ExerciseCell")
         exerciseList.dataSource = self
@@ -139,13 +152,36 @@ class ExerciesViewController: UIViewController {
     }
     
     private func setupView() {
+        view.addSubview(backButton)
+        view.addSubview(titleLabel)
+        view.addSubview(addedExerciseCount)
+        view.addSubview(addButton)
+        view.addSubview(searchBar)
         view.addSubview(filterView)
         view.addSubview(exerciseList)
         
         filterView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            filterView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            backButton.heightAnchor.constraint(equalToConstant: 35),
+            backButton.widthAnchor.constraint(equalToConstant: 35),
+
+            titleLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 55),
+            
+            addedExerciseCount.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            addedExerciseCount.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 8),
+            
+            addButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            
+            filterView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 5),
             filterView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
             filterView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             filterView.heightAnchor.constraint(equalToConstant: 48),
@@ -153,19 +189,23 @@ class ExerciesViewController: UIViewController {
             exerciseList.topAnchor.constraint(equalTo: filterView.bottomAnchor, constant: 8),
             exerciseList.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             exerciseList.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
-            exerciseList.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -90)
+            exerciseList.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
 
-extension ExerciesViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        let searchText = searchController.searchBar.text ?? ""
+extension ExerciesViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         viewModel.updateSearchText(searchText)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 }
 
-extension ExerciesViewController: UICollectionViewDataSource {
+extension ExerciesViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.filteredExercises.count
     }
@@ -180,11 +220,14 @@ extension ExerciesViewController: UICollectionViewDataSource {
         
         return cell
     }
-}
-
-extension ExerciesViewController: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let exercise = viewModel.filteredExercises[indexPath.item]
         print("Selected: \(exercise.name)")
+        searchBar.resignFirstResponder() 
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        searchBar.resignFirstResponder()
     }
 }
