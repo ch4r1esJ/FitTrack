@@ -95,7 +95,7 @@ struct TemplateDetailsView: View {
                     if viewModel.isLoading {
                         ProgressView().tint(.white)
                     } else {
-                        Text("Save")
+                        Text(viewModel.isEditing ? "Update" : "Save")
                     }
                 }
                 .buttonStyle(.borderedProminent)
@@ -104,6 +104,7 @@ struct TemplateDetailsView: View {
                 .disabled(viewModel.title.isEmpty || viewModel.exercises.isEmpty || viewModel.isLoading)
             }
         }
+        .navigationTitle(viewModel.isEditing ? "Edit Template" : "Create Template")
         .alert(viewModel.errorMessage ?? "", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { _ in viewModel.errorMessage = nil }

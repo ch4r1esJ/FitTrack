@@ -12,6 +12,9 @@ class TemplatesViewController: UIViewController {
     
     private let viewModel: TemplatesViewModel
     
+    var didSelectTemplate: ((WorkoutTemplate) -> Void)?
+    var didTapCreateTemplate: (() -> Void)?
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Exercise Templates"
@@ -94,9 +97,6 @@ class TemplatesViewController: UIViewController {
         
         return view
     }()
-    
-    //    var didSelectTemplate: ((WorkoutTemplate) -> Void)?
-    var didTapCreateTemplate: (() -> Void)?
     
     // MARK: - Init
     
@@ -227,7 +227,7 @@ extension TemplatesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let template = viewModel.templates[indexPath.row]
         
-        print("\(template.name) Template Tapped")
+        didSelectTemplate?(template)
     }
 }
 

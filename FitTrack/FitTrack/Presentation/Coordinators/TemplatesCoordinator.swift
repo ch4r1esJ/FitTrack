@@ -23,15 +23,23 @@ class TemplatesCoordinator: Coordinator {
         let templatesVC = diContainer.makeTemplatesViewController()
         
         templatesVC.didTapCreateTemplate = { [weak self] in
-            self?.showTemplateDetails()
+            self?.showTemplateDetails(template: nil)
+        }
+        
+        templatesVC.didSelectTemplate = { [weak self] template in
+            self?.showTemplateDetails(template: template)
         }
         
         navigationController.pushViewController(templatesVC, animated: false)
     }
     
     
-    private func showTemplateDetails() {
+    private func showTemplateDetails(template: WorkoutTemplate?) {
         let viewModel = diContainer.makeTemplateDetailsViewModel()
+        
+        if let template = template {
+            viewModel.configure(with: template)
+        }
         
         var detailView = TemplateDetailsView(viewModel: viewModel)
         

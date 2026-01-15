@@ -14,6 +14,13 @@ class TemplateDetailsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
+    private var editingTemplateId: String?
+    private var originalCreatedAt: Date?
+    
+    var isEditing: Bool {
+        return editingTemplateId != nil
+    }
+    
     private let templatesService: TemplatesServiceProtocol
     private let authService: AuthServiceProtocol
     
@@ -22,12 +29,19 @@ class TemplateDetailsViewModel: ObservableObject {
         self.authService = authService
     }
     
+    func configure(with template: WorkoutTemplate) {
+        self.editingTemplateId = template.id
+        self.title = template.name
+        self.exercises = template.exercises
+        self.originalCreatedAt = template.createdAt
+    }
+    
     func addExercises(_ newExercises: [Exercise]) {
         for exercise in newExercises {
             if !exercises.contains(where: { $0.exerciseId == exercise.id }) {
                 
                 let templateExercise = TemplateExercise(
-                    id: exercise.id,
+                    id: UUID().uuidString, // TODO: 
                     exerciseId: exercise.id,
                     exerciseName: exercise.name,
                     imageUrl: exercise.thumbnailURL,
@@ -78,7 +92,26 @@ class TemplateDetailsViewModel: ObservableObject {
         )
         
         do {
-            try await templatesService.createTemplate(newTemplate)
+            if let existingId = editingTemplateId {
+                let updatedTemplate = WorkoutTemplate(
+                    id: existingId,
+                    name: title,
+                    exercises: exercises,
+                    createdAt: originalCreatedAt ?? Date(),
+                    userId: userId
+                )
+                try await templatesService.updateTemplate(updatedTemplate)
+            } else {
+                let newTemplate = WorkoutTemplate(
+                    id: UUID().uuidString,
+                    name: title,
+                    exercises: exercises,
+                    createdAt: Date(),
+                    userId: userId
+                )
+                try await templatesService.createTemplate(newTemplate)
+            }
+            
             self.isLoading = false
             return true
             
@@ -94,6 +127,4 @@ class TemplateDetailsViewModel: ObservableObject {
             exercises.remove(at: index)
         }
     }
-    
-    
 }

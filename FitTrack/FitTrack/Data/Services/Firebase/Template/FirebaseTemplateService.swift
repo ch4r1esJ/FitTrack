@@ -38,6 +38,8 @@ class FirebaseTemplateService: TemplatesServiceProtocol {
                 
                 let equipment = exerciseData["equipment"] as? String ?? "None"
                 
+                let imageUrl = exerciseData["imageUrl"] as? String
+                
                 let sets = setsData.compactMap { setData -> ExerciseSet? in
                     guard let setNumber = setData["setNumber"] as? Int,
                           let targetReps = setData["targetReps"] as? Int,
@@ -57,6 +59,7 @@ class FirebaseTemplateService: TemplatesServiceProtocol {
                     id: id,
                     exerciseId: exerciseId,
                     exerciseName: exerciseName,
+                    imageUrl: imageUrl,
                     muscleGroup: muscleGroup,
                     equipment: equipment,
                     sets: sets
@@ -78,6 +81,11 @@ class FirebaseTemplateService: TemplatesServiceProtocol {
     func createTemplate(_ template: WorkoutTemplate) async throws {
         let docRef = db.collection("templates").document(template.id)
         
+        try docRef.setData(from: template)
+    }
+    
+    func updateTemplate(_ template: WorkoutTemplate) async throws {
+        let docRef = db.collection("templates").document(template.id)
         try docRef.setData(from: template)
     }
     
