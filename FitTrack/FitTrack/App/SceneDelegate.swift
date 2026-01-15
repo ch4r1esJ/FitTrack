@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowsScene)
         
-        let authDIContainer = AuthDIContainer()
+        let authDIContainer = AppDIContainer()
         
         let navController = UINavigationController()
         navController.setNavigationBarHidden(true, animated: false)

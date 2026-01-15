@@ -1,0 +1,133 @@
+//
+//  ExerciseViewModel.swift
+//  FitTrack
+//
+//  Created by Charles Janjgava on 1/9/26.
+//
+
+import Foundation
+
+class ExerciseViewModel {
+    
+    // MARK: - Properties
+    
+    private(set) var selectedExercises: Set<String> = []
+    private(set) var filteredExercises: [Exercise] = []
+    private(set) var isLoading: Bool = false
+    private(set) var errorMessage: String?
+    
+    private(set) var selectedMuscleGroup: String? = nil
+    private(set) var selectedEquipment: String? = nil
+    private var searchText: String = ""
+    
+    private var allExercises: [Exercise] = []
+    private let exerciseService: ExerciseServiceProtocol
+    
+    var onExercisesUpdated: (() -> Void)?
+    var onError: ((String) -> Void)?
+    var onMuscleGroupChanged: ((String?) -> Void)?
+    var onEquipmentChanged: ((String?) -> Void)?
+    var onSelectionUpdated: ((Int) -> Void)?
+    
+    // MARK: - Init
+    
+    init(exerciseService: ExerciseServiceProtocol) {
+        self.exerciseService = exerciseService
+    }
+    
+    // MARK: - Methods
+    
+    func isSelected(_ exercise: Exercise) -> Bool {
+        return selectedExercises.contains(exercise.id)
+    }
+    
+    func toggleSelection(for exercise: Exercise) {
+        if selectedExercises.contains(exercise.id) {
+            selectedExercises.remove(exercise.id)
+        } else {
+            selectedExercises.insert(exercise.id)
+        }
+        
+        onSelectionUpdated?(selectedExercises.count)
+    }
+    
+    func getSelectedExercises() -> [Exercise] {
+        return allExercises.filter { selectedExercises.contains($0.id) }
+    }
+    
+    var isAddButtonVisible: Bool {
+        return !selectedExercises.isEmpty
+    }
+    
+    var addButtonTitle: String {
+        let count = selectedExercises.count
+        return "Add \(count) Exercise\(count == 1 ? "" : "s")"
+    }
+    
+    func fetchExercises() {
+        isLoading = true
+        
+        Task {
+            do {
+                let exercises = try await exerciseService.fetchAllExercises()
+                
+                await MainActor.run {
+                    self.allExercises = exercises
+                    self.filteredExercises = exercises
+                    self.isLoading = false
+                    self.onExercisesUpdated?()
+                }
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = error.localizedDescription
+                    self.isLoading = false
+                    self.onError?(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    func updateSearchText(_ text: String) {
+        searchText = text
+        applyFilters()
+    }
+    
+    func selectMuscleGroup(_ value: String?) {
+        selectedMuscleGroup = value
+        onMuscleGroupChanged?(value)
+        applyFilters()
+    }
+    
+    func selectEquipment(_ value: String?) {
+        selectedEquipment = value
+        onEquipmentChanged?(value)
+        applyFilters()
+    }
+    
+    private func applyFilters() {
+        var filtered = allExercises
+        
+        if !searchText.isEmpty {
+            filtered = filtered.filter { exercise in
+                exercise.name.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+        
+        if let muscle = selectedMuscleGroup {
+            filtered = filtered.filter { exercise in
+                return exercise.muscleGroup.localizedCaseInsensitiveContains(muscle) ||
+                exercise.muscleGroup.caseInsensitiveCompare(muscle) == .orderedSame
+            }
+        }
+        
+        if let equipment = selectedEquipment {
+            filtered = filtered.filter { exercise in
+                return exercise.equipment.localizedCaseInsensitiveContains(equipment) ||
+                exercise.equipment.caseInsensitiveCompare(equipment) == .orderedSame
+            }
+        }
+        
+        self.filteredExercises = filtered
+        self.onExercisesUpdated?()
+    }
+}
