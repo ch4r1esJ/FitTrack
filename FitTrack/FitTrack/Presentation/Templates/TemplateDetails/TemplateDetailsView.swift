@@ -68,6 +68,9 @@ struct TemplateDetailsView: View {
         }
         .navigationTitle("Create Template")
         .navigationBarTitleDisplayMode(.inline)
+        .onTapGesture {
+            hideKeyboard()
+        }
         
         .sheet(isPresented: $isShowingReorderSheet) {
             ReorderExercisesView(viewModel: viewModel)
@@ -101,7 +104,7 @@ struct TemplateDetailsView: View {
                 .disabled(viewModel.title.isEmpty || viewModel.exercises.isEmpty || viewModel.isLoading)
             }
         }
-        .alert("Error", isPresented: Binding(
+        .alert(viewModel.errorMessage ?? "", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { _ in viewModel.errorMessage = nil }
         )) {

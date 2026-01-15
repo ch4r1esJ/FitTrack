@@ -52,12 +52,12 @@ class TemplateDetailsViewModel: ObservableObject {
     
     func saveTemplate() async -> Bool {
         guard !title.trimmingCharacters(in: .whitespaces).isEmpty else {
-            self.errorMessage = "Please enter a template title."
+            self.errorMessage = "Your template needs a title"
             return false
         }
         
         guard !exercises.isEmpty else {
-            self.errorMessage = "Please add at least one exercise."
+            self.errorMessage = "Your template needs at least one exercise"
             return false
         }
         
@@ -79,7 +79,6 @@ class TemplateDetailsViewModel: ObservableObject {
         
         do {
             try await templatesService.createTemplate(newTemplate)
-            
             self.isLoading = false
             return true
             
@@ -95,4 +94,6 @@ class TemplateDetailsViewModel: ObservableObject {
             exercises.remove(at: index)
         }
     }
+    
+    
 }

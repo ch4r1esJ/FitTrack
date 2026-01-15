@@ -5,7 +5,6 @@
 //  Created by Charles Janjgava on 1/14/26.
 //
 
-
 import SwiftUI
 
 struct WorkoutExerciseCard: View {
