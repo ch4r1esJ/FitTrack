@@ -34,7 +34,7 @@ struct CustomButton: View {
         .padding(.vertical, 16)
         .frame(maxWidth: .infinity)
         .background(isVisible ? Color.blue : Color.clear)
-        .foregroundColor(isVisible ? .white : .black)
+        .foregroundStyle(isVisible ? .white : .black)
         .cornerRadius(15)
         .overlay {
             if !isVisible {

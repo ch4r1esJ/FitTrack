@@ -42,7 +42,7 @@ struct OptionView: View {
             
             Text("Or")
                 .font(.system(size: 18, weight: .medium))
-                .foregroundColor(.gray.opacity(0.6))
+                .foregroundStyle(.gray.opacity(0.6))
             
             line
         }

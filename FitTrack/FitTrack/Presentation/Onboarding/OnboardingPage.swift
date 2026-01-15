@@ -18,7 +18,7 @@ struct OnboardingPage: View {
             
             Image(systemName: image)
                 .font(.system(size: 100))
-                .foregroundColor(.blue)
+                .foregroundStyle(.blue)
             
             VStack(spacing: 16) {
                 Text(title)
@@ -27,7 +27,7 @@ struct OnboardingPage: View {
                 
                 Text(description)
                     .font(.body)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
             }

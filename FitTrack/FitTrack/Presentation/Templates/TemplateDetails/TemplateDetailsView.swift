@@ -1,5 +1,5 @@
 //
-//  EditTemplate.swift
+//  TemplateDetailsView.swift
 //  FitTrack
 //
 //  Created by Charles Janjgava on 1/13/26.
@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct TemplateDetailsView: View {
+    @ObservedObject var viewModel: TemplateDetailsViewModel
+    
+    @State private var isShowingReorderSheet = false
+    
     var onDismiss: (() -> Void)?
     var onAddExerciseTapped: (() -> Void)?
-    
-    @ObservedObject var viewModel: TemplateDetailsViewModel
     
     var body: some View {
         VStack(spacing: 0) {
@@ -24,7 +26,7 @@ struct TemplateDetailsView: View {
                         viewModel.title = ""
                     }) {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.gray.opacity(0.4))
+                            .foregroundStyle(.gray.opacity(0.4))
                             .font(.system(size: 20))
                     }
                     .opacity(viewModel.title.isEmpty ? 0 : 1)
@@ -43,7 +45,17 @@ struct TemplateDetailsView: View {
                             .padding(.top, 50)
                     } else {
                         ForEach($viewModel.exercises) { $exercise in
-                            WorkoutExerciseCard(exercise: $exercise)
+                            WorkoutExerciseCard(
+                                exercise: $exercise,
+                                onReorder: {
+                                    isShowingReorderSheet = true
+                                },
+                                onDelete: {
+                                    withAnimation {
+                                        viewModel.deleteExercise(exercise)
+                                    }
+                                }
+                            )
                         }
                     }
                     
@@ -56,6 +68,11 @@ struct TemplateDetailsView: View {
         }
         .navigationTitle("Create Template")
         .navigationBarTitleDisplayMode(.inline)
+        
+        .sheet(isPresented: $isShowingReorderSheet) {
+            ReorderExercisesView(viewModel: viewModel)
+        }
+        
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Cancel") {
@@ -93,18 +110,18 @@ struct TemplateDetailsView: View {
             Text(viewModel.errorMessage ?? "")
         }
     }
-    
+        
     var emptyStateView: some View {
         VStack(spacing: 16) {
             Image(systemName: "dumbbell")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 50, height: 50)
-                .foregroundColor(.gray.opacity(0.5))
+                .foregroundStyle(.gray.opacity(0.5))
             
             Text("Get started by adding an exercise to your template.")
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundStyle(.gray)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
         }

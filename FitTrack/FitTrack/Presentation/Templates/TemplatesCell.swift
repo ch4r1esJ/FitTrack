@@ -87,7 +87,7 @@ class TemplatesCell: UICollectionViewCell {
         
     }
     
-    // MARK: - Setup
+    // MARK: - Methods
     
     private func layoutCardShadow() {
         layer.shadowColor = UIColor.black.cgColor

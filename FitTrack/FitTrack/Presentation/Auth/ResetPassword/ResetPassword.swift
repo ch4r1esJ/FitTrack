@@ -17,7 +17,7 @@ struct ForgotPasswordView: View {
             VStack(spacing: 20) {
                 Text("Enter your email and we'll send you a link to reset your password")
                     .font(.body)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .multilineTextAlignment(.center)
                     .padding()
                 

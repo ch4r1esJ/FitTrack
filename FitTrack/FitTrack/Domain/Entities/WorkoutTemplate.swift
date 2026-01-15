@@ -27,13 +27,14 @@ struct TemplateExercise: Identifiable, Codable {
     var id: String
     var exerciseId: String
     var exerciseName: String
+    var imageUrl: String?
     var muscleGroup: String
     var equipment: String
     var sets: [ExerciseSet]
 }
 
 struct ExerciseSet: Identifiable, Codable {
-    var id: String = UUID().uuidString  
+    var id: UUID = UUID()
     
     var setNumber: Int
     var targetWeightKg: Double?

@@ -14,7 +14,7 @@ struct ProfileView: View {
         VStack {
             if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)
-                    .foregroundColor(.red)
+                    .foregroundStyle(.red)
                     .padding()
             }
             

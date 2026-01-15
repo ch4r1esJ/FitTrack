@@ -23,24 +23,24 @@ class TemplateDetailsViewModel: ObservableObject {
     }
     
     func addExercises(_ newExercises: [Exercise]) {
-            for exercise in newExercises {
-                if !exercises.contains(where: { $0.exerciseId == exercise.id }) {
-                    
-                    let templateExercise = TemplateExercise(
-                        id: exercise.id,
-                        exerciseId: exercise.id,
-                        exerciseName: exercise.name,
-                        muscleGroup: exercise.muscleGroup,
-                        equipment: exercise.equipment,
-                        sets: [
-                            // Default: 1 empty set
-                            ExerciseSet(setNumber: 1, targetWeightKg: nil, targetReps: 0, restSeconds: 0)
-                        ]
-                    )
-                    self.exercises.append(templateExercise)
-                }
+        for exercise in newExercises {
+            if !exercises.contains(where: { $0.exerciseId == exercise.id }) {
+                
+                let templateExercise = TemplateExercise(
+                    id: exercise.id,
+                    exerciseId: exercise.id,
+                    exerciseName: exercise.name,
+                    imageUrl: exercise.thumbnailURL,
+                    muscleGroup: exercise.muscleGroup,
+                    equipment: exercise.equipment,
+                    sets: [
+                        ExerciseSet(setNumber: 1, targetWeightKg: nil, targetReps: 0, restSeconds: 0)
+                    ]
+                )
+                self.exercises.append(templateExercise)
             }
         }
+    }
     
     func removeExercise(at offsets: IndexSet) {
         exercises.remove(atOffsets: offsets)
@@ -51,48 +51,48 @@ class TemplateDetailsViewModel: ObservableObject {
     }
     
     func saveTemplate() async -> Bool {
-            // 1. Validation
-            guard !title.trimmingCharacters(in: .whitespaces).isEmpty else {
-                self.errorMessage = "Please enter a template title."
-                return false
-            }
-            
-            guard !exercises.isEmpty else {
-                self.errorMessage = "Please add at least one exercise."
-                return false
-            }
-            
-            guard let userId = authService.currentUser?.id else {
-                self.errorMessage = "User session not found."
-                return false
-            }
-            
-            // 2. State Update
-            self.isLoading = true
-            self.errorMessage = nil
-            
-            // 3. Prepare Data
-            let newTemplate = WorkoutTemplate(
-                id: UUID().uuidString,
-                name: title,
-                exercises: exercises,
-                createdAt: Date(),
-                userId: userId
-            )
-            
-            // 4. API Call
-            do {
-                try await templatesService.createTemplate(newTemplate)
-                
-                // Success: Reset state and return true
-                self.isLoading = false
-                return true
-                
-            } catch {
-                // Failure: Show error
-                self.isLoading = false
-                self.errorMessage = error.localizedDescription
-                return false
-            }
+        guard !title.trimmingCharacters(in: .whitespaces).isEmpty else {
+            self.errorMessage = "Please enter a template title."
+            return false
         }
+        
+        guard !exercises.isEmpty else {
+            self.errorMessage = "Please add at least one exercise."
+            return false
+        }
+        
+        guard let userId = authService.currentUser?.id else {
+            self.errorMessage = "User session not found."
+            return false
+        }
+        
+        self.isLoading = true
+        self.errorMessage = nil
+        
+        let newTemplate = WorkoutTemplate(
+            id: UUID().uuidString,
+            name: title,
+            exercises: exercises,
+            createdAt: Date(),
+            userId: userId
+        )
+        
+        do {
+            try await templatesService.createTemplate(newTemplate)
+            
+            self.isLoading = false
+            return true
+            
+        } catch {
+            self.isLoading = false
+            self.errorMessage = error.localizedDescription
+            return false
+        }
+    }
+    
+    func deleteExercise(_ exerciseToDelete: TemplateExercise) {
+        if let index = exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
+            exercises.remove(at: index)
+        }
+    }
 }

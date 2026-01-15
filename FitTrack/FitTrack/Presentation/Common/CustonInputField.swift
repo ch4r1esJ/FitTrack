@@ -25,7 +25,7 @@ struct CustomInputField: View {
             
             HStack {
                 Image(systemName: icon)
-                    .foregroundColor(isFocused.wrappedValue ? .blue : .gray)
+                    .foregroundStyle(isFocused.wrappedValue ? .blue : .gray)
                 
                 if isSecure && !isVisible {
                     SecureField(placeholder, text: $text)
@@ -44,7 +44,7 @@ struct CustomInputField: View {
                         isVisible.toggle()
                     } label: {
                         Image(systemName: isVisible ? "eye.slash.fill" : "eye.fill")
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                     }
                 }
             }
