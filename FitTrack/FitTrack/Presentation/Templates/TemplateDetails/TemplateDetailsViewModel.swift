@@ -34,7 +34,7 @@ class TemplateDetailsViewModel: ObservableObject {
                     muscleGroup: exercise.muscleGroup,
                     equipment: exercise.equipment,
                     sets: [
-                        ExerciseSet(setNumber: 1, targetWeightKg: nil, targetReps: 0, restSeconds: 0)
+                        ExerciseSet(setNumber: 1, targetWeightKg: nil, targetReps: nil, restSeconds: 0)
                     ]
                 )
                 self.exercises.append(templateExercise)

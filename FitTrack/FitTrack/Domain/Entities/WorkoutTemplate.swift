@@ -38,10 +38,11 @@ struct ExerciseSet: Identifiable, Codable {
     
     var setNumber: Int
     var targetWeightKg: Double?
-    var targetReps: Int
+    var targetReps: Int?
     var restSeconds: Int
     
     enum CodingKeys: String, CodingKey {
+        case id
         case setNumber
         case targetWeightKg
         case targetReps

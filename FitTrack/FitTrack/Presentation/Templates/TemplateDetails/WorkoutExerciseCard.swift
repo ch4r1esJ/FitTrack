@@ -101,7 +101,7 @@ struct WorkoutExerciseCard: View {
         let newSet = ExerciseSet(
             setNumber: nextNumber,
             targetWeightKg: nil,
-            targetReps: 0,
+            targetReps: nil,
             restSeconds: defaultRestTime
         )
         
