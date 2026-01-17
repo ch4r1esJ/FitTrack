@@ -47,6 +47,7 @@ struct TemplateDetailsView: View {
                         ForEach($viewModel.exercises) { $exercise in
                             WorkoutExerciseCard(
                                 exercise: $exercise,
+                                viewModel: viewModel,
                                 onReorder: {
                                     isShowingReorderSheet = true
                                 },

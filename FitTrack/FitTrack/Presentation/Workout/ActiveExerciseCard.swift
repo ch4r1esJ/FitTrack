@@ -1,24 +1,22 @@
 //
-//  WorkoutExerciseCard.swift
+//  ActiveExerciseCard.swift
 //  FitTrack
 //
-//  Created by Charles Janjgava on 1/14/26.
+//  Created by Charles Janjgava on 1/15/26.
 //
 
 import SwiftUI
 
-struct WorkoutExerciseCard: View {
-    
+struct ActiveExerciseCard: View {
     @Binding var exercise: TemplateExercise
-    @ObservedObject var viewModel: TemplateDetailsViewModel
+    @ObservedObject var viewModel: ActiveWorkoutViewModel
     
-    @State private var defaultRestTime: Int = 0
-    var onReorder: () -> Void
+    @State private var defaultRestTime: Int = 60
     var onDelete: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-
+            
             HStack {
                 ExerciseAvatarView(imageUrl: exercise.imageUrl)
                 
@@ -36,12 +34,6 @@ struct WorkoutExerciseCard: View {
                 Spacer()
                 
                 Menu {
-                    Button(action: {
-                        onReorder()
-                    }) {
-                        Label("Reorder Exercises", systemImage: "arrow.up.arrow.down")
-                    }
-                    
                     Button(role: .destructive, action: {
                         onDelete()
                     }) {
@@ -58,7 +50,6 @@ struct WorkoutExerciseCard: View {
             
             RestTimerPicker(selection: $defaultRestTime)
                 .onChange(of: defaultRestTime) { oldValue, newValue in
-                    // Update ALL existing sets when rest time changes
                     viewModel.updateRestTime(for: exercise.id, to: newValue)
                 }
             
@@ -70,7 +61,7 @@ struct WorkoutExerciseCard: View {
                     Spacer()
                     Text("REPS").frame(width: 60)
                     Spacer()
-                    Color.clear.frame(width: 30)
+                    Image(systemName: "checkmark").frame(width: 40)
                 }
                 .font(.caption)
                 .foregroundStyle(.gray)
@@ -79,17 +70,19 @@ struct WorkoutExerciseCard: View {
                 ForEach($exercise.sets) { $set in
                     VStack(spacing: 0) {
                         Divider()
-                        SetRowView(set: $set, onDelete: {
-                            viewModel.deleteSet(setId: set.id, from: exercise.id)
-                        })
-                        .transition(.move(edge: .top).combined(with: .opacity))
+                        ActiveSetRowView(
+                            set: $set,
+                            onSetCompleted: { restSeconds in
+                                viewModel.startRestTimer(seconds: restSeconds)
+                            }
+                        )
                     }
                 }
             }
             
             Button(action: {
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                    viewModel.addSet(to: exercise.id, restSeconds: defaultRestTime)
+                withAnimation {
+                    viewModel.addSet(to: exercise.id)
                 }
             }) {
                 HStack {
@@ -112,50 +105,5 @@ struct WorkoutExerciseCard: View {
         .onAppear {
             defaultRestTime = viewModel.getDefaultRestTime(for: exercise.id)
         }
-    }
-}
-
-struct SetRowView: View {
-    @Binding var set: ExerciseSet
-    var onDelete: () -> Void
-    
-    var body: some View {
-        HStack {
-            Text("\(set.setNumber)")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .frame(width: 30)
-                .foregroundStyle(.gray)
-            
-            Spacer()
-            
-            TextField("-", value: $set.targetWeightKg, format: .number)
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.center)
-                .frame(width: 60, height: 32)
-                .background(Color(uiColor: .systemGray6))
-                .cornerRadius(6)
-            
-            Spacer()
-            
-            TextField("-", value: $set.targetReps, format: .number)
-                .keyboardType(.numberPad)
-                .multilineTextAlignment(.center)
-                .frame(width: 60, height: 32)
-                .background(Color(uiColor: .systemGray6))
-                .cornerRadius(6)
-            
-            Spacer()
-            
-            Button(action: {
-                onDelete()
-            }) {
-                Image(systemName: "trash")
-                    .font(.caption)
-                    .foregroundStyle(.red.opacity(0.7))
-            }
-            .frame(width: 50)
-        }
-        .padding(.vertical, 8)
     }
 }

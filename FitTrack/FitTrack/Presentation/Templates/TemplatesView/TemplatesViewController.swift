@@ -14,6 +14,7 @@ class TemplatesViewController: UIViewController {
     
     var didSelectTemplate: ((WorkoutTemplate) -> Void)?
     var didTapCreateTemplate: (() -> Void)?
+    var didTapStartWorkout: ((WorkoutTemplate) -> Void)?
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -215,6 +216,10 @@ extension TemplatesViewController: UICollectionViewDataSource {
         cell.onDeleteTapped = { [weak self] in
             
             self?.confirmDelete(for: template.id)
+        }
+        
+        cell.onStartTapped = { [weak self] in
+            self?.didTapStartWorkout?(template)
         }
         
         return cell

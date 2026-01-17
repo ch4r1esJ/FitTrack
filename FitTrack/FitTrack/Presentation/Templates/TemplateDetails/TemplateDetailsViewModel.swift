@@ -56,12 +56,64 @@ class TemplateDetailsViewModel: ObservableObject {
         }
     }
     
+    func deleteExercise(_ exerciseToDelete: TemplateExercise) {
+        if let index = exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
+            exercises.remove(at: index)
+        }
+    }
+    
     func removeExercise(at offsets: IndexSet) {
         exercises.remove(atOffsets: offsets)
     }
     
     func moveExercise(from source: IndexSet, to destination: Int) {
         exercises.move(fromOffsets: source, toOffset: destination)
+    }
+    
+    func addSet(to exerciseId: String, restSeconds: Int) {
+        guard let exerciseIndex = exercises.firstIndex(where: { $0.id == exerciseId }) else {
+            return
+        }
+        
+        let nextNumber = exercises[exerciseIndex].sets.count + 1
+        let newSet = ExerciseSet(
+            setNumber: nextNumber,
+            targetWeightKg: nil,
+            targetReps: nil,
+            restSeconds: restSeconds
+        )
+        
+        exercises[exerciseIndex].sets.append(newSet)
+    }
+    
+    func deleteSet(setId: UUID, from exerciseId: String) {
+        guard let exerciseIndex = exercises.firstIndex(where: { $0.id == exerciseId }) else {
+            return
+        }
+        
+        exercises[exerciseIndex].sets.removeAll { $0.id == setId }
+        
+        for index in exercises[exerciseIndex].sets.indices {
+            exercises[exerciseIndex].sets[index].setNumber = index + 1
+        }
+    }
+    
+    func updateRestTime(for exerciseId: String, to newRestTime: Int) {
+        guard let exerciseIndex = exercises.firstIndex(where: { $0.id == exerciseId }) else {
+            return
+        }
+        
+        for index in exercises[exerciseIndex].sets.indices {
+            exercises[exerciseIndex].sets[index].restSeconds = newRestTime
+        }
+    }
+    
+    func getDefaultRestTime(for exerciseId: String) -> Int {
+        guard let exerciseIndex = exercises.firstIndex(where: { $0.id == exerciseId }),
+              let firstSet = exercises[exerciseIndex].sets.first else {
+            return 0
+        }
+        return firstSet.restSeconds
     }
     
     func saveTemplate() async -> Bool {
@@ -119,12 +171,6 @@ class TemplateDetailsViewModel: ObservableObject {
             self.isLoading = false
             self.errorMessage = error.localizedDescription
             return false
-        }
-    }
-    
-    func deleteExercise(_ exerciseToDelete: TemplateExercise) {
-        if let index = exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
-            exercises.remove(at: index)
         }
     }
 }

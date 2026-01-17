@@ -10,7 +10,7 @@ import Foundation
 struct WorkoutTemplate: Identifiable, Codable {
     let id: String
     let name: String
-    let exercises: [TemplateExercise]
+    var exercises: [TemplateExercise]
     let createdAt: Date
     let userId: String
     
@@ -40,6 +40,7 @@ struct ExerciseSet: Identifiable, Codable {
     var targetWeightKg: Double?
     var targetReps: Int?
     var restSeconds: Int
+    var isCompleted: Bool? = false
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -47,5 +48,16 @@ struct ExerciseSet: Identifiable, Codable {
         case targetWeightKg
         case targetReps
         case restSeconds
+        case isCompleted
     }
+}
+
+extension WorkoutTemplate {
+    static let empty = WorkoutTemplate(
+        id: "",
+        name: "Loading...",
+        exercises: [],
+        createdAt: Date(),
+        userId: ""
+    )
 }

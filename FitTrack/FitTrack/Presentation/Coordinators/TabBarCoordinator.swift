@@ -29,6 +29,10 @@ class TabBarCoordinator: Coordinator {
     func start() {
         tabBarController = MainTabBarController()
         
+        tabBarController.onResumeWorkout = { [weak self] in
+            self?.resumeWorkout()
+        }
+        
         let homeVC = HomeViewController()
         homeVC.tabBarItem = UITabBarItem(
             title: "Home",
@@ -76,6 +80,14 @@ class TabBarCoordinator: Coordinator {
         
         tabBarController.viewControllers = [homeVC, templatesNav, exerciseNav, profileVC]
         navigationController.setViewControllers([tabBarController], animated: true)
+    }
+    
+    private func resumeWorkout() {
+        guard let templatesCoordinator = childCoordinators.first(where: { $0 is TemplatesCoordinator }) as? TemplatesCoordinator else {
+            return
+        }
+        
+        templatesCoordinator.resumeMinimizedWorkout()
     }
     
     private func didLogout() {

@@ -23,12 +23,12 @@ class ExerciesViewController: UIViewController {
         let image = UIImage(named: "backButton")
         button.setImage(image, for: .normal)
         button.tintColor = .darkGray
-
+        
         button.contentHorizontalAlignment = .fill
         button.contentVerticalAlignment = .fill
         
         button.imageView?.contentMode = .scaleAspectFit
-
+        
         button.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -59,7 +59,7 @@ class ExerciesViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-        
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Exercise Library"
@@ -127,13 +127,15 @@ class ExerciesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
-                
+        
         setupView()
         registerCell()
         bindViewModel()
         viewModel.fetchExercises()
         navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
+    
+    // MARK: - Methods
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -142,11 +144,7 @@ class ExerciesViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
-    
-    // MARK: - Methods
     
     func updateCount(_ count: Int) {
         addedExerciseCount.text = "(\(count))"
@@ -231,7 +229,7 @@ class ExerciesViewController: UIViewController {
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             backButton.heightAnchor.constraint(equalToConstant: 35),
             backButton.widthAnchor.constraint(equalToConstant: 35),
-
+            
             titleLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 55),
             

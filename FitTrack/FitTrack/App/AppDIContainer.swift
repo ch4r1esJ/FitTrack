@@ -61,4 +61,14 @@ final class AppDIContainer {
             authService: authService
         )
     }
+    
+    // Workout Session
+    
+    private lazy var workoutManager: WorkoutSessionProtocol = {
+        return WorkoutManager()
+    }()
+    
+    func makeActiveWorkoutViewModel() -> ActiveWorkoutViewModel {
+        return ActiveWorkoutViewModel(workoutService: WorkoutManager.shared)
+    }
 }
