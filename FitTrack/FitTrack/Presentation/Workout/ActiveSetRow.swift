@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ActiveSetRowView: View {
     @Binding var set: ExerciseSet
-    var onSetCompleted: (Int) -> Void
+    var onSetCompleted: () -> Void  // Changed: removed Int parameter
     
     var body: some View {
         HStack {
@@ -65,10 +65,10 @@ struct ActiveSetRowView: View {
     private func toggleCompletion() {
         withAnimation(.spring(response: 0.3)) {
             let wasCompleted = set.isCompleted ?? false
-            set.isCompleted = !wasCompleted
             
-            if !wasCompleted && set.restSeconds > 0 {
-                onSetCompleted(set.restSeconds)
+            // Only allow completing (not un-completing)
+            if !wasCompleted {
+                onSetCompleted()  // Call ViewModel method
             }
         }
     }

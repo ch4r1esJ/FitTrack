@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		56576FBA2F12686500E8130B /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 56576FB92F12686500E8130B /* SDWebImage */; };
 		56576FBC2F12686500E8130B /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 56576FBB2F12686500E8130B /* SDWebImageMapKit */; };
+		565773842F1B860E00E8130B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565773832F1B860E00E8130B /* WidgetKit.framework */; };
+		565773862F1B860E00E8130B /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565773852F1B860E00E8130B /* SwiftUI.framework */; };
+		565773952F1B861100E8130B /* LiveWorkoutWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 565773812F1B860E00E8130B /* LiveWorkoutWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5657748B2F1BBE2D00E8130B /* silencee.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5657748A2F1BBE2D00E8130B /* silencee.mp3 */; };
 		567829352F0C57EB00744C8E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 567829342F0C57EB00744C8E /* FirebaseAnalytics */; };
 		567829372F0C57EB00744C8E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 567829362F0C57EB00744C8E /* FirebaseAuth */; };
 		567829392F0C57EB00744C8E /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 567829382F0C57EB00744C8E /* FirebaseCore */; };
@@ -18,11 +22,54 @@
 		567829462F0CF2BB00744C8E /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 567829452F0CF2BB00744C8E /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		565773932F1B861100E8130B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 567828112F09A5F800744C8E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 565773802F1B860E00E8130B;
+			remoteInfo = LiveWorkoutWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5657739A2F1B861100E8130B /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				565773952F1B861100E8130B /* LiveWorkoutWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		565773812F1B860E00E8130B /* LiveWorkoutWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LiveWorkoutWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		565773832F1B860E00E8130B /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		565773852F1B860E00E8130B /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		565773AC2F1BAFFE00E8130B /* LiveWorkoutWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveWorkoutWidgetExtension.entitlements; sourceTree = "<group>"; };
+		5657748A2F1BBE2D00E8130B /* silencee.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silencee.mp3; sourceTree = "<group>"; };
 		567828192F09A5F800744C8E /* FitTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		565773992F1B861100E8130B /* Exceptions for "LiveWorkoutWidget" folder in "LiveWorkoutWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 565773802F1B860E00E8130B /* LiveWorkoutWidgetExtension */;
+		};
+		565773A92F1B8A9800E8130B /* Exceptions for "FitTrack" folder in "LiveWorkoutWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Domain/Entities/Live Workouts/WorkoutActivityAttributes.swift",
+			);
+			target = 565773802F1B860E00E8130B /* LiveWorkoutWidgetExtension */;
+		};
 		5678282B2F09A5F900744C8E /* Exceptions for "FitTrack" folder in "FitTrack" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -33,10 +80,19 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		565773872F1B860E00E8130B /* LiveWorkoutWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				565773992F1B861100E8130B /* Exceptions for "LiveWorkoutWidget" folder in "LiveWorkoutWidgetExtension" target */,
+			);
+			path = LiveWorkoutWidget;
+			sourceTree = "<group>";
+		};
 		5678281B2F09A5F800744C8E /* FitTrack */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				5678282B2F09A5F900744C8E /* Exceptions for "FitTrack" folder in "FitTrack" target */,
+				565773A92F1B8A9800E8130B /* Exceptions for "FitTrack" folder in "LiveWorkoutWidgetExtension" target */,
 			);
 			path = FitTrack;
 			sourceTree = "<group>";
@@ -44,6 +100,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5657737E2F1B860E00E8130B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				565773862F1B860E00E8130B /* SwiftUI.framework in Frameworks */,
+				565773842F1B860E00E8130B /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		567828162F09A5F800744C8E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -63,11 +128,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		565773822F1B860E00E8130B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				565773832F1B860E00E8130B /* WidgetKit.framework */,
+				565773852F1B860E00E8130B /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		567828102F09A5F800744C8E = {
 			isa = PBXGroup;
 			children = (
+				565773AC2F1BAFFE00E8130B /* LiveWorkoutWidgetExtension.entitlements */,
 				5678281B2F09A5F800744C8E /* FitTrack */,
+				565773872F1B860E00E8130B /* LiveWorkoutWidget */,
+				565773822F1B860E00E8130B /* Frameworks */,
 				5678281A2F09A5F800744C8E /* Products */,
+				5657748A2F1BBE2D00E8130B /* silencee.mp3 */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				567828192F09A5F800744C8E /* FitTrack.app */,
+				565773812F1B860E00E8130B /* LiveWorkoutWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,6 +161,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		565773802F1B860E00E8130B /* LiveWorkoutWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 565773962F1B861100E8130B /* Build configuration list for PBXNativeTarget "LiveWorkoutWidgetExtension" */;
+			buildPhases = (
+				5657737D2F1B860E00E8130B /* Sources */,
+				5657737E2F1B860E00E8130B /* Frameworks */,
+				5657737F2F1B860E00E8130B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				565773872F1B860E00E8130B /* LiveWorkoutWidget */,
+			);
+			name = LiveWorkoutWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = LiveWorkoutWidgetExtension;
+			productReference = 565773812F1B860E00E8130B /* LiveWorkoutWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		567828182F09A5F800744C8E /* FitTrack */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5678282C2F09A5F900744C8E /* Build configuration list for PBXNativeTarget "FitTrack" */;
@@ -89,10 +190,12 @@
 				567828152F09A5F800744C8E /* Sources */,
 				567828162F09A5F800744C8E /* Frameworks */,
 				567828172F09A5F800744C8E /* Resources */,
+				5657739A2F1B861100E8130B /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				565773942F1B861100E8130B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				5678281B2F09A5F800744C8E /* FitTrack */,
@@ -123,6 +226,9 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					565773802F1B860E00E8130B = {
+						CreatedOnToolsVersion = 26.0;
+					};
 					567828182F09A5F800744C8E = {
 						CreatedOnToolsVersion = 26.0;
 					};
@@ -148,21 +254,37 @@
 			projectRoot = "";
 			targets = (
 				567828182F09A5F800744C8E /* FitTrack */,
+				565773802F1B860E00E8130B /* LiveWorkoutWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		567828172F09A5F800744C8E /* Resources */ = {
+		5657737F2F1B860E00E8130B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		567828172F09A5F800744C8E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5657748B2F1BBE2D00E8130B /* silencee.mp3 in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5657737D2F1B860E00E8130B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		567828152F09A5F800744C8E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -172,23 +294,100 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		565773942F1B861100E8130B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 565773802F1B860E00E8130B /* LiveWorkoutWidgetExtension */;
+			targetProxy = 565773932F1B861100E8130B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		565773972F1B861100E8130B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = LiveWorkoutWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KDKW63YG86;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LiveWorkoutWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Me.FitTrack.LiveWorkoutWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		565773982F1B861100E8130B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = LiveWorkoutWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KDKW63YG86;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LiveWorkoutWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Me.FitTrack.LiveWorkoutWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		5678282D2F09A5F900744C8E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FitTrack/FitTrack.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KDKW63YG86;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FitTrack/Info.plist;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -211,17 +410,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FitTrack/FitTrack.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KDKW63YG86;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FitTrack/Info.plist;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -361,6 +563,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		565773962F1B861100E8130B /* Build configuration list for PBXNativeTarget "LiveWorkoutWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				565773972F1B861100E8130B /* Debug */,
+				565773982F1B861100E8130B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		567828142F09A5F800744C8E /* Build configuration list for PBXProject "FitTrack" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -25,6 +25,7 @@ class ActiveWorkoutViewModel: ObservableObject {
     init(workoutService: WorkoutSessionProtocol) {
         self.workoutService = workoutService
         setupSubscriptions()
+        
         restTimer.resumeIfNeeded()
     }
     
@@ -32,7 +33,12 @@ class ActiveWorkoutViewModel: ObservableObject {
         workoutService.timerPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] time in
-                self?.elapsedTime = self?.formatTime(time) ?? "00:00"
+                let formatted = self?.formatTime(time) ?? "00:00"
+                self?.elapsedTime = formatted
+                
+                if #available(iOS 16.1, *) {
+                    LiveActivityManager.shared.updateWorkoutActivity(elapsedTime: formatted)
+                }
             }
             .store(in: &cancellables)
         
@@ -50,14 +56,58 @@ class ActiveWorkoutViewModel: ObservableObject {
                 self?.workoutService.updateWorkout(workout)
             }
             .store(in: &cancellables)
+        
+        restTimer.$isActive
+            .sink { [weak self] isActive in
+                if #available(iOS 16.1, *) {
+                    LiveActivityManager.shared.updateWorkoutActivity(isResting: isActive)
+                }
+            }
+            .store(in: &cancellables)
+        
+        restTimer.$remainingSeconds
+            .sink { [weak self] remaining in
+                if #available(iOS 16.1, *) {
+                    LiveActivityManager.shared.updateWorkoutActivity(restTimeRemaining: remaining)
+                }
+            }
+            .store(in: &cancellables)
     }
+    
     
     func startWorkout(from template: WorkoutTemplate) {
         workoutService.startWorkout(template: template)
+        
+        BackgroundAudioManager.shared.startBackgroundAudio()
+        
+        if #available(iOS 16.1, *) {
+            guard let firstExercise = template.exercises.first,
+                  let firstSet = firstExercise.sets.first else {
+                return
+            }
+            
+            
+            LiveActivityManager.shared.startWorkoutActivity(
+                workoutId: template.id,
+                workoutName: template.name,
+                exerciseName: firstExercise.exerciseName,
+                currentSet: 1,
+                totalSets: firstExercise.sets.count,
+                targetWeight: formatWeight(firstSet.targetWeightKg),
+                targetReps: formatReps(firstSet.targetReps)
+            )
+        }
     }
     
     func finishWorkout() {
         workoutService.finishWorkout()
+        
+        BackgroundAudioManager.shared.stopBackgroundAudio()
+        
+        if #available(iOS 16.1, *) {
+            LiveActivityManager.shared.endWorkoutActivity()
+        }
+        
         onFinish?()
     }
     
@@ -68,6 +118,52 @@ class ActiveWorkoutViewModel: ObservableObject {
     
     func resumeTimerIfNeeded() {
         workoutService.resumeWorkout()
+    }
+    
+    func completeCurrentSet() {
+        
+        for exerciseIndex in currentWorkout.exercises.indices {
+            for setIndex in currentWorkout.exercises[exerciseIndex].sets.indices {
+                let set = currentWorkout.exercises[exerciseIndex].sets[setIndex]
+                
+                if set.isCompleted != true {
+                    
+                    currentWorkout.exercises[exerciseIndex].sets[setIndex].isCompleted = true
+                    workoutService.updateWorkout(currentWorkout)
+                    
+                    if set.restSeconds > 0 {
+                        startRestTimer(seconds: set.restSeconds)
+                    }
+                    
+                    updateLiveActivityToNextSet()
+                    return
+                }
+            }
+        }
+        
+    }
+    
+    private func updateLiveActivityToNextSet() {
+        guard #available(iOS 16.1, *) else { return }
+        
+        for exercise in currentWorkout.exercises {
+            for set in exercise.sets {
+                if set.isCompleted != true {
+                    
+                    LiveActivityManager.shared.updateWorkoutActivity(
+                        exerciseName: exercise.exerciseName,
+                        currentSet: set.setNumber,
+                        totalSets: exercise.sets.count,
+                        targetWeight: formatWeight(set.targetWeightKg),
+                        targetReps: formatReps(set.targetReps),
+                        isResting: false,
+                        isFinished: false
+                    )
+                    return
+                }
+            }
+        }
+        LiveActivityManager.shared.updateWorkoutActivity(isFinished: true)
     }
         
     func startRestTimer(seconds: Int) {
@@ -97,6 +193,10 @@ class ActiveWorkoutViewModel: ObservableObject {
             currentWorkout.exercises.append(newTemplateExercise)
         }
         workoutService.updateWorkout(currentWorkout)
+        
+        if #available(iOS 16.1, *) {
+            updateLiveActivityToNextSet()
+        }
     }
     
     func deleteExercise(_ exerciseToDelete: TemplateExercise) {
@@ -124,6 +224,10 @@ class ActiveWorkoutViewModel: ObservableObject {
         
         currentWorkout.exercises[exerciseIndex].sets.append(newSet)
         workoutService.updateWorkout(currentWorkout)
+        
+        if #available(iOS 16.1, *) {
+            updateLiveActivityToNextSet()
+        }
     }
     
     func updateRestTime(for exerciseId: String, to newRestTime: Int) {
@@ -145,6 +249,16 @@ class ActiveWorkoutViewModel: ObservableObject {
         return firstSet.restSeconds
     }
         
+    private func formatWeight(_ weight: Double?) -> String {
+        guard let weight = weight else { return "-" }
+        return String(format: "%.1f kg", weight)
+    }
+    
+    private func formatReps(_ reps: Int?) -> String {
+        guard let reps = reps else { return "-" }
+        return "\(reps) reps"
+    }
+    
     private func formatTime(_ seconds: TimeInterval) -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.minute, .second]

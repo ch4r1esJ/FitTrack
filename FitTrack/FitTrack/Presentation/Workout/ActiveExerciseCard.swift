@@ -72,8 +72,8 @@ struct ActiveExerciseCard: View {
                         Divider()
                         ActiveSetRowView(
                             set: $set,
-                            onSetCompleted: { restSeconds in
-                                viewModel.startRestTimer(seconds: restSeconds)
+                            onSetCompleted: {
+                                viewModel.completeCurrentSet()
                             }
                         )
                     }

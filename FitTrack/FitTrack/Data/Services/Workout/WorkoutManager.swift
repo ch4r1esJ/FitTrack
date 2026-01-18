@@ -55,8 +55,6 @@ class WorkoutManager: WorkoutSessionProtocol, ObservableObject {
     
     func minimizeWorkout() {
         stateSubject.send(.minimized)
-        timer?.invalidate()
-        timer = nil
         persistWorkout()
     }
     
@@ -106,6 +104,8 @@ class WorkoutManager: WorkoutSessionProtocol, ObservableObject {
         startDate = persisted.startDate
         elapsedTimeSubject.send(persisted.elapsedTime)
         stateSubject.send(.minimized)
+        
+        startTimer()
     }
     
     private func startTimer() {
