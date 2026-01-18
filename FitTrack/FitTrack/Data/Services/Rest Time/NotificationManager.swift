@@ -5,7 +5,6 @@
 //  Created by Charles Janjgava on 1/17/26.
 //
 
-
 import Foundation
 import UserNotifications
 
@@ -19,11 +18,6 @@ class NotificationManager {
     
     func requestPermission() {
         notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if granted {
-                print("Notification permission granted")
-            } else if let error = error {
-                print("Notification permission error: \(error)")
-            }
         }
     }
     
@@ -44,9 +38,6 @@ class NotificationManager {
         )
         
         notificationCenter.add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error)")
-            }
         }
     }
     

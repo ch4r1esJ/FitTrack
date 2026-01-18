@@ -17,8 +17,7 @@ struct LiveWorkoutWidgetLiveActivity: Widget {
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 8) {
-                        Image(systemName: "figure.strengthtraining.traditional")
-                            .foregroundColor(.blue)
+                        ExerciseAvatarView(imageUrl: context.state.exerciseImage)
                         
                         VStack(alignment: .leading, spacing: 2) {
                             Text(context.state.exerciseName)
@@ -69,8 +68,7 @@ struct LiveWorkoutWidgetLiveActivity: Widget {
                         .foregroundColor(.secondary)
                 }
             } compactLeading: {
-                Image(systemName: "figure.strengthtraining.traditional")
-                    .foregroundColor(.blue)
+                ExerciseAvatarView(imageUrl: context.state.exerciseImage)
             } compactTrailing: {
                 if context.state.isResting {
                     Text("\(context.state.restTimeRemaining)s")
@@ -84,8 +82,7 @@ struct LiveWorkoutWidgetLiveActivity: Widget {
                         .monospacedDigit()
                 }
             } minimal: {
-                Image(systemName: "figure.strengthtraining.traditional")
-                    .foregroundColor(.blue)
+                ExerciseAvatarView(imageUrl: context.state.exerciseImage)
             }
         }
     }
@@ -107,9 +104,7 @@ struct LockScreenLiveActivityView: View {
     var activeWorkoutView: some View {
         VStack(spacing: 12) {
             HStack {
-                Image(systemName: "figure.strengthtraining.traditional")
-                    .font(.title3)
-                    .foregroundColor(.blue)
+                ExerciseAvatarView(imageUrl: context.state.exerciseImage)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(context.state.workoutName)

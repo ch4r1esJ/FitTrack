@@ -67,6 +67,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Domain/Entities/Live Workouts/WorkoutActivityAttributes.swift",
+				Presentation/Templates/TemplateDetails/Subviews/ExerciseAvatarView.swift,
+				Presentation/Templates/TemplateDetails/Subviews/ImageManager.swift,
 			);
 			target = 565773802F1B860E00E8130B /* LiveWorkoutWidgetExtension */;
 		};

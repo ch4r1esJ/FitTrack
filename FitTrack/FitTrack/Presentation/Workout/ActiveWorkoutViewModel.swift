@@ -80,22 +80,41 @@ class ActiveWorkoutViewModel: ObservableObject {
         
         BackgroundAudioManager.shared.startBackgroundAudio()
         
-        if #available(iOS 16.1, *) {
-            guard let firstExercise = template.exercises.first,
-                  let firstSet = firstExercise.sets.first else {
-                return
+        Task {
+            let healthKitService = HealthKitService()
+            if healthKitService.isHealthDataAvailable() {
+                try? await healthKitService.requestAuthorization()
             }
             
+            if #available(iOS 16.1, *) {
+                guard let firstExercise = template.exercises.first,
+                      let firstSet = firstExercise.sets.first else {
+                    return
+                }
+                
+                await LiveActivityManager.shared.startWorkoutActivity(
+                    workoutId: template.id,
+                    workoutName: template.name,
+                    exerciseName: firstExercise.exerciseName,
+                    exerciseImageUrl: firstExercise.imageUrl,
+                    currentSet: 1,
+                    totalSets: firstExercise.sets.count,
+                    targetWeight: formatWeight(firstSet.targetWeightKg),
+                    targetReps: formatReps(firstSet.targetReps)
+                )
+            }
             
-            LiveActivityManager.shared.startWorkoutActivity(
-                workoutId: template.id,
-                workoutName: template.name,
-                exerciseName: firstExercise.exerciseName,
-                currentSet: 1,
-                totalSets: firstExercise.sets.count,
-                targetWeight: formatWeight(firstSet.targetWeightKg),
-                targetReps: formatReps(firstSet.targetReps)
-            )
+            await preloadExerciseImages(for: template)
+        }
+    }
+
+    private func preloadExerciseImages(for template: WorkoutTemplate) async {
+        for exercise in template.exercises {
+            if let imageUrl = exercise.imageUrl {
+                if ImageManager.shared.getLocalImagePath(for: imageUrl) == nil {
+                    _ = await ImageManager.shared.downloadAndSaveImageAsync(from: imageUrl)
+                }
+            }
         }
     }
     
@@ -150,20 +169,26 @@ class ActiveWorkoutViewModel: ObservableObject {
             for set in exercise.sets {
                 if set.isCompleted != true {
                     
-                    LiveActivityManager.shared.updateWorkoutActivity(
-                        exerciseName: exercise.exerciseName,
-                        currentSet: set.setNumber,
-                        totalSets: exercise.sets.count,
-                        targetWeight: formatWeight(set.targetWeightKg),
-                        targetReps: formatReps(set.targetReps),
-                        isResting: false,
-                        isFinished: false
-                    )
+                    Task {
+                        await LiveActivityManager.shared.updateWorkoutActivityAsync(
+                            exerciseName: exercise.exerciseName,
+                            exerciseImageUrl: exercise.imageUrl,
+                            currentSet: set.setNumber,
+                            totalSets: exercise.sets.count,
+                            targetWeight: formatWeight(set.targetWeightKg),
+                            targetReps: formatReps(set.targetReps),
+                            isResting: false,
+                            isFinished: false
+                        )
+                    }
                     return
                 }
             }
         }
-        LiveActivityManager.shared.updateWorkoutActivity(isFinished: true)
+        
+        Task {
+            await LiveActivityManager.shared.updateWorkoutActivityAsync(isFinished: true)
+        }
     }
         
     func startRestTimer(seconds: Int) {
@@ -195,17 +220,12 @@ class ActiveWorkoutViewModel: ObservableObject {
         workoutService.updateWorkout(currentWorkout)
         
         if #available(iOS 16.1, *) {
-            updateLiveActivityToNextSet()
+            Task {
+                await updateLiveActivityToNextSetAsync()
+            }
         }
     }
-    
-    func deleteExercise(_ exerciseToDelete: TemplateExercise) {
-        if let index = currentWorkout.exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
-            currentWorkout.exercises.remove(at: index)
-        }
-        workoutService.updateWorkout(currentWorkout)
-    }
-    
+
     func addSet(to exerciseId: String) {
         guard let exerciseIndex = currentWorkout.exercises.firstIndex(where: { $0.id == exerciseId }) else {
             return
@@ -226,8 +246,42 @@ class ActiveWorkoutViewModel: ObservableObject {
         workoutService.updateWorkout(currentWorkout)
         
         if #available(iOS 16.1, *) {
-            updateLiveActivityToNextSet()
+            Task {
+                await updateLiveActivityToNextSetAsync()
+            }
         }
+    }
+
+    private func updateLiveActivityToNextSetAsync() async {
+        guard #available(iOS 16.1, *) else { return }
+        
+        for exercise in currentWorkout.exercises {
+            for set in exercise.sets {
+                if set.isCompleted != true {
+                    
+                    await LiveActivityManager.shared.updateWorkoutActivityAsync(
+                        exerciseName: exercise.exerciseName,
+                        exerciseImageUrl: exercise.imageUrl,
+                        currentSet: set.setNumber,
+                        totalSets: exercise.sets.count,
+                        targetWeight: formatWeight(set.targetWeightKg),
+                        targetReps: formatReps(set.targetReps),
+                        isResting: false,
+                        isFinished: false
+                    )
+                    return
+                }
+            }
+        }
+        
+        await LiveActivityManager.shared.updateWorkoutActivityAsync(isFinished: true)
+    }
+    
+    func deleteExercise(_ exerciseToDelete: TemplateExercise) {
+        if let index = currentWorkout.exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
+            currentWorkout.exercises.remove(at: index)
+        }
+        workoutService.updateWorkout(currentWorkout)
     }
     
     func updateRestTime(for exerciseId: String, to newRestTime: Int) {
