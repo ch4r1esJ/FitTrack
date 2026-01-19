@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 protocol AuthServiceProtocol {
     func signIn(email: String, password: String) async throws -> User

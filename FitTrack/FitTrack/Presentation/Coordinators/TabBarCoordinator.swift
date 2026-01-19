@@ -33,12 +33,20 @@ class TabBarCoordinator: Coordinator {
             self?.resumeWorkout()
         }
         
-        let homeVC = HomeViewController()
-        homeVC.tabBarItem = UITabBarItem(
-            title: "Home",
-            image: UIImage(systemName: "house"),
-            selectedImage: UIImage(systemName: "house.fill")
+        let historyNav = UINavigationController()
+        historyNav.tabBarItem = UITabBarItem(
+            title: "History",
+            image: UIImage(systemName: "clock"),
+            selectedImage: UIImage(systemName: "clock.fill")
         )
+        
+        let historyCoordinator = HistoryCoordinator(
+            navigationController: historyNav,
+            diContainer: diContainer
+        )
+        
+        historyCoordinator.start()
+        childCoordinators.append(historyCoordinator)
         
         let templatesNav = UINavigationController()
         templatesNav.tabBarItem = UITabBarItem(
@@ -78,7 +86,7 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "person.circle.fill")
         )
         
-        tabBarController.viewControllers = [homeVC, templatesNav, exerciseNav, profileVC]
+        tabBarController.viewControllers = [templatesNav, historyNav, profileVC]
         navigationController.setViewControllers([tabBarController], animated: true)
     }
     

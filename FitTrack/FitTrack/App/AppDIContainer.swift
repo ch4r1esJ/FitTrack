@@ -71,4 +71,21 @@ final class AppDIContainer {
     func makeActiveWorkoutViewModel() -> ActiveWorkoutViewModel {
         return ActiveWorkoutViewModel(workoutService: WorkoutManager.shared)
     }
+    
+    // Workout History
+    
+    lazy var workoutHistoryService: WorkoutHistoryServiceProtocol = {
+        return FirebaseWorkoutHistoryService()
+    }()
+    
+    func makeWorkoutHistoryViewModel() -> WorkoutHistoryViewModel {
+        let currentUserId = authService.currentUser?.id ?? "No User"
+        
+        return WorkoutHistoryViewModel(workoutHistoryService: FirebaseWorkoutHistoryService(), userId: currentUserId)
+    } 
+    
+    func makeWorkoutHistoryViewController() -> WorkoutHistoryViewController {
+        let viewModel = makeWorkoutHistoryViewModel()
+        return WorkoutHistoryViewController(viewModel: viewModel)
+    }
 }
