@@ -48,6 +48,14 @@ class TabBarCoordinator: Coordinator {
         historyCoordinator.start()
         childCoordinators.append(historyCoordinator)
         
+        let statsVC = diContainer.makeWorkoutStatsView()
+        let statsNav = UIHostingController(rootView: statsVC)
+        statsNav.tabBarItem = UITabBarItem(
+            title: "Stats",
+            image: UIImage(systemName: "chart.bar"),
+            selectedImage: UIImage(systemName: "chart.bar.fill")
+        )
+        
         let templatesNav = UINavigationController()
         templatesNav.tabBarItem = UITabBarItem(
             title: "Templates",
@@ -86,7 +94,15 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "person.circle.fill")
         )
         
-        tabBarController.viewControllers = [templatesNav, historyNav, profileVC]
+        let homeView = HomeView()
+        let homeVc = UIHostingController(rootView: homeView)
+        homeVc.tabBarItem = UITabBarItem(
+            title: "Home",
+            image: UIImage(systemName: "house"),
+            selectedImage: UIImage(systemName: "house.fill")
+        )
+        
+        tabBarController.viewControllers = [homeVc, templatesNav, historyNav, statsNav, profileVC]
         navigationController.setViewControllers([tabBarController], animated: true)
     }
     

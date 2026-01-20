@@ -88,4 +88,16 @@ final class AppDIContainer {
         let viewModel = makeWorkoutHistoryViewModel()
         return WorkoutHistoryViewController(viewModel: viewModel)
     }
+    
+    func makeWorkoutStatsViewModel() -> WorkoutStatsViewModel {
+        let currentUserId = authService.currentUser?.id ?? "No User"
+        
+        return WorkoutStatsViewModel(workoutHistoryService: FirebaseWorkoutHistoryService(), userId: currentUserId)
+    }
+    
+    func makeWorkoutStatsView() -> WorkoutStatsView {
+        let viewModel = makeWorkoutStatsViewModel()
+        
+        return WorkoutStatsView(viewModel: viewModel)
+    }
 }
