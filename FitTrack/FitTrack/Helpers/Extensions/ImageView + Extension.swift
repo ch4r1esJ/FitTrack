@@ -47,7 +47,6 @@ extension UIImageView {
                 }
                 
             } catch {
-                print("Failed to load image: \(error)")
             }
         }
     }
