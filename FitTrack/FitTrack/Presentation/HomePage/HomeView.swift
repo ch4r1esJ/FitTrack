@@ -16,11 +16,15 @@ class HomeViewModel: ObservableObject {
     @Published var exercise: Int = 0
     @Published var stand: Int = 0
     
+    @Published var activities = [Activities]()
+    @Published var workouts = [Workout]()
+    
     var mockActivities = [
-        Activities(id: 1, title: "Morning Run", subtitle: "Cardio", image: "figure.run", tintColor: .green, amount: "5.2 km"),
-        Activities(id: 2, title: "Deep Sleep", subtitle: "Rest", image: "moon.stars.fill", tintColor: .indigo, amount: "7h 20m"),
-        Activities(id: 3, title: "Water Intake", subtitle: "Hydration", image: "drop.fill", tintColor: .blue, amount: "1.5 Liters"),
-        Activities(id: 4, title: "Read Book", subtitle: "Education", image: "book.fill", tintColor: .orange, amount: "45 Pages"), ]
+        Activities(title: "Morning Run", subtitle: "Cardio", image: "figure.run", tintColor: .green, amount: "5.2 km"),
+        Activities(title: "Deep Sleep", subtitle: "Rest", image: "moon.stars.fill", tintColor: .indigo, amount: "7h 20m"),
+        Activities(title: "Water Intake", subtitle: "Hydration", image: "drop.fill", tintColor: .blue, amount: "1.5 Liters"),
+        Activities(title: "Read Book", subtitle: "Education", image: "book.fill", tintColor: .orange, amount: "45 Pages"), ]
+    
     
     init() {
         Task {
@@ -29,6 +33,9 @@ class HomeViewModel: ObservableObject {
                 fetchTodayCalories()
                 fetchTodayExerciseTime()
                 fetchTodayStandHours()
+                fetchTodaysSteps()
+                fetchCurrentWeekActivities()
+                fetchRecentWorkouts()
             } catch {
                 print(error.localizedDescription)
             }
@@ -41,6 +48,8 @@ class HomeViewModel: ObservableObject {
             case .success(let calories):
                 DispatchQueue.main.async {
                     self.calories = Int(calories)
+                    let activity = Activities(title: "Today calories", subtitle: "today", image: "flame", tintColor: .red, amount: calories.formattedNumbersString())
+                    self.activities.append(activity)
                 }
 
             case .failure(let failure):
@@ -69,6 +78,45 @@ class HomeViewModel: ObservableObject {
             case .success(let hours):
                 DispatchQueue.main.async {
                     self.stand = Int(hours)
+                }
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchTodaysSteps() {
+        healthManager.fetchTodaySteps { result in
+            switch result {
+            case .success(let activity):
+                DispatchQueue.main.async {
+                    self.activities.append(activity)
+                }
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchCurrentWeekActivities() {
+        healthManager.fetchCurrentWeekWorkoutStats { result in
+            switch result {
+            case .success(let activities):
+                DispatchQueue.main.async {
+                    self.activities.append(contentsOf: activities)
+                }
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchRecentWorkouts() {
+        healthManager.fetchWorkoutsForMonth(month: Date()) { result in
+            switch result {
+            case .success(let workouts):
+                DispatchQueue.main.async {
+                    self.workouts = Array(workouts.prefix(4))
                 }
             case .failure(let failure):
                 print(failure.localizedDescription)
@@ -120,7 +168,7 @@ struct HomeView: View {
                                     .bold()
                                     .foregroundColor(.green )
                                 
-                                Text("8 hours")
+                                Text("\(viewModel.stand)")
                                     .bold()
                             }
                         }
@@ -160,12 +208,14 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
                     
-                    LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                        ForEach(viewModel.mockActivities, id: \.id) { activity in
-                            ActivityCard(activity: activity)
+                    if !viewModel.activities.isEmpty {
+                        LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
+                            ForEach(viewModel.activities, id: \.title) { activity in
+                                ActivityCard(activity: activity)
+                            }
                         }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
                     
                     HStack {
                         Text("Recent Workouts")
@@ -184,6 +234,15 @@ struct HomeView: View {
                         }
                     }
                     .padding(.horizontal)
+                    .padding(.top)
+                    
+                    LazyVStack {
+                        ForEach(viewModel.workouts) { workout in
+                            WorkoutCard(workout: workout)
+                        }
+                    }
+                    .padding(.bottom)
+                    
                 }
             }
         }
