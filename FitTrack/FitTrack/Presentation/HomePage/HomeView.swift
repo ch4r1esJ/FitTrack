@@ -6,109 +6,185 @@
 //
 
 import SwiftUI
+import Combine
 
-struct HomeView: View {
-    @State var calories: Int = 123
-    @State var active: Int = 12
-    @State var stand: Int = 8
+class HomeViewModel: ObservableObject {
+    
+    let healthManager = HealthManager.shared
+    
+    @Published var calories: Int = 0
+    @Published var exercise: Int = 0
+    @Published var stand: Int = 0
     
     var mockActivities = [
         Activities(id: 1, title: "Morning Run", subtitle: "Cardio", image: "figure.run", tintColor: .green, amount: "5.2 km"),
         Activities(id: 2, title: "Deep Sleep", subtitle: "Rest", image: "moon.stars.fill", tintColor: .indigo, amount: "7h 20m"),
         Activities(id: 3, title: "Water Intake", subtitle: "Hydration", image: "drop.fill", tintColor: .blue, amount: "1.5 Liters"),
-        Activities(id: 4, title: "Read Book", subtitle: "Education", image: "book.fill", tintColor: .orange, amount: "45 Pages"),
-        Activities(id: 5, title: "Coding Session", subtitle: "Work", image: "command", tintColor: .purple, amount: "3.5 Hours"),
-        Activities(id: 6, title: "Meditation", subtitle: "Mindfulness", image: "laurel.leading", tintColor: .teal, amount: "15 mins"),
-        Activities(id: 7, title: "Grocery Shopping", subtitle: "Errands", image: "cart.fill", tintColor: .pink, amount: "$84.20"),
-        Activities(id: 8, title: "Gym Session", subtitle: "Strength", image: "dumbbell.fill", tintColor: .red, amount: "450 kcal"),
-        Activities(id: 9, title: "Electric Charging", subtitle: "Vehicle", image: "bolt.car.fill", tintColor: .yellow, amount: "80%"),
-        Activities(id: 10, title: "Piano Practice", subtitle: "Hobby", image: "music.note", tintColor: .cyan, amount: "1 Hour")    ]
+        Activities(id: 4, title: "Read Book", subtitle: "Education", image: "book.fill", tintColor: .orange, amount: "45 Pages"), ]
+    
+    init() {
+        Task {
+            do {
+                try await healthManager.requestHealthKitAccess()
+                fetchTodayCalories()
+                fetchTodayExerciseTime()
+                fetchTodayStandHours()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchTodayCalories() {
+        healthManager.fetchTodayCaloriesBurned { result in
+            switch result {
+            case .success(let calories):
+                DispatchQueue.main.async {
+                    self.calories = Int(calories)
+                }
+
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchTodayExerciseTime() {
+        healthManager.fetchTodayExerciseTime { result in
+            switch result {
+            case .success(let exercise):
+                DispatchQueue.main.async {
+                    self.exercise = Int(exercise)
+                }
+
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchTodayStandHours() {
+        healthManager.fetchTodayStandHours { result in
+            switch result {
+            case .success(let hours):
+                DispatchQueue.main.async {
+                    self.stand = Int(hours)
+                }
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
+    }
+}
+
+struct HomeView: View {
+    @StateObject var viewModel = HomeViewModel()
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading) {
-                Text("Welcome")
-                    .font(.largeTitle)
-                    .padding()
-                
-                HStack {
-                    Spacer()
+        NavigationStack {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading) {
+                    Text("Welcome")
+                        .font(.largeTitle)
+                        .padding()
                     
-                    VStack {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Calories")
-                                .font(.callout)
-                                .bold()
-                                .foregroundColor(.red)
-                            
-                            Text("123 kcal")
-                                .bold()
-                        }
-                        .padding(.bottom)
+                    HStack {
+                        Spacer()
                         
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Active")
-                                .font(.callout)
-                                .bold()
-                                .foregroundColor(.green )
+                        VStack {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Calories")
+                                    .font(.callout)
+                                    .bold()
+                                    .foregroundColor(.red)
+                                
+                                Text("\(viewModel.calories)")
+                                    .bold()
+                            }
+                            .padding(.bottom)
                             
-                            Text("52 mins")
-                                .bold()
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Active")
+                                    .font(.callout)
+                                    .bold()
+                                    .foregroundColor(.green )
+                                
+                                Text("\(viewModel.exercise)")
+                                    .bold()
+                            }
+                            .padding(.bottom)
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Stand")
+                                    .font(.callout)
+                                    .bold()
+                                    .foregroundColor(.green )
+                                
+                                Text("8 hours")
+                                    .bold()
+                            }
                         }
-                        .padding(.bottom)
                         
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Stand")
-                                .font(.callout)
-                                .bold()
-                                .foregroundColor(.green )
+                        Spacer()
+                        
+                        ZStack {
+                            ProgressCircleView(progress: $viewModel.calories, goal: 600, color: .red)
                             
-                            Text("8 hours")
-                                .bold()
+                            ProgressCircleView(progress: $viewModel.exercise, goal: 60, color: .green)
+                                .padding(.all, 20)
+                            
+                            ProgressCircleView(progress: $viewModel.stand, goal: 12, color: .blue)
+                                .padding(.all, 40)
                         }
+                        .padding(.horizontal)
+                        
+                        Spacer()
                     }
+                    .padding()
                     
-                    Spacer()
-                    
-                    ZStack {
-                        ProgressCircleView(progress: $calories, goal: 600, color: .red)
+                    HStack {
+                        Text("Fitness Activity")
+                            .font(.title2)
                         
-                        ProgressCircleView(progress: $active, goal: 60, color: .green)
-                            .padding(.all, 20)
+                        Spacer()
                         
-                        ProgressCircleView(progress: $stand, goal: 12, color: .blue)
-                            .padding(.all, 40)
+                        Button {
+                            print("show more")
+                        } label: {
+                            Text("Show more")
+                                .padding(.all, 10)
+                                .foregroundStyle(.white)
+                                .background(.blue)
+                                .cornerRadius(20)
+                        }
                     }
                     .padding(.horizontal)
                     
-                    Spacer()
-                }
-                .padding()
-                
-                HStack {
-                    Text("Fitness Activity")
-                        .font(.title2)
-                    
-                    Spacer()
-                    
-                    Button {
-                        print("show more")
-                    } label: {
-                        Text("Show more")
-                            .padding(.all, 10)
-                            .foregroundStyle(.white)
-                            .background(.blue)
-                            .cornerRadius(20)
+                    LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
+                        ForEach(viewModel.mockActivities, id: \.id) { activity in
+                            ActivityCard(activity: activity)
+                        }
                     }
-                }
-                .padding(.horizontal)
-                
-                LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                    ForEach(mockActivities, id: \.id) { activity in
-                        ActivityCard(activity: activity)
+                    .padding(.horizontal)
+                    
+                    HStack {
+                        Text("Recent Workouts")
+                            .font(.title2)
+                        
+                        Spacer()
+                        
+                        NavigationLink {
+                            EmptyView()
+                        } label: {
+                            Text("Show more")
+                                .padding(.all, 10)
+                                .foregroundStyle(.white)
+                                .background(.blue)
+                                .cornerRadius(20)
+                        }
                     }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
             }
         }
     }
