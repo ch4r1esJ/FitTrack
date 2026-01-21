@@ -36,6 +36,12 @@ extension Date {
         formatter.dateFormat = "MMM d"
         return formatter.string(from: self)
     }
+    
+    func monthAndYearFormat() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM YYYY"
+        return formatter.string(from: self)
+    }
 }
 
 extension Double {
@@ -69,17 +75,46 @@ class HealthManager {
         let stand = HKCategoryType(.appleStandHour)
         let steps = HKQuantityType(.stepCount)
         let workouts = HKSampleType.workoutType()
+        let activitySummary = HKObjectType.activitySummaryType()
         
-        let healthTypes: Set = [calories, exercise, stand, steps, workouts]
+        let healthTypes: Set = [calories, exercise, stand, steps, workouts, activitySummary]
         try await healthStore.requestAuthorization(toShare: [], read: healthTypes)
     }
+    
+        func startObservingActivitySummary(onUpdate: @escaping (Result<HKActivitySummary, Error>) -> Void) {
+            let calendar = Calendar.current
+            var components = calendar.dateComponents([.day, .month, .year, .era], from: Date())
+            components.calendar = calendar
+            
+            let predicate = HKQuery.predicateForActivitySummary(with: components)
+            
+            let query = HKActivitySummaryQuery(predicate: predicate) { _, summaries, error in
+                if let error = error {
+                    onUpdate(.failure(error))
+                    return
+                }
+                
+                if let summary = summaries?.first {
+                    onUpdate(.success(summary))
+                }
+            }
+            
+            query.updateHandler = { _, summaries, error in
+                if let summary = summaries?.first {
+                    onUpdate(.success(summary))
+                }
+            }
+            
+            healthStore.execute(query)
+        }
     
     func fetchTodayCaloriesBurned(completion: @escaping(Result<Double, Error>) -> Void) {
         let calories = HKQuantityType(.activeEnergyBurned)
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKStatisticsQuery(quantityType: calories, quantitySamplePredicate: predicate) { _, results, error in
             guard let quantity = results?.sumQuantity(), error == nil else {
-                completion(.failure(NSError()))
+//                completion(.failure(NSError()))
+                completion(.success(0))
                 
                 return
             }
@@ -95,7 +130,8 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKStatisticsQuery(quantityType: exercise, quantitySamplePredicate: predicate) { _, results, error in
             guard let quantity = results?.sumQuantity(), error == nil else {
-                completion(.failure(NSError()))
+//                completion(.failure(NSError()))
+                completion(.success(0))
                 
                 return
             }
@@ -112,7 +148,8 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKSampleQuery(sampleType: stand, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, results, error in
             guard let samples = results as? [HKCategorySample], error == nil else {
-                completion(.failure(NSError()))
+//                completion(.failure(NSError()))
+                completion(.success(0))
                 
                 return
             }
@@ -155,43 +192,54 @@ class HealthManager {
             }
             
             var runningCount: Int = 0
+            var walkingCount: Int = 0
+            var cyclingCount: Int = 0
             var strengthCount: Int = 0
-            var soccerCount: Int = 0
-            var basketballCount: Int = 0
-            var stairsCount: Int = 0
-            var kickboxingCount: Int = 0
+            var yogaCount: Int = 0
+            var hiitCount: Int = 0
             
             for workout in workouts {
-                let duration = Int(workout.duration)/60
-                if workout.workoutActivityType == .running {
+                let duration = Int(workout.duration) / 60
+                
+                switch workout.workoutActivityType {
+                case .running:
                     runningCount += duration
-                } else if workout.workoutActivityType == .traditionalStrengthTraining {
+                case .walking:
+                    walkingCount += duration
+                case .cycling:
+                    cyclingCount += duration
+                case .traditionalStrengthTraining, .functionalStrengthTraining:
                     strengthCount += duration
-                } else if workout.workoutActivityType == .soccer {
-                    soccerCount += duration
-                } else if workout.workoutActivityType == .basketball {
-                    basketballCount += duration
-                } else if workout.workoutActivityType == .stairClimbing {
-                    stairsCount += duration
-                } else if workout.workoutActivityType == .kickboxing {
-                    kickboxingCount += duration
+                case .yoga:
+                    yogaCount += duration
+                case .highIntensityIntervalTraining:
+                    hiitCount += duration
+                default:
+                    break
                 }
             }
             
-            completion(.success(generateActivitiesFromDurations(running: runningCount, strength: strengthCount, soccer: soccerCount, basketball: basketballCount, stairs: stairsCount, kickboxing: kickboxingCount)))
+            completion(.success(generateActivitiesFromDurations(
+                running: runningCount,
+                walking: walkingCount,
+                cycling: cyclingCount,
+                strength: strengthCount,
+                yoga: yogaCount,
+                hiit: hiitCount
+            )))
         }
         
         healthStore.execute(query)
     }
     
-    func generateActivitiesFromDurations(running: Int, strength: Int, soccer: Int, basketball: Int, stairs: Int, kickboxing: Int) -> [Activities] {
+    func generateActivitiesFromDurations(running: Int, walking: Int, cycling: Int, strength: Int, yoga: Int, hiit: Int) -> [Activities] {
         return [
             Activities(title: "Running", subtitle: "This week", image: "figure.run", tintColor: .green, amount: "\(running) min"),
-            Activities(title: "Strength Training", subtitle: "This week", image: "dumbbell", tintColor: .blue, amount: "\(strength) min"),
-            Activities(title: "Soccer", subtitle: "This week", image: "figure.soccer", tintColor: .indigo, amount: "\(soccer) min"),
-            Activities(title: "Basketball", subtitle: "This week", image: "figure.basketball", tintColor: .green, amount: "\(basketball) min"),
-            Activities(title: "Stairstepper", subtitle: "This week", image: "figure.stairs", tintColor: .green, amount: "\(stairs) min"),
-            Activities(title: "Kickboxing", subtitle: "This week", image: "figure.kickboxing", tintColor: .green, amount: "\(kickboxing) min")
+            Activities(title: "Walking", subtitle: "This week", image: "figure.walk", tintColor: .orange, amount: "\(walking) min"),
+            Activities(title: "Cycling", subtitle: "This week", image: "figure.outdoor.cycle", tintColor: .blue, amount: "\(cycling) min"),
+            Activities(title: "Strength", subtitle: "This week", image: "dumbbell.fill", tintColor: .red, amount: "\(strength) min"),
+            Activities(title: "Yoga", subtitle: "This week", image: "figure.yoga", tintColor: .purple, amount: "\(yoga) min"),
+            Activities(title: "HIIT", subtitle: "This week", image: "figure.cross.training", tintColor: .yellow, amount: "\(hiit) min")
         ]
     }
     
@@ -210,10 +258,29 @@ class HealthManager {
                 return
             }
             
-            let workoutsArray = workouts.map( { Workout(title: $0.workoutActivityType.name, image:
-                $0.workoutActivityType.image, tintcolor: $0.workoutActivityType.color, duration:
-                "\(Int($0.duration)/60) min", date: $0.startDate.formatWorkoutDate(), calories:
-                ($0.totalEnergyBurned?.doubleValue(for: .kilocalorie()).formattedNumbersString() ?? "-") + "kcal") })
+            let workoutsArray = workouts.map { workout in
+                let appName = workout.metadata?["AppName"] as? String
+                let templateName = workout.metadata?[HKMetadataKeyWorkoutBrandName] as? String
+                
+                let isFromFitTrack = (appName == "FitTrack")
+                let title: String
+                
+                if isFromFitTrack, let template = templateName {
+                    title = "FitTrack - \(template)"
+                } else {
+                    title = workout.workoutActivityType.name
+                }
+                
+                return Workout(
+                    title: title,
+                    image: workout.workoutActivityType.image,
+                    tintcolor: workout.workoutActivityType.color,
+                    duration: "\(Int(workout.duration)/60) min",
+                    date: workout.startDate,
+                    calories: (workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()).formattedNumbersString() ?? "-") + " kcal",
+                    isFromFitTrack: isFromFitTrack
+                )
+            }
             
             completion(.success(workoutsArray))
         }

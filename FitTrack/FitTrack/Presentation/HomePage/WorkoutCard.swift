@@ -7,28 +7,38 @@
 
 import SwiftUI
 
-struct Workout: Identifiable {
-    let id: UUID = UUID() 
+struct Workout: Identifiable, Hashable {
+    let id: UUID = UUID()
     let title: String
     let image: String
     let tintcolor: Color
     let duration: String
-    let date: String
+    let date: Date
     let calories: String
+    let isFromFitTrack: Bool
 }
 
 struct WorkoutCard: View {
     @State var workout: Workout
     var body: some View {
         HStack {
-            Image(systemName: workout.image,)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 48, height: 48)
-                .foregroundStyle(workout.tintcolor)
-                .padding()
-                .background(.gray.opacity(0.1))
-                .cornerRadius(10)
+            Group {
+                if workout.isFromFitTrack {
+                    Image("icon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 77, height: 77)
+                } else {
+                    Image(systemName: workout.image)
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundStyle(workout.tintcolor)
+                        .frame(width: 46, height: 46)
+                        .padding()
+                        .background(.gray.opacity(0.1))
+                        .cornerRadius(20)
+                }
+            }
             
             VStack {
                 HStack {
@@ -40,7 +50,7 @@ struct WorkoutCard: View {
                 }
                 
                 HStack {
-                    Text(workout.date)
+                    Text(workout.date.formatWorkoutDate())
                     
                     Spacer()
                     

@@ -7,32 +7,35 @@
 
 import SwiftUI
 import Combine
+import HealthKit
 
 class HomeViewModel: ObservableObject {
     
     let healthManager = HealthManager.shared
+    private let authService = FirebaseAuthService()
+    @Published var userName: String = ""
     
     @Published var calories: Int = 0
     @Published var exercise: Int = 0
     @Published var stand: Int = 0
     
+    @Published var calorieGoal: Int = 500
+    @Published var exerciseGoal: Int = 30
+    @Published var standGoal: Int = 12
+    
     @Published var activities = [Activities]()
     @Published var workouts = [Workout]()
     
-    var mockActivities = [
-        Activities(title: "Morning Run", subtitle: "Cardio", image: "figure.run", tintColor: .green, amount: "5.2 km"),
-        Activities(title: "Deep Sleep", subtitle: "Rest", image: "moon.stars.fill", tintColor: .indigo, amount: "7h 20m"),
-        Activities(title: "Water Intake", subtitle: "Hydration", image: "drop.fill", tintColor: .blue, amount: "1.5 Liters"),
-        Activities(title: "Read Book", subtitle: "Education", image: "book.fill", tintColor: .orange, amount: "45 Pages"), ]
-    
-    
     init() {
         Task {
+            
+            fetchUserName()
             do {
                 try await healthManager.requestHealthKitAccess()
-                fetchTodayCalories()
-                fetchTodayExerciseTime()
-                fetchTodayStandHours()
+//                fetchTodayCalories()
+                fetchActivityRings()
+//                fetchTodayExerciseTime()
+//                fetchTodayStandHours()
                 fetchTodaysSteps()
                 fetchCurrentWeekActivities()
                 fetchRecentWorkouts()
@@ -41,6 +44,59 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
+    
+    var userFirstName: String {
+        userName.components(separatedBy: " ").first ?? userName
+    }
+    
+    func fetchUserName() {
+            if let user = authService.currentUser {
+                self.userName = user.name
+            } else {
+                self.userName = "Guest"
+            }
+        }
+    
+    func fetchActivityRings() {
+            healthManager.startObservingActivitySummary { result in
+                switch result {
+                case .success(let summary):
+                    DispatchQueue.main.async {
+                        let calValue = summary.activeEnergyBurned.doubleValue(for: .kilocalorie())
+                        let exValue = summary.appleExerciseTime.doubleValue(for: .minute())
+                        let standValue = summary.appleStandHours.doubleValue(for: .count())
+                        
+                        let calGoal = summary.activeEnergyBurnedGoal.doubleValue(for: .kilocalorie())
+                        let exGoal = summary.appleExerciseTimeGoal.doubleValue(for: .minute())
+                        let standGoal = summary.appleStandHoursGoal.doubleValue(for: .count())
+                        
+                        withAnimation {
+                            self.calories = Int(calValue)
+                            self.exercise = Int(exValue)
+                            self.stand = Int(standValue)
+                            
+                            self.calorieGoal = Int(calGoal)
+                            self.exerciseGoal = Int(exGoal)
+                            self.standGoal = Int(standGoal)
+                        }
+                        
+                        self.activities.removeAll(where: { $0.title == "Today calories" })
+                        
+                        let activity = Activities(
+                            title: "Today calories",
+                            subtitle: "Goal: \(Int(calGoal))",
+                            image: "flame",
+                            tintColor: .red,
+                            amount: calValue.formattedNumbersString()
+                        )
+                        self.activities.append(activity)
+                    }
+                    
+                case .failure(let error):
+                    print("Failed to fetch summary: \(error.localizedDescription)")
+                }
+            }
+        }
     
     func fetchTodayCalories() {
         healthManager.fetchTodayCaloriesBurned { result in
@@ -53,6 +109,10 @@ class HomeViewModel: ObservableObject {
                 }
 
             case .failure(let failure):
+                DispatchQueue.main.async {
+                    let activity = Activities(title: "Today calories", subtitle: "today", image: "flame", tintColor: .red, amount: "---")
+                    self.activities.append(activity)
+                }
                 print(failure.localizedDescription)
             }
         }
@@ -93,6 +153,9 @@ class HomeViewModel: ObservableObject {
                     self.activities.append(activity)
                 }
             case .failure(let failure):
+                DispatchQueue.main.async {
+                    self.activities.append(Activities(title: "Today Steps", subtitle: "Goal: 10000", image: "figure.walk", tintColor: .green, amount: "---"))
+                }
                 print(failure.localizedDescription)
             }
         }
@@ -127,26 +190,39 @@ class HomeViewModel: ObservableObject {
 
 struct HomeView: View {
     @StateObject var viewModel = HomeViewModel()
+    @State var showAllActivities = false
     
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
-                    Text("Welcome")
-                        .font(.largeTitle)
-                        .padding()
+                    HStack {
+                        Text("Welcome, \(viewModel.userFirstName)")
+                            .font(.largeTitle)
+                            .padding()
+                        
+                        Button(action: {
+                            // TODO: Nav to profile
+                        }) {
+                            Image(systemName: "person.crop.circle.fill")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .foregroundStyle(.gray.opacity(0.3))
+                        }
+                    }
+                    
                     
                     HStack {
                         Spacer()
                         
-                        VStack {
+                        VStack(alignment: .leading) {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Calories")
                                     .font(.callout)
                                     .bold()
-                                    .foregroundColor(.red)
+                                    .foregroundStyle(.red)
                                 
-                                Text("\(viewModel.calories)")
+                                Text("\(viewModel.calories) / \(viewModel.calorieGoal)")
                                     .bold()
                             }
                             .padding(.bottom)
@@ -155,9 +231,9 @@ struct HomeView: View {
                                 Text("Active")
                                     .font(.callout)
                                     .bold()
-                                    .foregroundColor(.green )
+                                    .foregroundStyle(.green )
                                 
-                                Text("\(viewModel.exercise)")
+                                Text("\(viewModel.exercise) / \(viewModel.exerciseGoal)")
                                     .bold()
                             }
                             .padding(.bottom)
@@ -166,9 +242,9 @@ struct HomeView: View {
                                 Text("Stand")
                                     .font(.callout)
                                     .bold()
-                                    .foregroundColor(.green )
+                                    .foregroundStyle(.blue )
                                 
-                                Text("\(viewModel.stand)")
+                                Text("\(viewModel.stand) / \(viewModel.standGoal)")
                                     .bold()
                             }
                         }
@@ -176,12 +252,12 @@ struct HomeView: View {
                         Spacer()
                         
                         ZStack {
-                            ProgressCircleView(progress: $viewModel.calories, goal: 600, color: .red)
+                            ProgressCircleView(progress: $viewModel.calories, goal: viewModel.calorieGoal, color: .red)
                             
-                            ProgressCircleView(progress: $viewModel.exercise, goal: 60, color: .green)
+                            ProgressCircleView(progress: $viewModel.exercise, goal: viewModel.exerciseGoal, color: .green)
                                 .padding(.all, 20)
                             
-                            ProgressCircleView(progress: $viewModel.stand, goal: 12, color: .blue)
+                            ProgressCircleView(progress: $viewModel.stand, goal: viewModel.standGoal, color: .blue)
                                 .padding(.all, 40)
                         }
                         .padding(.horizontal)
@@ -197,9 +273,11 @@ struct HomeView: View {
                         Spacer()
                         
                         Button {
-                            print("show more")
+                            withAnimation {
+                                showAllActivities.toggle()
+                            }
                         } label: {
-                            Text("Show more")
+                            Text(showAllActivities ? "Show less" : "Show more")
                                 .padding(.all, 10)
                                 .foregroundStyle(.white)
                                 .background(.blue)
@@ -210,7 +288,8 @@ struct HomeView: View {
                     
                     if !viewModel.activities.isEmpty {
                         LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                            ForEach(viewModel.activities, id: \.title) { activity in
+                            
+                            ForEach(showAllActivities ? viewModel.activities : Array(viewModel.activities.prefix(4)), id: \.title) { activity in
                                 ActivityCard(activity: activity)
                             }
                         }
@@ -224,7 +303,7 @@ struct HomeView: View {
                         Spacer()
                         
                         NavigationLink {
-                            EmptyView()
+                            MonthWorkoutsView()
                         } label: {
                             Text("Show more")
                                 .padding(.all, 10)
