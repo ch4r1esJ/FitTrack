@@ -10,8 +10,7 @@ import SwiftUI
 import Combine
 
 class MainTabBarController: UITabBarController {
-    
-    private var minimizedBarHostingController: UIHostingController<MinimizedWorkoutBarContainer>?
+    private var miniBarHC: UIHostingController<miniWorkoutBarContainer>?
     private var cancellables = Set<AnyCancellable>()
     private let workoutManager = WorkoutManager.shared
     
@@ -30,7 +29,6 @@ class MainTabBarController: UITabBarController {
     }
     
     private func setupWorkoutObserver() {
-        // Observe workout state
         workoutManager.statePublisher
             .sink { [weak self] state in
                 if state == .minimized {
@@ -43,9 +41,9 @@ class MainTabBarController: UITabBarController {
     }
     
     private func showMinimizedBar() {
-        guard minimizedBarHostingController == nil else { return }
+        guard miniBarHC == nil else { return }
         
-        let containerView = MinimizedWorkoutBarContainer(
+        let containerView = miniWorkoutBarContainer(
             onResume: { [weak self] in
                 self?.onResumeWorkout?()
             },
@@ -69,14 +67,14 @@ class MainTabBarController: UITabBarController {
         ])
         
         hostingController.didMove(toParent: self)
-        self.minimizedBarHostingController = hostingController
+        self.miniBarHC = hostingController
     }
     
     private func hideMinimizedBar() {
-        minimizedBarHostingController?.willMove(toParent: nil)
-        minimizedBarHostingController?.view.removeFromSuperview()
-        minimizedBarHostingController?.removeFromParent()
-        minimizedBarHostingController = nil
+        miniBarHC?.willMove(toParent: nil)
+        miniBarHC?.view.removeFromSuperview()
+        miniBarHC?.removeFromParent()
+        miniBarHC = nil
     }
     
     private func showDiscardAlert() {
@@ -95,12 +93,12 @@ class MainTabBarController: UITabBarController {
     }
 }
 
-struct MinimizedWorkoutBarContainer: View {
+struct miniWorkoutBarContainer: View {
     let onResume: () -> Void
     let onDiscard: () -> Void
     
     var body: some View {
-        MinimizedWorkoutBar(
+        MiniWorkoutTabBar(
             onResume: onResume,
             onDiscard: onDiscard
         )

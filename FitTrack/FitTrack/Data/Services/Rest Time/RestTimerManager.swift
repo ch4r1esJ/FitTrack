@@ -137,7 +137,7 @@ class RestTimerManager: ObservableObject {
         totalSeconds = 0
         endTime = nil
     }
-    
+
     private func playSound() {
         AudioServicesPlaySystemSound(1304)
     }

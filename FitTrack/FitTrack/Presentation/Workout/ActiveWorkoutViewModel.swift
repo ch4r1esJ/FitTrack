@@ -74,7 +74,6 @@ class ActiveWorkoutViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    
     func startWorkout(from template: WorkoutTemplate) {
         workoutService.startWorkout(template: template)
         

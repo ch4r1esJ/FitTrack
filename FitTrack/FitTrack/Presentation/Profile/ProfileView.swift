@@ -9,11 +9,17 @@ import SwiftUI
 
 struct ProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel
+    @AppStorage("profileName") var profileName: String?
+    @AppStorage("profileImage") var profileImage: String?
+    
+    @State private var isEditingImage = false
+    @State private var selectedImage: String?
+    @State private var images = ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5", "avatar6", "avatar7", "avatar8", "avatar9", "avatar10", "avatar11", "avatar12", "avatar13", "avatar14", "avatar15", "avatar16", "avatar17", "avatar18", "avatar19", "avatar20", "avatar21", "avatar22"]
     
     var body: some View {
         VStack {
             HStack(spacing: 16) {
-                Image("avatar1")
+                Image(profileImage ?? "avatar1")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
@@ -22,15 +28,68 @@ struct ProfileView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .foregroundColor(.gray.opacity(0.25))
                     )
+                    .onTapGesture {
+                        isEditingImage = true
+                    }
                 
                 VStack(alignment: .leading) {
                     Text("Good morning,")
                         .font(.largeTitle)
                         .foregroundColor(.gray)
                     
-                    Text("Name")
+                    Text(profileName ?? "Name")
                         .font(.title)
                 }
+            }
+            
+            if isEditingImage {
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(images, id: \.self) { image in
+                            Button {
+                                withAnimation {
+                                    selectedImage = image
+                                }
+                            } label: {
+                                VStack {
+                                    Image(image)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 100, height: 100)
+                                    
+                                    if selectedImage == image {
+                                        Circle()
+                                            .frame(width: 16, height: 16)
+                                            .foregroundStyle(.primary)
+                                    }
+                                }
+                                .padding()
+                            }
+                            .shadow(radius: selectedImage == image ? 5 : 0)
+                        }
+                    }
+                }
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.gray.opacity(0.15))
+                )
+                
+                Button {
+                    withAnimation {
+                        profileImage = selectedImage
+                        isEditingImage = false
+                    }
+                } label: {
+                    Text("Done")
+                        .padding()
+                        .frame(maxWidth: 200)
+                        .foregroundColor(.white)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(.black)
+                        )
+                }
+                .padding(.bottom)
             }
             
             VStack {
@@ -39,7 +98,7 @@ struct ProfileView: View {
                 }
                 
                 FitnessProfileButton(title: "Edit image", image: "square.and.pencil") {
-                    print("image")
+                    isEditingImage = true
                 }
             }
             .background {
@@ -82,6 +141,9 @@ struct ProfileView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment:
                 .topLeading)
+        .onAppear {
+            selectedImage = profileImage
+        }
     }
 }
 

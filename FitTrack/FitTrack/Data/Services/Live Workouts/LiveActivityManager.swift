@@ -26,7 +26,7 @@ class LiveActivityManager {
         targetWeight: String,
         targetReps: String
     ) async {
-           
+        
         let attributes = WorkoutActivityAttributes(workoutId: workoutId)
         
         var localImagePath: String? = nil
@@ -47,7 +47,7 @@ class LiveActivityManager {
             restTimeRemaining: 0,
             isFinished: false
         )
-                
+        
         do {
             let staleDate = Date().addingTimeInterval(60)
             

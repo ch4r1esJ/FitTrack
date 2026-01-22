@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MinimizedWorkoutBar: View {
+struct MiniWorkoutTabBar: View {
     let onResume: () -> Void
     let onDiscard: () -> Void
     
