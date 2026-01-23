@@ -183,7 +183,6 @@ class TemplatesCoordinator: Coordinator {
             sheet.prefersGrabberVisible = true
         }
         
-        // Present from the appropriate nav controller
         if let workoutNav = workoutNavController {
             workoutNav.present(hostingController, animated: true)
         } else if let templateNav = templateNavController {

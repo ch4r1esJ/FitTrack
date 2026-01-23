@@ -9,6 +9,7 @@
 import Combine
 import SwiftUI
 import Foundation
+import FirebaseAuth
 
 class ProfileViewModel: ObservableObject {
     @Published var isEditingName = false
@@ -30,6 +31,18 @@ class ProfileViewModel: ObservableObject {
 
     init(authService: AuthServiceProtocol) {
         self.authService = authService
+        
+        if let firebaseName = authService.currentUser?.name, !firebaseName.isEmpty {
+            self.profileName = firebaseName
+            UserDefaults.standard.setValue(firebaseName, forKey: "profileName")
+        } else {
+            self.profileName = UserDefaults.standard.string(forKey: "profileName")
+        }
+    }
+    
+    var profileFirstName: String {
+        guard let name = profileName else { return "User" }
+        return name.components(separatedBy: " ").first ?? name
     }
     
     func presentEditName() {
@@ -48,9 +61,27 @@ class ProfileViewModel: ObservableObject {
     }
     
     func setNewName() {
-        profileName = currentName
-        UserDefaults.standard.setValue(currentName, forKey: "profileName")
-        self.dismissEdit()
+        guard !currentName.isEmpty else { return }
+        
+        Task { @MainActor in
+            do {
+                guard let user = Auth.auth().currentUser else {
+                    errorMessage = "No user logged in"
+                    return
+                }
+                
+                let changeRequest = user.createProfileChangeRequest()
+                changeRequest.displayName = currentName
+                try await changeRequest.commitChanges()
+                
+                UserDefaults.standard.setValue(currentName, forKey: "profileName")
+                profileName = currentName
+                dismissEdit()
+                
+            } catch {
+                errorMessage = "Failed to update name: \(error.localizedDescription)"
+            }
+        }
     }
     
     func didSelectNewImage(name: String) {

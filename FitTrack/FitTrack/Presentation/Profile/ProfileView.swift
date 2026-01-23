@@ -29,12 +29,12 @@ struct ProfileView: View {
                     }
                 
                 VStack(alignment: .leading) {
-                    Text("Good morning,")
+                    Text("Welcome, home")
                         .font(.largeTitle)
                         .foregroundColor(.gray)
                         .minimumScaleFactor(0.5)
                     
-                    Text(viewModel.profileName ?? "Name")
+                    Text(viewModel.profileFirstName)
                         .font(.title)
                 }
             }

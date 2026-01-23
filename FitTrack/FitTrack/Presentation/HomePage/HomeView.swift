@@ -13,7 +13,9 @@ class HomeViewModel: ObservableObject {
     
     let healthManager = HealthManager.shared
     private let authService = FirebaseAuthService()
+    private var cancellables = Set<AnyCancellable>()
     @Published var userName: String = ""
+    @Published var profileImage: String = "avatar1"
     
     @Published var calories: Int = 0
     @Published var exercise: Int = 0
@@ -28,8 +30,8 @@ class HomeViewModel: ObservableObject {
     
     init() {
         Task {
-            
             fetchUserName()
+            fetchProfileImage()
             do {
                 try await healthManager.requestHealthKitAccess()
 //                fetchTodayCalories()
@@ -42,6 +44,28 @@ class HomeViewModel: ObservableObject {
             } catch {
                 print(error.localizedDescription)
             }
+        }
+    }
+    
+    func fetchProfileImage() {
+        if let savedImage = UserDefaults.standard.string(forKey: "profileImage") {
+            self.profileImage = savedImage
+        } else {
+            self.profileImage = "avatar1"
+        }
+    }
+    
+    func checkForImageUpdate() {
+        if let updatedImage = UserDefaults.standard.string(forKey: "profileImage"),
+           updatedImage != profileImage {
+            self.profileImage = updatedImage
+        }
+    }
+    
+    func checkForNameUpdate() {
+        if let updatedName = UserDefaults.standard.string(forKey: "profileName"),
+           updatedName != userName {
+            self.userName = updatedName
         }
     }
     
@@ -190,6 +214,7 @@ class HomeViewModel: ObservableObject {
 
 struct HomeView: View {
     @StateObject var viewModel = HomeViewModel()
+    var onProfileTapped: (() -> Void)?
     @State var showAllActivities = false
     
     var body: some View {
@@ -202,13 +227,19 @@ struct HomeView: View {
                             .padding()
                         
                         Button(action: {
-                            // TODO: Nav to profile
+                            onProfileTapped?()
                         }) {
-                            Image(systemName: "person.crop.circle.fill")
+                            Image(viewModel.profileImage)
                                 .resizable()
+                                .scaledToFit()
                                 .frame(width: 50, height: 50)
-                                .foregroundStyle(.gray.opacity(0.3))
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.gray.opacity(0.3), lineWidth: 2)
+                                )
                         }
+                        .padding(.trailing)
                     }
                     
                     
@@ -325,9 +356,9 @@ struct HomeView: View {
                 }
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)) { _ in
+            viewModel.checkForNameUpdate()
+            viewModel.checkForImageUpdate()
+        }
     }
-}
-
-#Preview {
-    HomeView()
 }
