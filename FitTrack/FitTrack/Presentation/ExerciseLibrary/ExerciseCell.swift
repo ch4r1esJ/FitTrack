@@ -10,6 +10,8 @@ import UIKit
 class ExerciseCell: UICollectionViewCell {
     // MARK: - Properties
     
+    var onDetailsTapped: (() -> Void)?
+    
     private let exerciseImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -101,7 +103,7 @@ class ExerciseCell: UICollectionViewCell {
     // MARK: - Methods
     
     @objc private func didTapCheck() {
-        print("check")
+        onDetailsTapped?()
     }
     
     private func setupView() {

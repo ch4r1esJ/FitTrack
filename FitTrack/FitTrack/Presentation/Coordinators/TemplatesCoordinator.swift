@@ -89,6 +89,10 @@ class TemplatesCoordinator: Coordinator {
             self?.templateNavController?.popViewController(animated: true)
             self?.templateNavController?.setNavigationBarHidden(false, animated: true)
         }
+        
+        exerciseVC.onShowExerciseDetails = { [weak self] exercise in
+                    self?.showExerciseDetails(exercise)
+                }
          
         templateNavController?.pushViewController(exerciseVC, animated: true)
     }
@@ -137,6 +141,10 @@ class TemplatesCoordinator: Coordinator {
             self?.workoutNavController?.popViewController(animated: true)
         }
         
+        exerciseVC.onShowExerciseDetails = { [weak self] exercise in
+            self?.showExerciseDetails(exercise)
+        }
+        
         workoutNavController?.pushViewController(exerciseVC, animated: true)
     }
     
@@ -163,5 +171,23 @@ class TemplatesCoordinator: Coordinator {
     private func dismissWorkout() {
         workoutNavController?.dismiss(animated: true)
         workoutNavController = nil
+    }
+    
+    private func showExerciseDetails(_ exercise: Exercise) {
+        let detailView = ExerciseDetailView(exercise: exercise)
+        let hostingController = UIHostingController(rootView: detailView)
+        hostingController.modalPresentationStyle = .pageSheet
+        
+        if let sheet = hostingController.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+        }
+        
+        // Present from the appropriate nav controller
+        if let workoutNav = workoutNavController {
+            workoutNav.present(hostingController, animated: true)
+        } else if let templateNav = templateNavController {
+            templateNav.present(hostingController, animated: true)
+        }
     }
 }

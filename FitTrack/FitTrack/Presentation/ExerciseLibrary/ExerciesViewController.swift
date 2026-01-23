@@ -16,6 +16,7 @@ class ExerciesViewController: UIViewController {
     lazy var filterView = FilterView(viewModel: viewModel)
     var onAddExerciseTapped: (() -> Void)?
     var didSelectExercises: (([Exercise]) -> Void)?
+    var onShowExerciseDetails: ((Exercise) -> Void)?
     
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -288,6 +289,11 @@ extension ExerciesViewController: UICollectionViewDataSource, UICollectionViewDe
         let isSelected = viewModel.isSelected(exercise)
         
         cell.configure(with: exercise, isSelected: isSelected)
+        
+        cell.onDetailsTapped = { [weak self] in
+            self?.onShowExerciseDetails?(exercise)
+        }
+        
         return cell
     }
     
