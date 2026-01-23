@@ -131,20 +131,23 @@ struct ProfileView: View {
             
             VStack {
                 FitnessProfileItemButton(title: "Contact Us", image: "envelope") {
-                    print("name")
+                    viewModel.presentEmailApp()
                 }
                 
-                FitnessProfileItemButton(title: "Privacy Policy", image: "doc") {
-                    print("image")
-                }
-                
-                FitnessProfileItemButton(title: "Terms of Service", image: "doc") {
-                    print("image")
+                Link(destination: URL(string: "https://github.com/ch4r1esJ/FitTrack")!) {
+                    HStack {
+                        Image(systemName: "chevron.left.forwardslash.chevron.right")
+                        
+                        Text("Check Out Github")
+                    }
+                    .foregroundColor(.primary)
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             .background {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(.gray.opacity(0.15))
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.gray.opacity(0.15))
             }
             
             if let errorMessage = viewModel.errorMessage {
@@ -164,6 +167,11 @@ struct ProfileView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment:
                 .topLeading)
+        .alert("Oops", isPresented: $viewModel.showAlert) {
+            Button("Ok", role: .cancel) { }
+        } message: {
+            Text("We were unable to open your mail application. Please, make sure you have one installed.")
+        }
     }
 }
 

@@ -382,6 +382,8 @@
 				DEVELOPMENT_TEAM = KDKW63YG86;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FitTrack/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "FitTrack needs access to read your workout data from Apple Health to provide personalized insights.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "FitTrack needs permission to save your workout sessions to Apple Health so you can track your fitness progress.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -418,6 +420,8 @@
 				DEVELOPMENT_TEAM = KDKW63YG86;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FitTrack/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "FitTrack needs access to read your workout data from Apple Health to provide personalized insights.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "FitTrack needs permission to save your workout sessions to Apple Health so you can track your fitness progress.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

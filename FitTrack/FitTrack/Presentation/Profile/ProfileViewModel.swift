@@ -7,6 +7,7 @@
 
 
 import Combine
+import SwiftUI
 import Foundation
 
 class ProfileViewModel: ObservableObject {
@@ -17,6 +18,7 @@ class ProfileViewModel: ObservableObject {
     @Published var isEditingImage = false
     @Published var profileImage: String? = UserDefaults.standard.string(forKey: "profileImage")
     @Published var selectedImage: String? = UserDefaults.standard.string(forKey: "profileImage")
+    @Published var showAlert = false
     
     var images = ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5", "avatar6", "avatar7", "avatar8", "avatar9", "avatar10", "avatar11", "avatar12", "avatar13", "avatar14", "avatar15", "avatar16", "avatar17", "avatar18", "avatar19", "avatar20", "avatar21", "avatar22"]
     @Published var errorMessage: String?
@@ -59,6 +61,29 @@ class ProfileViewModel: ObservableObject {
         profileImage = selectedImage
         UserDefaults.standard.setValue(selectedImage, forKey: "profileImage")
         self.dismissEdit()
+    }
+    
+    func presentEmailApp() {
+        let emailSubject = "FitTrack - Contact Us"
+        let emailRecepient = "charles.janjgava@gmail.com"
+        
+        let encodedSubject = emailSubject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let encodedRecepient = emailRecepient.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        let urlString = "mailto:\(encodedRecepient)?subject=\(encodedSubject)"
+        
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        } else {
+            DispatchQueue.main.async { [weak self] in 
+                guard let self = self else { return }
+                self.showAlert = true
+            }
+        }
     }
     
     func logoutTapped() {
