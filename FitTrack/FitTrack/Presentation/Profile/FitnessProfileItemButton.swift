@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FitnessProfileButton: View {
+struct FitnessProfileItemButton: View {
     @State var title: String
     @State var image: String
     @State var action: (() -> Void)
