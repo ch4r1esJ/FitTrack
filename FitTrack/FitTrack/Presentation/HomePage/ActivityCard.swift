@@ -20,7 +20,7 @@ struct ActivityCard: View {
     
     var body: some View {
         ZStack {
-            Color(uiColor: .systemGray6)
+            Color(uiColor: .systemGray5)
                 .cornerRadius(15)
             
             VStack {

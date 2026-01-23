@@ -34,10 +34,10 @@ class HomeViewModel: ObservableObject {
             fetchProfileImage()
             do {
                 try await healthManager.requestHealthKitAccess()
-//                fetchTodayCalories()
+                //                fetchTodayCalories()
                 fetchActivityRings()
-//                fetchTodayExerciseTime()
-//                fetchTodayStandHours()
+                //                fetchTodayExerciseTime()
+                //                fetchTodayStandHours()
                 fetchTodaysSteps()
                 fetchCurrentWeekActivities()
                 fetchRecentWorkouts()
@@ -74,53 +74,53 @@ class HomeViewModel: ObservableObject {
     }
     
     func fetchUserName() {
-            if let user = authService.currentUser {
-                self.userName = user.name
-            } else {
-                self.userName = "Guest"
-            }
+        if let user = authService.currentUser {
+            self.userName = user.name
+        } else {
+            self.userName = "Guest"
         }
+    }
     
     func fetchActivityRings() {
-            healthManager.startObservingActivitySummary { result in
-                switch result {
-                case .success(let summary):
-                    DispatchQueue.main.async {
-                        let calValue = summary.activeEnergyBurned.doubleValue(for: .kilocalorie())
-                        let exValue = summary.appleExerciseTime.doubleValue(for: .minute())
-                        let standValue = summary.appleStandHours.doubleValue(for: .count())
+        healthManager.startObservingActivitySummary { result in
+            switch result {
+            case .success(let summary):
+                DispatchQueue.main.async {
+                    let calValue = summary.activeEnergyBurned.doubleValue(for: .kilocalorie())
+                    let exValue = summary.appleExerciseTime.doubleValue(for: .minute())
+                    let standValue = summary.appleStandHours.doubleValue(for: .count())
+                    
+                    let calGoal = summary.activeEnergyBurnedGoal.doubleValue(for: .kilocalorie())
+                    let exGoal = summary.appleExerciseTimeGoal.doubleValue(for: .minute())
+                    let standGoal = summary.appleStandHoursGoal.doubleValue(for: .count())
+                    
+                    withAnimation {
+                        self.calories = Int(calValue)
+                        self.exercise = Int(exValue)
+                        self.stand = Int(standValue)
                         
-                        let calGoal = summary.activeEnergyBurnedGoal.doubleValue(for: .kilocalorie())
-                        let exGoal = summary.appleExerciseTimeGoal.doubleValue(for: .minute())
-                        let standGoal = summary.appleStandHoursGoal.doubleValue(for: .count())
-                        
-                        withAnimation {
-                            self.calories = Int(calValue)
-                            self.exercise = Int(exValue)
-                            self.stand = Int(standValue)
-                            
-                            self.calorieGoal = Int(calGoal)
-                            self.exerciseGoal = Int(exGoal)
-                            self.standGoal = Int(standGoal)
-                        }
-                        
-                        self.activities.removeAll(where: { $0.title == "Today calories" })
-                        
-                        let activity = Activities(
-                            title: "Today calories",
-                            subtitle: "Goal: \(Int(calGoal))",
-                            image: "flame",
-                            tintColor: .red,
-                            amount: calValue.formattedNumbersString()
-                        )
-                        self.activities.append(activity)
+                        self.calorieGoal = Int(calGoal)
+                        self.exerciseGoal = Int(exGoal)
+                        self.standGoal = Int(standGoal)
                     }
                     
-                case .failure(let error):
-                    print("Failed to fetch summary: \(error.localizedDescription)")
+                    self.activities.removeAll(where: { $0.title == "Today calories" })
+                    
+                    let activity = Activities(
+                        title: "Today calories",
+                        subtitle: "Goal: \(Int(calGoal))",
+                        image: "flame",
+                        tintColor: .red,
+                        amount: calValue.formattedNumbersString()
+                    )
+                    self.activities.append(activity)
                 }
+                
+            case .failure(let error):
+                print("Failed to fetch summary: \(error.localizedDescription)")
             }
         }
+    }
     
     func fetchTodayCalories() {
         healthManager.fetchTodayCaloriesBurned { result in
@@ -131,7 +131,7 @@ class HomeViewModel: ObservableObject {
                     let activity = Activities(title: "Today calories", subtitle: "today", image: "flame", tintColor: .red, amount: calories.formattedNumbersString())
                     self.activities.append(activity)
                 }
-
+                
             case .failure(let failure):
                 DispatchQueue.main.async {
                     let activity = Activities(title: "Today calories", subtitle: "today", image: "flame", tintColor: .red, amount: "---")
@@ -149,7 +149,7 @@ class HomeViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.exercise = Int(exercise)
                 }
-
+                
             case .failure(let failure):
                 print(failure.localizedDescription)
             }
@@ -216,143 +216,148 @@ struct HomeView: View {
     @StateObject var viewModel = HomeViewModel()
     var onProfileTapped: (() -> Void)?
     @State var showAllActivities = false
+    let backgroundColor = Color(uiColor: .systemGray6)
     
     var body: some View {
         NavigationStack {
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text("Welcome, \(viewModel.userFirstName)")
-                            .font(.largeTitle)
-                            .padding()
-                        
-                        Button(action: {
-                            onProfileTapped?()
-                        }) {
-                            Image(viewModel.profileImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
-                                .clipShape(Circle())
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.gray.opacity(0.3), lineWidth: 2)
-                                )
-                        }
-                        .padding(.trailing)
-                    }
-                    
-                    
-                    HStack {
-                        Spacer()
-                        
-                        VStack(alignment: .leading) {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Calories")
-                                    .font(.callout)
-                                    .bold()
-                                    .foregroundStyle(.red)
-                                
-                                Text("\(viewModel.calories) / \(viewModel.calorieGoal)")
-                                    .bold()
-                            }
-                            .padding(.bottom)
+            ZStack {
+                backgroundColor
+                    .ignoresSafeArea()
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text("Welcome, \(viewModel.userFirstName)")
+                                .font(.largeTitle)
+                                .padding()
                             
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Active")
-                                    .font(.callout)
-                                    .bold()
-                                    .foregroundStyle(.green )
-                                
-                                Text("\(viewModel.exercise) / \(viewModel.exerciseGoal)")
-                                    .bold()
+                            Button(action: {
+                                onProfileTapped?()
+                            }) {
+                                Image(viewModel.profileImage)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 50, height: 50)
+                                    .clipShape(Circle())
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.gray.opacity(0.3), lineWidth: 2)
+                                    )
                             }
-                            .padding(.bottom)
-                            
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Stand")
-                                    .font(.callout)
-                                    .bold()
-                                    .foregroundStyle(.blue )
-                                
-                                Text("\(viewModel.stand) / \(viewModel.standGoal)")
-                                    .bold()
-                            }
+                            .padding(.trailing)
                         }
                         
-                        Spacer()
                         
-                        ZStack {
-                            ProgressCircleView(progress: $viewModel.calories, goal: viewModel.calorieGoal, color: .red)
+                        HStack {
+                            Spacer()
                             
-                            ProgressCircleView(progress: $viewModel.exercise, goal: viewModel.exerciseGoal, color: .green)
-                                .padding(.all, 20)
+                            VStack(alignment: .leading) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Calories")
+                                        .font(.callout)
+                                        .bold()
+                                        .foregroundStyle(.red)
+                                    
+                                    Text("\(viewModel.calories) / \(viewModel.calorieGoal)")
+                                        .bold()
+                                }
+                                .padding(.bottom)
+                                
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Active")
+                                        .font(.callout)
+                                        .bold()
+                                        .foregroundStyle(.green )
+                                    
+                                    Text("\(viewModel.exercise) / \(viewModel.exerciseGoal)")
+                                        .bold()
+                                }
+                                .padding(.bottom)
+                                
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Stand")
+                                        .font(.callout)
+                                        .bold()
+                                        .foregroundStyle(.blue )
+                                    
+                                    Text("\(viewModel.stand) / \(viewModel.standGoal)")
+                                        .bold()
+                                }
+                            }
                             
-                            ProgressCircleView(progress: $viewModel.stand, goal: viewModel.standGoal, color: .blue)
-                                .padding(.all, 40)
+                            Spacer()
+                            
+                            ZStack {
+                                ProgressCircleView(progress: $viewModel.calories, goal: viewModel.calorieGoal, color: .red)
+                                
+                                ProgressCircleView(progress: $viewModel.exercise, goal: viewModel.exerciseGoal, color: .green)
+                                    .padding(.all, 20)
+                                
+                                ProgressCircleView(progress: $viewModel.stand, goal: viewModel.standGoal, color: .blue)
+                                    .padding(.all, 40)
+                            }
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                        }
+                        .padding()
+                        
+                        HStack {
+                            Text("Fitness Activity")
+                                .font(.title2)
+                            
+                            Spacer()
+                            
+                            Button {
+                                withAnimation {
+                                    showAllActivities.toggle()
+                                }
+                            } label: {
+                                Text(showAllActivities ? "Show less" : "Show more")
+                                    .padding(.all, 10)
+                                    .foregroundStyle(.white)
+                                    .background(.blue)
+                                    .cornerRadius(20)
+                            }
                         }
                         .padding(.horizontal)
                         
-                        Spacer()
-                    }
-                    .padding()
-                    
-                    HStack {
-                        Text("Fitness Activity")
-                            .font(.title2)
-                        
-                        Spacer()
-                        
-                        Button {
-                            withAnimation {
-                                showAllActivities.toggle()
+                        if !viewModel.activities.isEmpty {
+                            LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
+                                
+                                ForEach(showAllActivities ? viewModel.activities : Array(viewModel.activities.prefix(4)), id: \.title) { activity in
+                                    ActivityCard(activity: activity)
+                                }
                             }
-                        } label: {
-                            Text(showAllActivities ? "Show less" : "Show more")
-                                .padding(.all, 10)
-                                .foregroundStyle(.white)
-                                .background(.blue)
-                                .cornerRadius(20)
+                            .padding(.horizontal)
                         }
-                    }
-                    .padding(.horizontal)
-                    
-                    if !viewModel.activities.isEmpty {
-                        LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
+                        
+                        HStack {
+                            Text("Recent Workouts")
+                                .font(.title2)
                             
-                            ForEach(showAllActivities ? viewModel.activities : Array(viewModel.activities.prefix(4)), id: \.title) { activity in
-                                ActivityCard(activity: activity)
+                            Spacer()
+                            
+                            NavigationLink {
+                                MonthWorkoutsView()
+                            } label: {
+                                Text("Show more")
+                                    .padding(.all, 10)
+                                    .foregroundStyle(.white)
+                                    .background(.blue)
+                                    .cornerRadius(20)
                             }
                         }
                         .padding(.horizontal)
-                    }
-                    
-                    HStack {
-                        Text("Recent Workouts")
-                            .font(.title2)
+                        .padding(.top)
                         
-                        Spacer()
+                        LazyVStack {
+                            ForEach(viewModel.workouts) { workout in
+                                WorkoutCard(workout: workout)
+                            }
+                        }
+                        .padding(.bottom)
                         
-                        NavigationLink {
-                            MonthWorkoutsView()
-                        } label: {
-                            Text("Show more")
-                                .padding(.all, 10)
-                                .foregroundStyle(.white)
-                                .background(.blue)
-                                .cornerRadius(20)
-                        }
                     }
-                    .padding(.horizontal)
-                    .padding(.top)
-                    
-                    LazyVStack {
-                        ForEach(viewModel.workouts) { workout in
-                            WorkoutCard(workout: workout)
-                        }
-                    }
-                    .padding(.bottom)
-                    
                 }
             }
         }
