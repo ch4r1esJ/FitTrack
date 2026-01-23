@@ -26,6 +26,9 @@ class WorkoutManager: WorkoutSessionProtocol {
     var currentWorkoutPublisher: AnyPublisher<WorkoutTemplate?, Never> { currentWorkoutSubject.eraseToAnyPublisher() }
     var timerPublisher: AnyPublisher<TimeInterval, Never> { elapsedTimeSubject.eraseToAnyPublisher() }
     
+    var currentState: WorkoutState { stateSubject.value }
+    var currentWorkout: WorkoutTemplate? { currentWorkoutSubject.value }
+    
     init(
         workoutHistoryService: WorkoutHistoryServiceProtocol = FirebaseWorkoutHistoryService(),
         healthKitService: HealthKitServiceProtocol = HealthKitService()
@@ -64,6 +67,8 @@ class WorkoutManager: WorkoutSessionProtocol {
     
     func minimizeWorkout() {
         stateSubject.send(.minimized)
+        timer?.invalidate()
+        timer = nil
         persistWorkout()
     }
     
@@ -101,6 +106,10 @@ class WorkoutManager: WorkoutSessionProtocol {
         startDate = nil
         
         WorkoutPersistence.clearWorkout()
+        
+        if #available(iOS 16.1, *) {
+            LiveActivityManager.shared.endWorkoutActivity()
+        }
     }
     
     func updateWorkout(_ workout: WorkoutTemplate) {

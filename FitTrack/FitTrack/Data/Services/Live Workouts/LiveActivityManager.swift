@@ -14,7 +14,15 @@ class LiveActivityManager {
     
     private var currentActivity: Activity<WorkoutActivityAttributes>?
     
-    private init() {}
+    private init() {
+        restoreExistingActivity()
+    }
+    
+    private func restoreExistingActivity() {
+        if let existingActivity = Activity<WorkoutActivityAttributes>.activities.first {
+            currentActivity = existingActivity
+        }
+    }
     
     func startWorkoutActivity(
         workoutId: String,
@@ -26,7 +34,7 @@ class LiveActivityManager {
         targetWeight: String,
         targetReps: String
     ) async {
-        
+        await endAllActivities()
         let attributes = WorkoutActivityAttributes(workoutId: workoutId)
         
         var localImagePath: String? = nil
@@ -160,4 +168,17 @@ class LiveActivityManager {
             currentActivity = nil
         }
     }
+    
+    func endAllActivities() async {
+           for activity in Activity<WorkoutActivityAttributes>.activities {
+               await activity.end(
+                   ActivityContent(
+                       state: activity.content.state,
+                       staleDate: nil
+                   ),
+                   dismissalPolicy: .immediate
+               )
+           }
+           currentActivity = nil
+       }
 }

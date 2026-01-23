@@ -33,8 +33,10 @@ class ActiveWorkoutViewModel: ObservableObject {
         workoutService.timerPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] time in
-                let formatted = self?.formatTime(time) ?? "00:00"
-                self?.elapsedTime = formatted
+                guard let self = self else { return }
+                
+                let formatted = self.formatTime(time)
+                self.elapsedTime = formatted
                 
                 if #available(iOS 16.1, *) {
                     LiveActivityManager.shared.updateWorkoutActivity(elapsedTime: formatted)
@@ -75,6 +77,8 @@ class ActiveWorkoutViewModel: ObservableObject {
     }
     
     func startWorkout(from template: WorkoutTemplate) {
+        restTimer.skip()
+        
         workoutService.startWorkout(template: template)
         
         BackgroundAudioManager.shared.startBackgroundAudio()
@@ -86,20 +90,24 @@ class ActiveWorkoutViewModel: ObservableObject {
             }
             
             if #available(iOS 16.1, *) {
-                guard let firstExercise = template.exercises.first,
-                      let firstSet = firstExercise.sets.first else {
-                    return
-                }
+                let firstExercise = template.exercises.first
+                let firstSet = firstExercise?.sets.first
+                
+                let exerciseName = firstExercise?.exerciseName ?? "No Exercise"
+                let exerciseImageUrl = firstExercise?.imageUrl
+                let totalSets = firstExercise?.sets.count ?? 0
+                let targetWeight = formatWeight(firstSet?.targetWeightKg) 
+                let targetReps = formatReps(firstSet?.targetReps)
                 
                 await LiveActivityManager.shared.startWorkoutActivity(
                     workoutId: template.id,
                     workoutName: template.name,
-                    exerciseName: firstExercise.exerciseName,
-                    exerciseImageUrl: firstExercise.imageUrl,
+                    exerciseName: exerciseName,
+                    exerciseImageUrl: exerciseImageUrl,
                     currentSet: 1,
-                    totalSets: firstExercise.sets.count,
-                    targetWeight: formatWeight(firstSet.targetWeightKg),
-                    targetReps: formatReps(firstSet.targetReps)
+                    totalSets: totalSets,
+                    targetWeight: targetWeight,
+                    targetReps: targetReps
                 )
             }
             
@@ -118,6 +126,8 @@ class ActiveWorkoutViewModel: ObservableObject {
     }
     
     func finishWorkout() {
+        restTimer.skip()
+        
         workoutService.finishWorkout()
         
         BackgroundAudioManager.shared.stopBackgroundAudio()
@@ -131,12 +141,45 @@ class ActiveWorkoutViewModel: ObservableObject {
     
     func minimizeWorkout() {
         workoutService.minimizeWorkout()
+        restTimer.pause()
         onMinimize?()
     }
     
     func resumeTimerIfNeeded() {
         workoutService.resumeWorkout()
+        restTimer.resumeIfNeeded()
+        
+        if #available(iOS 16.1, *) {
+            Task {
+                await syncLiveActivityWithCurrentState()
+            }
+        }
     }
+    
+    @available(iOS 16.1, *)
+        private func syncLiveActivityWithCurrentState() async {
+            for exercise in currentWorkout.exercises {
+                for set in exercise.sets {
+                    if set.isCompleted != true {
+                        await LiveActivityManager.shared.updateWorkoutActivityAsync(
+                            elapsedTime: elapsedTime,
+                            exerciseName: exercise.exerciseName,
+                            exerciseImageUrl: exercise.imageUrl,
+                            currentSet: set.setNumber,
+                            totalSets: exercise.sets.count,
+                            targetWeight: formatWeight(set.targetWeightKg),
+                            targetReps: formatReps(set.targetReps),
+                            isResting: restTimer.isActive,
+                            restTimeRemaining: restTimer.remainingSeconds,
+                            isFinished: false
+                        )
+                        return
+                    }
+                }
+            }
+            
+            await LiveActivityManager.shared.updateWorkoutActivityAsync(isFinished: true)
+        }
     
     func completeCurrentSet() {
         

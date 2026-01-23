@@ -65,6 +65,13 @@ class RestTimerManager: ObservableObject {
         RestTimerPersistence.clearRestTimer()
     }
     
+    func pause() {
+        timer?.invalidate()
+        timer = nil
+        notificationManager.cancelRestTimerNotification()
+        persistTimer()
+    }
+    
     func resumeIfNeeded() {
         guard isActive, let endTime = endTime else { return }
         
@@ -74,6 +81,7 @@ class RestTimerManager: ObservableObject {
             finish()
         } else {
             remainingSeconds = Int(ceil(timeRemaining))
+            notificationManager.scheduleRestTimerNotification(seconds: remainingSeconds) 
             startTicking()
         }
     }

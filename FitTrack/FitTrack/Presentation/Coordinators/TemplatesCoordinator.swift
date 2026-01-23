@@ -98,6 +98,12 @@ class TemplatesCoordinator: Coordinator {
     }
     
     private func startWorkout(with template: WorkoutTemplate) {
+        let currentState = WorkoutManager.shared.currentState
+        if currentState != .inactive {
+            showDiscardWorkoutAlert(for: template)
+            return
+        }
+        
         let viewModel = diContainer.makeActiveWorkoutViewModel()
         viewModel.startWorkout(from: template)
         
@@ -118,6 +124,44 @@ class TemplatesCoordinator: Coordinator {
         self.workoutNavController = navController
         navigationController.present(navController, animated: true)
     }
+    
+    private func showDiscardWorkoutAlert(for template: WorkoutTemplate) {
+        let alert = UIAlertController(
+            title: "Active Workout",
+            message: "You have an active workout. Do you want to discard it and start a new one?",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Discard & Start New", style: .destructive) { [weak self] _ in
+            WorkoutManager.shared.discardWorkout()
+            self?.startWorkoutAfterDiscard(with: template)
+        })
+        
+        navigationController.present(alert, animated: true)
+    }
+    
+    private func startWorkoutAfterDiscard(with template: WorkoutTemplate) {
+            let viewModel = diContainer.makeActiveWorkoutViewModel()
+            viewModel.startWorkout(from: template)
+            
+            setupWorkoutCalls(for: viewModel)
+            
+            var activeWorkoutView = ActiveWorkoutView(viewModel: viewModel)
+            
+            activeWorkoutView.onAddExerciseTapped = { [weak self] in
+                self?.showExerciseSelectionForWorkout(viewModel: viewModel)
+            }
+            
+            let hostingController = UIHostingController(rootView: activeWorkoutView)
+            let navController = UINavigationController(rootViewController: hostingController)
+            navController.modalPresentationStyle = .fullScreen
+            
+            navController.setNavigationBarHidden(true, animated: false)
+            
+            self.workoutNavController = navController
+            navigationController.present(navController, animated: true)
+        }
     
     private func setupWorkoutCalls(for viewModel: ActiveWorkoutViewModel) {
         viewModel.onFinish = { [weak self] in

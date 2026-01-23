@@ -29,7 +29,7 @@ struct ProfileView: View {
                     }
                 
                 VStack(alignment: .leading) {
-                    Text("Welcome, home")
+                    Text("Welcome, Home")
                         .font(.largeTitle)
                         .foregroundColor(.gray)
                         .minimumScaleFactor(0.5)
