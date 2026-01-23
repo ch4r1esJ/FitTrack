@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FitnessProfileEditingButton: View {
     @State var title: String
+    @State var tint: Color
     @State var backgroundColor: Color
     var action: (() -> Void)
     
@@ -19,7 +20,7 @@ struct FitnessProfileEditingButton: View {
             Text(title)
             .padding()
             .frame(maxWidth: 200)
-            .foregroundColor(.red)
+            .foregroundColor(tint)
             .background(
                 RoundedRectangle(cornerRadius: 10)
                 .fill(backgroundColor)
