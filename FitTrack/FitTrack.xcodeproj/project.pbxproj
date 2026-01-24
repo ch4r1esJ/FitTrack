@@ -66,9 +66,9 @@
 		565773A92F1B8A9800E8130B /* Exceptions for "FitTrack" folder in "LiveWorkoutWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"Domain/Entities/Live Workouts/WorkoutActivityAttributes.swift",
-				Presentation/Templates/TemplateDetails/Subviews/ExerciseAvatarView.swift,
-				Presentation/Templates/TemplateDetails/Subviews/ImageManager.swift,
+				Presentation/Scenes/LiveActivity/Components/WorkoutActivityAttributes.swift,
+				Presentation/Scenes/Templates/Details/Subviews/ExerciseAvatarView.swift,
+				Presentation/Scenes/Templates/Details/Subviews/ImageManager.swift,
 			);
 			target = 565773802F1B860E00E8130B /* LiveWorkoutWidgetExtension */;
 		};
