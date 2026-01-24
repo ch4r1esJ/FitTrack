@@ -42,7 +42,7 @@ class WorkoutManager: WorkoutSessionProtocol {
         
         loadPersistedWorkout()
     }
-        
+    
     func startWorkout(template: WorkoutTemplate) {
         currentWorkoutSubject.send(template)
         elapsedTimeSubject.send(0)

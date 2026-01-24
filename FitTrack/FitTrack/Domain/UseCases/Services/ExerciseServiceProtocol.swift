@@ -9,4 +9,7 @@ import Foundation
 
 protocol ExerciseServiceProtocol {
     func fetchAllExercises() async throws -> [Exercise]
+    func fetchUserCustomExercises(userId: String) async throws -> [Exercise]
+    func createCustomExercise(_ exercise: Exercise, userId: String) async throws
+    func deleteCustomExercise(exerciseId: String, userId: String) async throws
 }

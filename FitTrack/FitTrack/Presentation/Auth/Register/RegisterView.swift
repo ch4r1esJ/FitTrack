@@ -62,7 +62,7 @@ struct RegisterView: View {
                     .padding(.top, 20)
                 
                 
-                Spacer() // TODO: Try deleting
+                Spacer()
                 
                 RegisterFooter(onSignInTapped: {
                     viewModel.backToLoginTapped()

@@ -21,7 +21,9 @@ class ExerciseViewModel {
     private var searchText: String = ""
     
     private var allExercises: [Exercise] = []
+    private var customExercises: [Exercise] = []
     private let exerciseService: ExerciseServiceProtocol
+    private let userId: String
     
     var onExercisesUpdated: (() -> Void)?
     var onError: ((String) -> Void)?
@@ -31,8 +33,9 @@ class ExerciseViewModel {
     
     // MARK: - Init
     
-    init(exerciseService: ExerciseServiceProtocol) {
+    init(exerciseService: ExerciseServiceProtocol, userId: String) {
         self.exerciseService = exerciseService
+        self.userId = userId
     }
     
     // MARK: - Methods
@@ -52,7 +55,8 @@ class ExerciseViewModel {
     }
     
     func getSelectedExercises() -> [Exercise] {
-        return allExercises.filter { selectedExercises.contains($0.id) }
+        let combined = customExercises + allExercises
+        return combined.filter { selectedExercises.contains($0.id) }
     }
     
     var isAddButtonVisible: Bool {
@@ -69,11 +73,18 @@ class ExerciseViewModel {
         
         Task {
             do {
-                let exercises = try await exerciseService.fetchAllExercises()
+                async let regularExercises = exerciseService.fetchAllExercises()
+                async let userExercises = exerciseService.fetchUserCustomExercises(userId: userId)
+                
+                let (regular, custom) = try await (regularExercises, userExercises)
                 
                 await MainActor.run {
-                    self.allExercises = exercises
-                    self.filteredExercises = exercises
+                    self.allExercises = regular
+                    self.customExercises = custom
+                    
+                    let combined = custom + regular
+                    self.filteredExercises = combined
+                    
                     self.isLoading = false
                     self.onExercisesUpdated?()
                 }
@@ -105,7 +116,7 @@ class ExerciseViewModel {
     }
     
     private func applyFilters() {
-        var filtered = allExercises
+        var filtered = customExercises + allExercises
         
         if !searchText.isEmpty {
             filtered = filtered.filter { exercise in

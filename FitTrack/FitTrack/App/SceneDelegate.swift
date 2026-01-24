@@ -14,9 +14,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var appCoordinator: AppCoordinator?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowsScene = (scene as? UIWindowScene) else { return }
         
         if FirebaseApp.app() == nil {
@@ -32,7 +29,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         appCoordinator = AppCoordinator(
             navigationController: navController,
-            authDIContainer: authDIContainer 
+            authDIContainer: authDIContainer
         )
         
         window?.rootViewController = navController
@@ -48,7 +45,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             handleDeepLink(url: url)
         }
     }
-
+    
     private func handleDeepLink(url: URL) {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else { return }
         
@@ -104,7 +101,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-    
-    
 }
-

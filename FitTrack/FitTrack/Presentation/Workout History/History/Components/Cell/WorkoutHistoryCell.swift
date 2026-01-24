@@ -41,7 +41,6 @@ class WorkoutHistoryCell: UITableViewCell {
     private let durationBadge: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 14
-//        view.backgroundColor = .systemGray6
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

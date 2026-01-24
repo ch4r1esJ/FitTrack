@@ -5,7 +5,6 @@
 //  Created by Charles Janjgava on 1/18/26.
 //
 
-
 import Foundation
 
 protocol WorkoutHistoryServiceProtocol {

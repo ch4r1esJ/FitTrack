@@ -139,13 +139,10 @@ class ExerciseCell: UICollectionViewCell {
             
             muscleTagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             muscleTagLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            
             muscleTagLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 24),
             
             equipmentTagLabel.centerYAnchor.constraint(equalTo: muscleTagLabel.centerYAnchor),
             equipmentTagLabel.leadingAnchor.constraint(equalTo: muscleTagLabel.trailingAnchor, constant: 8),
-            
-            equipmentTagLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkButton.leadingAnchor, constant: -8),
             
             checkButton.trailingAnchor.constraint(equalTo: containerview.trailingAnchor, constant: -16),
             checkButton.centerYAnchor.constraint(equalTo: containerview.centerYAnchor),
@@ -158,7 +155,13 @@ class ExerciseCell: UICollectionViewCell {
         nameLabel.text = exercise.name
         muscleTagLabel.text = exercise.primaryMuscles.first?.capitalized ?? exercise.muscleGroup
         equipmentTagLabel.text = exercise.equipment
-        exerciseImageView.loadImage(from: exercise.thumbnailURL)
+                
+        if exercise.category == "custom" {
+            exerciseImageView.image = UIImage(named: exercise.images.first ?? "exercise1")
+        } else {
+            exerciseImageView.loadImage(from: exercise.thumbnailURL)
+        }
+        
         changeAppearance(isSelected)
     }
     

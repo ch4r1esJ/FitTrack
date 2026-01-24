@@ -8,7 +8,6 @@
 import AppIntents
 import Foundation
 
-// Complete Set Intent
 struct CompleteSetIntent: AppIntent {
     static var title: LocalizedStringResource = "Complete Set"
     static var openAppWhenRun: Bool = true

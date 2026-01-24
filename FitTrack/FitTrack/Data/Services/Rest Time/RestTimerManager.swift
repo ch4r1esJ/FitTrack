@@ -81,7 +81,7 @@ class RestTimerManager: ObservableObject {
             finish()
         } else {
             remainingSeconds = Int(ceil(timeRemaining))
-            notificationManager.scheduleRestTimerNotification(seconds: remainingSeconds) 
+            notificationManager.scheduleRestTimerNotification(seconds: remainingSeconds)
             startTicking()
         }
     }
@@ -145,7 +145,7 @@ class RestTimerManager: ObservableObject {
         totalSeconds = 0
         endTime = nil
     }
-
+    
     private func playSound() {
         AudioServicesPlaySystemSound(1304)
     }

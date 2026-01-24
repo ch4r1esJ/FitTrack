@@ -159,7 +159,3 @@ class TemplatesCell: UICollectionViewCell {
         onStartTapped?()
     }
 }
-
-#Preview {
-    TemplatesCell()
-}

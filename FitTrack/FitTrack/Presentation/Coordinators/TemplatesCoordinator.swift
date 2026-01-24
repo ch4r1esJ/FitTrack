@@ -77,7 +77,7 @@ class TemplatesCoordinator: Coordinator {
     }
     
     private func showExerciseSelection(completion: @escaping ([Exercise]) -> Void) {
-        let exerciseVC = diContainer.makeExerciseViewController()
+        let exerciseVC = makeExerciseViewController()
         
         exerciseVC.onAddExerciseTapped = { [weak self] in
             self?.templateNavController?.popViewController(animated: true)
@@ -91,9 +91,9 @@ class TemplatesCoordinator: Coordinator {
         }
         
         exerciseVC.onShowExerciseDetails = { [weak self] exercise in
-                    self?.showExerciseDetails(exercise)
-                }
-         
+            self?.showExerciseDetails(exercise)
+        }
+        
         templateNavController?.pushViewController(exerciseVC, animated: true)
     }
     
@@ -142,26 +142,26 @@ class TemplatesCoordinator: Coordinator {
     }
     
     private func startWorkoutAfterDiscard(with template: WorkoutTemplate) {
-            let viewModel = diContainer.makeActiveWorkoutViewModel()
-            viewModel.startWorkout(from: template)
-            
-            setupWorkoutCalls(for: viewModel)
-            
-            var activeWorkoutView = ActiveWorkoutView(viewModel: viewModel)
-            
-            activeWorkoutView.onAddExerciseTapped = { [weak self] in
-                self?.showExerciseSelectionForWorkout(viewModel: viewModel)
-            }
-            
-            let hostingController = UIHostingController(rootView: activeWorkoutView)
-            let navController = UINavigationController(rootViewController: hostingController)
-            navController.modalPresentationStyle = .fullScreen
-            
-            navController.setNavigationBarHidden(true, animated: false)
-            
-            self.workoutNavController = navController
-            navigationController.present(navController, animated: true)
+        let viewModel = diContainer.makeActiveWorkoutViewModel()
+        viewModel.startWorkout(from: template)
+        
+        setupWorkoutCalls(for: viewModel)
+        
+        var activeWorkoutView = ActiveWorkoutView(viewModel: viewModel)
+        
+        activeWorkoutView.onAddExerciseTapped = { [weak self] in
+            self?.showExerciseSelectionForWorkout(viewModel: viewModel)
         }
+        
+        let hostingController = UIHostingController(rootView: activeWorkoutView)
+        let navController = UINavigationController(rootViewController: hostingController)
+        navController.modalPresentationStyle = .fullScreen
+        
+        navController.setNavigationBarHidden(true, animated: false)
+        
+        self.workoutNavController = navController
+        navigationController.present(navController, animated: true)
+    }
     
     private func setupWorkoutCalls(for viewModel: ActiveWorkoutViewModel) {
         viewModel.onFinish = { [weak self] in
@@ -174,7 +174,7 @@ class TemplatesCoordinator: Coordinator {
     }
     
     private func showExerciseSelectionForWorkout(viewModel: ActiveWorkoutViewModel) {
-        let exerciseVC = diContainer.makeExerciseViewController()
+        let exerciseVC = makeExerciseViewController()
         
         exerciseVC.onAddExerciseTapped = { [weak self] in
             self?.workoutNavController?.popViewController(animated: true)
@@ -231,6 +231,45 @@ class TemplatesCoordinator: Coordinator {
             workoutNav.present(hostingController, animated: true)
         } else if let templateNav = templateNavController {
             templateNav.present(hostingController, animated: true)
+        }
+    }
+    
+    private func makeExerciseViewController() -> ExerciesViewController {
+        let viewModel = diContainer.makeExerciseViewModel()
+        let exerciseVC = ExerciesViewController(viewModel: viewModel, diContainer: diContainer)
+        
+        exerciseVC.onCreateExerciseTapped = { [weak self] in
+            self?.showCustomExerciseCreation()
+        }
+        
+        return exerciseVC
+    }
+    
+    private func showCustomExerciseCreation() {
+        let viewModel = diContainer.makeCustomExerciseViewModel()
+        
+        var customExerciseView = CustomExerciseView(viewModel: viewModel)
+        
+        customExerciseView.onDismiss = { [weak self] in
+            self?.dismissCustomExerciseCreation()
+        }
+        
+        let hostingController = UIHostingController(rootView: customExerciseView)
+        
+        hostingController.modalPresentationStyle = .fullScreen
+        
+        if let workoutNav = workoutNavController {
+            workoutNav.present(hostingController, animated: true)
+        } else if let templateNav = templateNavController {
+            templateNav.present(hostingController, animated: true)
+        }
+    }
+
+    private func dismissCustomExerciseCreation() {
+        if let workoutNav = workoutNavController {
+            workoutNav.dismiss(animated: true)
+        } else if let templateNav = templateNavController {
+            templateNav.dismiss(animated: true)
         }
     }
 }

@@ -41,7 +41,7 @@ class TemplateDetailsViewModel: ObservableObject {
             if !exercises.contains(where: { $0.exerciseId == exercise.id }) {
                 
                 let templateExercise = TemplateExercise(
-                    id: UUID().uuidString, // TODO: 
+                    id: UUID().uuidString,
                     exerciseId: exercise.id,
                     exerciseName: exercise.name,
                     imageUrl: exercise.thumbnailURL,

@@ -81,39 +81,38 @@ class HealthManager {
         try await healthStore.requestAuthorization(toShare: [], read: healthTypes)
     }
     
-        func startObservingActivitySummary(onUpdate: @escaping (Result<HKActivitySummary, Error>) -> Void) {
-            let calendar = Calendar.current
-            var components = calendar.dateComponents([.day, .month, .year, .era], from: Date())
-            components.calendar = calendar
-            
-            let predicate = HKQuery.predicateForActivitySummary(with: components)
-            
-            let query = HKActivitySummaryQuery(predicate: predicate) { _, summaries, error in
-                if let error = error {
-                    onUpdate(.failure(error))
-                    return
-                }
-                
-                if let summary = summaries?.first {
-                    onUpdate(.success(summary))
-                }
+    func startObservingActivitySummary(onUpdate: @escaping (Result<HKActivitySummary, Error>) -> Void) {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.day, .month, .year, .era], from: Date())
+        components.calendar = calendar
+        
+        let predicate = HKQuery.predicateForActivitySummary(with: components)
+        
+        let query = HKActivitySummaryQuery(predicate: predicate) { _, summaries, error in
+            if let error = error {
+                onUpdate(.failure(error))
+                return
             }
             
-            query.updateHandler = { _, summaries, error in
-                if let summary = summaries?.first {
-                    onUpdate(.success(summary))
-                }
+            if let summary = summaries?.first {
+                onUpdate(.success(summary))
             }
-            
-            healthStore.execute(query)
         }
+        
+        query.updateHandler = { _, summaries, error in
+            if let summary = summaries?.first {
+                onUpdate(.success(summary))
+            }
+        }
+        
+        healthStore.execute(query)
+    }
     
     func fetchTodayCaloriesBurned(completion: @escaping(Result<Double, Error>) -> Void) {
         let calories = HKQuantityType(.activeEnergyBurned)
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKStatisticsQuery(quantityType: calories, quantitySamplePredicate: predicate) { _, results, error in
             guard let quantity = results?.sumQuantity(), error == nil else {
-//                completion(.failure(NSError()))
                 completion(.success(0))
                 
                 return
@@ -130,7 +129,6 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKStatisticsQuery(quantityType: exercise, quantitySamplePredicate: predicate) { _, results, error in
             guard let quantity = results?.sumQuantity(), error == nil else {
-//                completion(.failure(NSError()))
                 completion(.success(0))
                 
                 return
@@ -148,21 +146,18 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKSampleQuery(sampleType: stand, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, results, error in
             guard let samples = results as? [HKCategorySample], error == nil else {
-//                completion(.failure(NSError()))
                 completion(.success(0))
                 
                 return
             }
-  
+            
             let standCount = samples.filter({ $0.value == 0}).count
             completion(.success(standCount))
         }
         
         healthStore.execute(query)
     }
-    
-    // Fitness
-    
+        
     func fetchTodaySteps(completion: @escaping(Result<Activities, Error>) -> Void) {
         let steps = HKQuantityType(.stepCount)
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
@@ -242,9 +237,7 @@ class HealthManager {
             Activities(title: "HIIT", subtitle: "This week", image: "figure.cross.training", tintColor: .yellow, amount: "\(hiit) min")
         ]
     }
-    
-    // recents
-    
+        
     func fetchWorkoutsForMonth(month: Date, completion: @escaping (Result<[Workout], Error>) -> Void) {
         let workouts = HKSampleType.workoutType()
         let (startDate, endDate) = month.fetchMonthStartAndEndDate()

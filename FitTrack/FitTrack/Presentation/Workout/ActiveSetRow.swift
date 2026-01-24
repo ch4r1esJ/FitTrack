@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ActiveSetRowView: View {
     @Binding var set: ExerciseSet
-    var onSetCompleted: () -> Void  // Changed: removed Int parameter
+    var onSetCompleted: () -> Void
     
     var body: some View {
         HStack {
@@ -66,9 +66,8 @@ struct ActiveSetRowView: View {
         withAnimation(.spring(response: 0.3)) {
             let wasCompleted = set.isCompleted ?? false
             
-            // Only allow completing (not un-completing)
             if !wasCompleted {
-                onSetCompleted()  // Call ViewModel method
+                onSetCompleted()
             }
         }
     }

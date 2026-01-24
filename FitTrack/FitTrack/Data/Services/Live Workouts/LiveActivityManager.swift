@@ -170,15 +170,15 @@ class LiveActivityManager {
     }
     
     func endAllActivities() async {
-           for activity in Activity<WorkoutActivityAttributes>.activities {
-               await activity.end(
-                   ActivityContent(
-                       state: activity.content.state,
-                       staleDate: nil
-                   ),
-                   dismissalPolicy: .immediate
-               )
-           }
-           currentActivity = nil
-       }
+        for activity in Activity<WorkoutActivityAttributes>.activities {
+            await activity.end(
+                ActivityContent(
+                    state: activity.content.state,
+                    staleDate: nil
+                ),
+                dismissalPolicy: .immediate
+            )
+        }
+        currentActivity = nil
+    }
 }

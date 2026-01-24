@@ -39,7 +39,7 @@ struct LoginView: View {
                 SignInButtonsView(viewModel: viewModel)
                 FooterView(viewModel: viewModel)
                 
-                Spacer() // TODO: Try deleting
+                Spacer()
             }
             .padding(20)
         }

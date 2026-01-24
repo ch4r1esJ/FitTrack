@@ -5,14 +5,6 @@
 //  Created by Charles Janjgava on 1/7/26.
 //
 
-
-//
-//  RegisterHeaderView.swift
-//  FitTrack
-//
-//  Created by Charles Janjgava on 1/4/26.
-//
-
 import SwiftUI
 
 struct RegisterHeaderView: View {

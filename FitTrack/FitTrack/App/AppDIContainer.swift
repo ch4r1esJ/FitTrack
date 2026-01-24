@@ -23,19 +23,25 @@ final class AppDIContainer {
         return RegisterViewModel(authService: authService)
     }
     
-    // Exercise Librart
+    // Exercise Librari
     
     lazy var exerciseService: ExerciseServiceProtocol = {
         return FirebaseExerciseService()
     }()
     
     func makeExerciseViewModel() -> ExerciseViewModel {
-        return ExerciseViewModel(exerciseService: exerciseService)
+        let currentUserId = authService.currentUser?.id ?? ""
+        return ExerciseViewModel(exerciseService: exerciseService, userId: currentUserId)
     }
     
     func makeExerciseViewController() -> ExerciesViewController {
         let viewModel = makeExerciseViewModel()
-        return ExerciesViewController(viewModel: viewModel)
+        return ExerciesViewController(viewModel: viewModel, diContainer: AppDIContainer())
+    }
+    
+    func makeCustomExerciseViewModel() -> CustomExerciseViewModel {
+        let currentUserId = authService.currentUser?.id ?? ""
+        return CustomExerciseViewModel(exerciseService: exerciseService, userId: currentUserId)
     }
     
     // Templates
@@ -82,7 +88,7 @@ final class AppDIContainer {
         let currentUserId = authService.currentUser?.id ?? "No User"
         
         return WorkoutHistoryViewModel(workoutHistoryService: FirebaseWorkoutHistoryService(), userId: currentUserId)
-    } 
+    }
     
     func makeWorkoutHistoryViewController() -> WorkoutHistoryViewController {
         let viewModel = makeWorkoutHistoryViewModel()

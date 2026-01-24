@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 import Combine
 
 class ExerciesViewController: UIViewController {
@@ -17,7 +18,8 @@ class ExerciesViewController: UIViewController {
     var onAddExerciseTapped: (() -> Void)?
     var didSelectExercises: (([Exercise]) -> Void)?
     var onShowExerciseDetails: ((Exercise) -> Void)?
-    
+    var onCreateExerciseTapped: (() -> Void)?
+        
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
         
@@ -87,7 +89,7 @@ class ExerciesViewController: UIViewController {
         button.setTitle("Create", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
         button.setTitleColor(.systemBlue, for: .normal)
-        button.addTarget(self, action: #selector(didTapAdd), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapCreate), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -114,7 +116,7 @@ class ExerciesViewController: UIViewController {
     
     // MARK: - Init
     
-    init(viewModel: ExerciseViewModel) {
+    init(viewModel: ExerciseViewModel, diContainer: AppDIContainer) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -141,6 +143,8 @@ class ExerciesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+        
+        viewModel.fetchExercises()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -151,8 +155,8 @@ class ExerciesViewController: UIViewController {
         addedExerciseCount.text = "(\(count))"
     }
     
-    @objc private func didTapAdd() {
-        print("Add button tapped")
+    @objc private func didTapCreate() {
+        onCreateExerciseTapped?()
     }
     
     private func showError(_ message: String) {
