@@ -1,5 +1,5 @@
 //
-//  FirebaseExerciseService.swift
+//  FirebaseExerciseRepository.swift
 //  FitTrack
 //
 //  Created by Charles Janjgava on 1/9/26.
@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-class FirebaseExerciseService: ExerciseRepositoryProtocol {
+class FirebaseExerciseRepository: ExerciseRepositoryProtocol {
     
     private let db = Firestore.firestore()
     

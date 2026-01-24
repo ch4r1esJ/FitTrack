@@ -30,7 +30,7 @@ class WorkoutManager: WorkoutSessionRepositoryProtocol {
     var currentWorkout: WorkoutTemplate? { currentWorkoutSubject.value }
     
     init(
-        workoutHistoryService: WorkoutHistoryRepositoryProtocol = FirebaseWorkoutHistoryService(),
+        workoutHistoryService: WorkoutHistoryRepositoryProtocol = FirebaseWorkoutHistoryRepository(),
         healthKitService: HealthKitRepositoryProtocol = HealthKitService()
     ) {
         self.workoutHistoryService = workoutHistoryService

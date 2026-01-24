@@ -11,7 +11,7 @@ final class AppDIContainer {
     
     // Auth
     lazy var authService: AuthRepositoryProtocol = {
-        FirebaseAuthService()
+        FirebaseAuthRepository()
         
     }()
     
@@ -26,7 +26,7 @@ final class AppDIContainer {
     // Exercise Librari
     
     lazy var exerciseService: ExerciseRepositoryProtocol = {
-        return FirebaseExerciseService()
+        return FirebaseExerciseRepository()
     }()
     
     func makeExerciseViewModel() -> ExerciseViewModel {
@@ -47,7 +47,7 @@ final class AppDIContainer {
     // Templates
     
     lazy var templatesService: TemplatesRepositoryProtocol = {
-        return FirebaseTemplateService()
+        return FirebaseTemplateRepository()
     }()
     
     func makeTemplatesViewModel() -> TemplatesViewModel {
@@ -81,13 +81,13 @@ final class AppDIContainer {
     // Workout History
     
     lazy var workoutHistoryService: WorkoutHistoryRepositoryProtocol = {
-        return FirebaseWorkoutHistoryService()
+        return FirebaseWorkoutHistoryRepository()
     }()
     
     func makeWorkoutHistoryViewModel() -> WorkoutHistoryViewModel {
         let currentUserId = authService.currentUser?.id ?? "No User"
         
-        return WorkoutHistoryViewModel(workoutHistoryService: FirebaseWorkoutHistoryService(), userId: currentUserId)
+        return WorkoutHistoryViewModel(workoutHistoryService: FirebaseWorkoutHistoryRepository(), userId: currentUserId)
     }
     
     func makeWorkoutHistoryViewController() -> WorkoutHistoryViewController {
@@ -98,7 +98,7 @@ final class AppDIContainer {
     func makeWorkoutStatsViewModel() -> WorkoutStatsViewModel {
         let currentUserId = authService.currentUser?.id ?? "No User"
         
-        return WorkoutStatsViewModel(workoutHistoryService: FirebaseWorkoutHistoryService(), userId: currentUserId)
+        return WorkoutStatsViewModel(workoutHistoryService: FirebaseWorkoutHistoryRepository(), userId: currentUserId)
     }
     
     func makeWorkoutStatsView() -> WorkoutStatsView {

@@ -12,7 +12,7 @@ import HealthKit
 class HomeViewModel: ObservableObject {
     
     let healthManager = HealthManager.shared
-    private let authService = FirebaseAuthService()
+    private let authService = FirebaseAuthRepository()
     private var cancellables = Set<AnyCancellable>()
     @Published var userName: String = ""
     @Published var profileImage: String = "avatar1"

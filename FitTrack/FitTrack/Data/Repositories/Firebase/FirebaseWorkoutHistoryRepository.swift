@@ -1,5 +1,5 @@
 //
-//  FirebaseWorkoutHistoryService.swift
+//  FirebaseWorkoutHistoryRepository.swift
 //  FitTrack
 //
 //  Created by Charles Janjgava on 1/18/26.
@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-class FirebaseWorkoutHistoryService: WorkoutHistoryRepositoryProtocol {
+class FirebaseWorkoutHistoryRepository: WorkoutHistoryRepositoryProtocol {
     
     private let db = Firestore.firestore()
     private let collectionName = "completedWorkouts"

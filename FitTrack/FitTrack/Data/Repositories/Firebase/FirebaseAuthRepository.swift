@@ -1,5 +1,5 @@
 //
-//  FirebaseAuthService.swift
+//  FirebaseAuthRepository.swift
 //  FitTrack
 //
 //  Created by Charles Janjgava on 1/6/26.
@@ -10,7 +10,7 @@ import Combine
 import FirebaseAuth
 import GoogleSignIn
 
-class FirebaseAuthService: AuthRepositoryProtocol {
+class FirebaseAuthRepository: AuthRepositoryProtocol {
     var currentUser: User? {
         guard let firebaseUser = Auth.auth().currentUser else { return nil }
         return mapFirebaseUser(firebaseUser)

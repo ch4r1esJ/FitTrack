@@ -1,5 +1,5 @@
 //
-//  FirebaseTemplateService.swift
+//  FirebaseTemplateRepository.swift
 //  FitTrack
 //
 //  Created by Charles Janjgava on 1/12/26.
@@ -7,7 +7,7 @@
 
 import FirebaseFirestore
 
-class FirebaseTemplateService: TemplatesRepositoryProtocol {
+class FirebaseTemplateRepository: TemplatesRepositoryProtocol {
     
     private let db = Firestore.firestore()
     
