@@ -10,7 +10,7 @@ import Foundation
 
 class ActiveWorkoutViewModel: ObservableObject {
     
-    private let workoutService: WorkoutSessionProtocol
+    private let workoutService: WorkoutSessionRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
     @Published var elapsedTime: String = "00:00"
@@ -22,7 +22,7 @@ class ActiveWorkoutViewModel: ObservableObject {
     var onMinimize: (() -> Void)?
     var onFinish: (() -> Void)?
     
-    init(workoutService: WorkoutSessionProtocol) {
+    init(workoutService: WorkoutSessionRepositoryProtocol) {
         self.workoutService = workoutService
         setupSubscriptions()
         

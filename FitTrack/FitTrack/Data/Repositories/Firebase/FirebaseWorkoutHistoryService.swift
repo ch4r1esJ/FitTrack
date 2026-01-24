@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-class FirebaseWorkoutHistoryService: WorkoutHistoryServiceProtocol {
+class FirebaseWorkoutHistoryService: WorkoutHistoryRepositoryProtocol {
     
     private let db = Firestore.firestore()
     private let collectionName = "completedWorkouts"

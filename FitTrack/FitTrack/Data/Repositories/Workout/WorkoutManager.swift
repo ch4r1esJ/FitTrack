@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class WorkoutManager: WorkoutSessionProtocol {
+class WorkoutManager: WorkoutSessionRepositoryProtocol {
     
     static let shared = WorkoutManager()
     
@@ -19,8 +19,8 @@ class WorkoutManager: WorkoutSessionProtocol {
     private var timer: Timer?
     private var startDate: Date?
     
-    private let workoutHistoryService: WorkoutHistoryServiceProtocol
-    private let healthKitService: HealthKitServiceProtocol
+    private let workoutHistoryService: WorkoutHistoryRepositoryProtocol
+    private let healthKitService: HealthKitRepositoryProtocol
     
     var statePublisher: AnyPublisher<WorkoutState, Never> { stateSubject.eraseToAnyPublisher() }
     var currentWorkoutPublisher: AnyPublisher<WorkoutTemplate?, Never> { currentWorkoutSubject.eraseToAnyPublisher() }
@@ -30,8 +30,8 @@ class WorkoutManager: WorkoutSessionProtocol {
     var currentWorkout: WorkoutTemplate? { currentWorkoutSubject.value }
     
     init(
-        workoutHistoryService: WorkoutHistoryServiceProtocol = FirebaseWorkoutHistoryService(),
-        healthKitService: HealthKitServiceProtocol = HealthKitService()
+        workoutHistoryService: WorkoutHistoryRepositoryProtocol = FirebaseWorkoutHistoryService(),
+        healthKitService: HealthKitRepositoryProtocol = HealthKitService()
     ) {
         self.workoutHistoryService = workoutHistoryService
         self.healthKitService = healthKitService

@@ -34,7 +34,7 @@ class WorkoutStatsViewModel: ObservableObject {
     @Published var totalTimeThisMonth: String = "-"
     @Published var averageTimePerWeek: String = "-"
     
-    private let workoutHistoryService: WorkoutHistoryServiceProtocol
+    private let workoutHistoryService: WorkoutHistoryRepositoryProtocol
     private let userId: String
     private let calendar = Calendar.current
     private var cancellables = Set<AnyCancellable>()
@@ -42,7 +42,7 @@ class WorkoutStatsViewModel: ObservableObject {
     // MARK: - Init
     
     init(
-        workoutHistoryService: WorkoutHistoryServiceProtocol,
+        workoutHistoryService: WorkoutHistoryRepositoryProtocol,
         userId: String
     ) {
         self.workoutHistoryService = workoutHistoryService

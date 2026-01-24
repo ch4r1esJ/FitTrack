@@ -10,7 +10,7 @@ import Foundation
 final class AppDIContainer {
     
     // Auth
-    lazy var authService: AuthServiceProtocol = {
+    lazy var authService: AuthRepositoryProtocol = {
         FirebaseAuthService()
         
     }()
@@ -25,7 +25,7 @@ final class AppDIContainer {
     
     // Exercise Librari
     
-    lazy var exerciseService: ExerciseServiceProtocol = {
+    lazy var exerciseService: ExerciseRepositoryProtocol = {
         return FirebaseExerciseService()
     }()
     
@@ -46,7 +46,7 @@ final class AppDIContainer {
     
     // Templates
     
-    lazy var templatesService: TemplatesServiceProtocol = {
+    lazy var templatesService: TemplatesRepositoryProtocol = {
         return FirebaseTemplateService()
     }()
     
@@ -70,7 +70,7 @@ final class AppDIContainer {
     
     // Workout Session
     
-    private lazy var workoutManager: WorkoutSessionProtocol = {
+    private lazy var workoutManager: WorkoutSessionRepositoryProtocol = {
         return WorkoutManager()
     }()
     
@@ -80,7 +80,7 @@ final class AppDIContainer {
     
     // Workout History
     
-    lazy var workoutHistoryService: WorkoutHistoryServiceProtocol = {
+    lazy var workoutHistoryService: WorkoutHistoryRepositoryProtocol = {
         return FirebaseWorkoutHistoryService()
     }()
     

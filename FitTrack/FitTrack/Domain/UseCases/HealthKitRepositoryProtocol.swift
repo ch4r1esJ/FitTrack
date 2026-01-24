@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol HealthKitServiceProtocol {
+protocol HealthKitRepositoryProtocol {
     func requestAuthorization() async throws
     func saveWorkout(_ workout: CompletedWorkout) async throws
     func isHealthDataAvailable() -> Bool

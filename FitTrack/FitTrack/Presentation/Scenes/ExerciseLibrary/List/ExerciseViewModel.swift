@@ -22,7 +22,7 @@ class ExerciseViewModel {
     
     private var allExercises: [Exercise] = []
     private var customExercises: [Exercise] = []
-    private let exerciseService: ExerciseServiceProtocol
+    private let exerciseService: ExerciseRepositoryProtocol
     private let userId: String
     
     var onExercisesUpdated: (() -> Void)?
@@ -33,7 +33,7 @@ class ExerciseViewModel {
     
     // MARK: - Init
     
-    init(exerciseService: ExerciseServiceProtocol, userId: String) {
+    init(exerciseService: ExerciseRepositoryProtocol, userId: String) {
         self.exerciseService = exerciseService
         self.userId = userId
     }

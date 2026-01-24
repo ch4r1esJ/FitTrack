@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ExerciseServiceProtocol {
+protocol ExerciseRepositoryProtocol {
     func fetchAllExercises() async throws -> [Exercise]
     func fetchUserCustomExercises(userId: String) async throws -> [Exercise]
     func createCustomExercise(_ exercise: Exercise, userId: String) async throws

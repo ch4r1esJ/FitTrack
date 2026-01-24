@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol WorkoutHistoryServiceProtocol {
+protocol WorkoutHistoryRepositoryProtocol {
     func saveCompletedWorkout(_ workout: CompletedWorkout) async throws
     func fetchUserWorkoutHistory(userId: String, limit: Int?) async throws -> [CompletedWorkout]
     func fetchWorkoutById(workoutId: String) async throws -> CompletedWorkout?

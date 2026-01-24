@@ -15,15 +15,15 @@ class TemplatesViewModel {
     private(set) var isLoading: Bool = false
     private(set) var errorMessage: String?
     
-    private let templatesService: TemplatesServiceProtocol
-    private let authService: AuthServiceProtocol
+    private let templatesService: TemplatesRepositoryProtocol
+    private let authService: AuthRepositoryProtocol
     
     var onError: ((String) -> Void)?
     var onTemplateUpdated: (() -> Void)?
     
     // MARK: - Init
     
-    init(templatesService: TemplatesServiceProtocol, authService: AuthServiceProtocol) {
+    init(templatesService: TemplatesRepositoryProtocol, authService: AuthRepositoryProtocol) {
         self.templatesService = templatesService
         self.authService = authService
     }

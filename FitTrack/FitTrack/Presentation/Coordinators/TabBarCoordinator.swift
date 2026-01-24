@@ -13,14 +13,14 @@ class TabBarCoordinator: Coordinator {
     var navigationController: UINavigationController
     weak var parentCoordinator: AppCoordinator?
     
-    private let authService: AuthServiceProtocol
+    private let authService: AuthRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     private let diContainer: AppDIContainer
     private var tabBarController: MainTabBarController!
     
     private var childCoordinators = [Coordinator]()
     
-    init(navigationController: UINavigationController, authService: AuthServiceProtocol, diContainer: AppDIContainer) {
+    init(navigationController: UINavigationController, authService: AuthRepositoryProtocol, diContainer: AppDIContainer) {
         self.navigationController = navigationController
         self.authService = authService
         self.diContainer = diContainer

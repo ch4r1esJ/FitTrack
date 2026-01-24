@@ -21,10 +21,10 @@ class TemplateDetailsViewModel: ObservableObject {
         return editingTemplateId != nil
     }
     
-    private let templatesService: TemplatesServiceProtocol
-    private let authService: AuthServiceProtocol
+    private let templatesService: TemplatesRepositoryProtocol
+    private let authService: AuthRepositoryProtocol
     
-    init(templatesService: TemplatesServiceProtocol, authService: AuthServiceProtocol) {
+    init(templatesService: TemplatesRepositoryProtocol, authService: AuthRepositoryProtocol) {
         self.templatesService = templatesService
         self.authService = authService
     }

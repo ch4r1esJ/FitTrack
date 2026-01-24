@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol TemplatesServiceProtocol {
+protocol TemplatesRepositoryProtocol {
     func fetchAllUserTemplates(userId: String) async throws -> [WorkoutTemplate]
     func createTemplate(_ template: WorkoutTemplate) async throws
     func updateTemplate(_ template: WorkoutTemplate) async throws

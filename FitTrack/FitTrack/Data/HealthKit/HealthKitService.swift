@@ -8,7 +8,7 @@
 import Foundation
 import HealthKit
 
-class HealthKitService: HealthKitServiceProtocol {
+class HealthKitService: HealthKitRepositoryProtocol {
     
     private let healthStore = HKHealthStore()
     

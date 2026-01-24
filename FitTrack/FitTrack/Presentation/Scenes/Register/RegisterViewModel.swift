@@ -19,10 +19,10 @@ class RegisterViewModel: ObservableObject {
     let registerFinished = PassthroughSubject<Void, Never>()
     let navigateToLogin = PassthroughSubject<Void, Never>()
     
-    private let authService: AuthServiceProtocol
+    private let authService: AuthRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(authService: AuthServiceProtocol) {
+    init(authService: AuthRepositoryProtocol) {
         self.authService = authService
     }
     

@@ -17,13 +17,13 @@ class WorkoutHistoryViewModel {
     
     var sections: [WorkoutSection] = []
     private var allWorkouts: [CompletedWorkout] = []
-    private let workoutHistoryService: WorkoutHistoryServiceProtocol
+    private let workoutHistoryService: WorkoutHistoryRepositoryProtocol
     
     private let userId: String
     
     // MARK: - Init
     
-    init(workoutHistoryService: WorkoutHistoryServiceProtocol, userId: String) {
+    init(workoutHistoryService: WorkoutHistoryRepositoryProtocol, userId: String) {
         self.workoutHistoryService = workoutHistoryService
         self.userId = userId
     }

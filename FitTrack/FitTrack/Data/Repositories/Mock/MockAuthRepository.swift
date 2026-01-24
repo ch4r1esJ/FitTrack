@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class MockAuthService: AuthServiceProtocol {
+final class MockAuthService: AuthRepositoryProtocol {
     var currentUser: User? = nil
     
     var isAuthenticated: Bool {

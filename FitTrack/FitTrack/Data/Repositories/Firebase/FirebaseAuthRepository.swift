@@ -10,7 +10,7 @@ import Combine
 import FirebaseAuth
 import GoogleSignIn
 
-class FirebaseAuthService: AuthServiceProtocol {
+class FirebaseAuthService: AuthRepositoryProtocol {
     var currentUser: User? {
         guard let firebaseUser = Auth.auth().currentUser else { return nil }
         return mapFirebaseUser(firebaseUser)

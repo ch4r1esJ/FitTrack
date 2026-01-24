@@ -7,7 +7,7 @@
 
 import FirebaseFirestore
 
-class FirebaseTemplateService: TemplatesServiceProtocol {
+class FirebaseTemplateService: TemplatesRepositoryProtocol {
     
     private let db = Firestore.firestore()
     

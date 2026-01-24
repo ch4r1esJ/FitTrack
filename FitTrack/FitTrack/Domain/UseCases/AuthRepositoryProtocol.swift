@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol AuthServiceProtocol {
+protocol AuthRepositoryProtocol {
     func signIn(email: String, password: String) async throws -> User
     func signInWithGoogle() async throws -> User
     func signOut() throws

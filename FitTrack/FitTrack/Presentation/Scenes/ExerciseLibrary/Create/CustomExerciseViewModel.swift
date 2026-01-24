@@ -23,7 +23,7 @@ class CustomExerciseViewModel: ObservableObject {
     @Published var isCreated: Bool = false
     
     // MARK: - Properties
-    private let exerciseService: ExerciseServiceProtocol
+    private let exerciseService: ExerciseRepositoryProtocol
     private let userId: String
     
     let availableImages = [
@@ -95,7 +95,7 @@ class CustomExerciseViewModel: ObservableObject {
     }
     
     // MARK: - Init
-    init(exerciseService: ExerciseServiceProtocol, userId: String) {
+    init(exerciseService: ExerciseRepositoryProtocol, userId: String) {
         self.exerciseService = exerciseService
         self.userId = userId
     }

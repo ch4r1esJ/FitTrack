@@ -19,10 +19,10 @@ class LoginViewModel: ObservableObject {
     let navigateToRegister = PassthroughSubject<Void, Never>()
     let showForgotPassword = PassthroughSubject<Void, Never>()
     
-    private let authService: AuthServiceProtocol
+    private let authService: AuthRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(authService: AuthServiceProtocol) {
+    init(authService: AuthRepositoryProtocol) {
         self.authService = authService
     }
     

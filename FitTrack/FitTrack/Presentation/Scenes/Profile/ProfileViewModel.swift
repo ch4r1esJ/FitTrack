@@ -26,10 +26,10 @@ class ProfileViewModel: ObservableObject {
     
     let logoutFinished = PassthroughSubject<Void, Never>()
     
-    private let authService: AuthServiceProtocol
+    private let authService: AuthRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
 
-    init(authService: AuthServiceProtocol) {
+    init(authService: AuthRepositoryProtocol) {
         self.authService = authService
         
         if let firebaseName = authService.currentUser?.name, !firebaseName.isEmpty {

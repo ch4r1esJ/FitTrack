@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-class FirebaseExerciseService: ExerciseServiceProtocol {
+class FirebaseExerciseService: ExerciseRepositoryProtocol {
     
     private let db = Firestore.firestore()
     
