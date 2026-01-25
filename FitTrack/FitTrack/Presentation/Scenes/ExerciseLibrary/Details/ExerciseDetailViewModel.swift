@@ -8,16 +8,14 @@
 import Foundation
 import Combine
 
-@MainActor
 class ExerciseDetailViewModel: ObservableObject {
         
     @Published var currentImageURL: String
     @Published var isAnimating: Bool = false
         
-    private let exercise: Exercise
+    let exercise: Exercise
     private var currentImageIndex: Int = 0
     private var animationTimer: Timer?
-    private let animationInterval: TimeInterval = 1.0
     
     var exerciseName: String {
         exercise.name
@@ -33,26 +31,6 @@ class ExerciseDetailViewModel: ObservableObject {
     
     var equipment: String {
         exercise.equipment
-    }
-    
-    var force: String? {
-        exercise.force
-    }
-    
-    var mechanic: String? {
-        exercise.mechanic
-    }
-    
-    var primaryMuscle: String? {
-        exercise.primaryMuscles.first?.capitalized
-    }
-    
-    var secondaryMuscles: [String] {
-        exercise.secondaryMuscles.map { $0.capitalized }
-    }
-    
-    var instructions: [String] {
-        exercise.instructions
     }
     
     var hasMultipleImages: Bool {
@@ -71,12 +49,30 @@ class ExerciseDetailViewModel: ObservableObject {
         !exercise.instructions.isEmpty
     }
     
+    var primaryMuscle: String? {
+        exercise.primaryMuscles.first?.capitalized
+    }
+    
+    var secondaryMuscles: [String] {
+        exercise.secondaryMuscles.map { $0.capitalized }
+    }
+    
+    var instructions: [String] {
+        exercise.instructions
+    }
+    
+    var force: String? {
+        exercise.force
+    }
+    
+    var mechanic: String? {
+        exercise.mechanic
+    }
+    
     init(exercise: Exercise) {
         self.exercise = exercise
-        self.currentImageURL = Self.constructImageURL(
-            from: exercise.images.first ?? "",
-            thumbnailURL: exercise.thumbnailURL
-        )
+        self.currentImageURL = ""
+        self.currentImageURL = self.buildImageURL(from: exercise.images.first ?? "")
     }
     
     func toggleAnimation() {
@@ -95,7 +91,7 @@ class ExerciseDetailViewModel: ObservableObject {
         guard hasMultipleImages else { return }
         
         isAnimating = true
-        animationTimer = Timer.scheduledTimer(withTimeInterval: animationInterval, repeats: true) { [weak self] _ in
+        animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.updateImage()
         }
     }
@@ -105,29 +101,17 @@ class ExerciseDetailViewModel: ObservableObject {
         animationTimer?.invalidate()
         animationTimer = nil
         currentImageIndex = 0
-        currentImageURL = Self.constructImageURL(
-            from: exercise.images.first ?? "",
-            thumbnailURL: exercise.thumbnailURL
-        )
+        currentImageURL = buildImageURL(from: exercise.images.first ?? "")
     }
     
     private func updateImage() {
         currentImageIndex = (currentImageIndex + 1) % exercise.images.count
-        
-        guard currentImageIndex < exercise.images.count else {
-            currentImageURL = exercise.thumbnailURL
-            return
-        }
-        
-        currentImageURL = Self.constructImageURL(
-            from: exercise.images[currentImageIndex],
-            thumbnailURL: exercise.thumbnailURL
-        )
+        currentImageURL = buildImageURL(from: exercise.images[currentImageIndex])
     }
     
-    private static func constructImageURL(from path: String, thumbnailURL: String) -> String {
+    private func buildImageURL(from path: String) -> String {
         if path.isEmpty {
-            return thumbnailURL
+            return exercise.thumbnailURL
         }
         
         if path.hasPrefix("http") {
