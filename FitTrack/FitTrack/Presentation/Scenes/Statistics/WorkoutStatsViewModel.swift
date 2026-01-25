@@ -234,7 +234,7 @@ class WorkoutStatsViewModel: ObservableObject {
             }
         }
         
-        var data: [WeekDurationData] = weekDurations.map { (weekStart, duration) in
+        let data: [WeekDurationData] = weekDurations.map { (weekStart, duration) in
             let weekNumber = calendar.component(.weekOfMonth, from: weekStart)
             return WeekDurationData(
                 weekLabel: "Week \(weekNumber)",

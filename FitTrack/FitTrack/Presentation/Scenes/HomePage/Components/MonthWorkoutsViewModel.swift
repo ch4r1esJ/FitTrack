@@ -22,10 +22,7 @@ class MonthWorkoutsViewModel: ObservableObject {
     
     init(healthKitActivityRepository: HealthKitActivityRepositoryProtocol) {
         self.healthKitActivityRepository = healthKitActivityRepository
-        
-        Task {
-            await fetchWorkoutsForMonth()
-        }
+        fetchWorkoutsForMonth()
     }
     
     func updateSelectedDate() {
@@ -34,36 +31,25 @@ class MonthWorkoutsViewModel: ObservableObject {
         if fetchedMonths.contains(selectedDate.monthAndYearFormat()) {
             self.currentMonthWorkouts = workouts.filter({ $0.date.monthAndYearFormat() == selectedDate.monthAndYearFormat() })
         } else {
-            Task {
-                await fetchWorkoutsForMonth()
-            }
+            fetchWorkoutsForMonth()
         }
     }
     
-    func fetchWorkoutsForMonth() async {
-        do {
-            let summaries = try await healthKitActivityRepository.fetchWorkoutsForMonth(selectedDate)
+    func fetchWorkoutsForMonth() {
+        healthKitActivityRepository.fetchWorkoutsForMonth(selectedDate) { [weak self] result in
+            guard let self = self else { return }
             
-            await MainActor.run {
-                let newWorkouts = summaries.map { summary in
-                    Workout(
-                        title: summary.title,
-                        image: summary.imageName,
-                        tintcolor: summary.color.toColor(),
-                        duration: "\(summary.durationMinutes) min",
-                        date: summary.date,
-                        calories: summary.calories.map { "\($0.formattedNumbersString()) kcal" } ?? "---",
-                        isFromFitTrack: summary.isFromFitTrack
-                    )
+            switch result {
+            case .success(let newWorkouts):
+                DispatchQueue.main.async {
+                    self.workouts.append(contentsOf: newWorkouts)
+                    self.fetchedMonths.insert(self.selectedDate.monthAndYearFormat())
+                    self.currentMonthWorkouts = self.workouts.filter({ $0.date.monthAndYearFormat() == self.selectedDate.monthAndYearFormat() })
                 }
-                
-                self.workouts.append(contentsOf: newWorkouts)
-                self.fetchedMonths.insert(self.selectedDate.monthAndYearFormat())
-                self.currentMonthWorkouts = self.workouts.filter({ $0.date.monthAndYearFormat() == self.selectedDate.monthAndYearFormat() })
-            }
-        } catch {
-            await MainActor.run {
-                self.showAlert = true
+            case .failure:
+                DispatchQueue.main.async {
+                    self.showAlert = true
+                }
             }
         }
     }

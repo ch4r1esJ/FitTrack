@@ -77,7 +77,7 @@ class ExerciseUploader {
             "name": source.name,
             
             "primaryMuscles": source.primaryMuscles,
-            "secondaryMuscles": source.secondaryMuscles,
+            "secondaryMuscles": source.secondaryMuscles ?? "General",
             "instructions": source.instructions,
             "images": source.images,
             

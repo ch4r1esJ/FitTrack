@@ -52,7 +52,7 @@ class HealthKitService: HealthKitRepositoryProtocol {
         
         let estimatedCalories = calculateEstimatedCalories(for: workout)
         
-        var metadata: [String: Any] = [
+        let metadata: [String: Any] = [
             HKMetadataKeyIndoorWorkout: true,
             HKMetadataKeyWorkoutBrandName: workout.templateName,
             "AppName": "FitTrack",
@@ -62,59 +62,33 @@ class HealthKitService: HealthKitRepositoryProtocol {
             "Exercises": workout.exercises.map { $0.exerciseName }.joined(separator: ", ")
         ]
         
-        let hkWorkout = HKWorkout(
-            activityType: .traditionalStrengthTraining,
-            start: workout.startDate,
-            end: workout.endDate,
-            duration: workout.duration,
-            totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: estimatedCalories),
-            totalDistance: nil,
-            metadata: metadata
+        let configuration = HKWorkoutConfiguration()
+        configuration.activityType = .traditionalStrengthTraining
+        configuration.locationType = .indoor
+        
+        let builder = HKWorkoutBuilder(
+            healthStore: healthStore,
+            configuration: configuration,
+            device: .local()
         )
         
-        try await healthStore.save(hkWorkout)
+        try await builder.beginCollection(at: workout.startDate)
         
-        try await saveCaloriesSample(
-            calories: estimatedCalories,
-            start: workout.startDate,
-            end: workout.endDate,
-            workout: hkWorkout
-        )
-    }
-    
-    private func saveCaloriesSample(
-        calories: Double,
-        start: Date,
-        end: Date,
-        workout: HKWorkout
-    ) async throws {
-        guard let energyType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) else {
-            return
-        }
-        
-        let energyQuantity = HKQuantity(unit: .kilocalorie(), doubleValue: calories)
-        
+        let energyType = HKQuantityType(.activeEnergyBurned)
+        let energyQuantity = HKQuantity(unit: .kilocalorie(), doubleValue: estimatedCalories)
         let energySample = HKQuantitySample(
             type: energyType,
             quantity: energyQuantity,
-            start: start,
-            end: end,
-            metadata: nil
+            start: workout.startDate,
+            end: workout.endDate
         )
         
-        try await healthStore.save(energySample)
+        try await builder.addSamples([energySample])
         
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            healthStore.add([energySample], to: workout) { success, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else if success {
-                    continuation.resume()
-                } else {
-                    continuation.resume(throwing: HealthKitError.saveFailed)
-                }
-            }
-        }
+        try await builder.addMetadata(metadata)
+        
+        try await builder.endCollection(at: workout.endDate)
+        try await builder.finishWorkout()
     }
     
     private func calculateEstimatedCalories(for workout: CompletedWorkout) -> Double {

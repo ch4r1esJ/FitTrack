@@ -309,8 +309,8 @@ struct CustomExerciseView: View {
         } message: {
             Text("Are you sure you want to discard this exercise?")
         }
-        .onChange(of: viewModel.isCreated) { created in
-            if created {
+        .onChange(of: viewModel.isCreated) {
+            if viewModel.isCreated {
                 onDismiss?()
             }
         }

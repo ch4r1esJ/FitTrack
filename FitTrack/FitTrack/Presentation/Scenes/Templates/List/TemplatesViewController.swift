@@ -42,32 +42,9 @@ class TemplatesViewController: UIViewController {
         button.backgroundColor = .systemGray5
         button.layer.cornerRadius = 12
         
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(newTemplateButtonTapped), for: .touchUpInside)
+        button.addTarget(TemplatesViewController.self, action: #selector(newTemplateButtonTapped), for: .touchUpInside)
         
-        return button
-    }()
-    
-    private var exploreButton: UIButton = {
-        let button = UIButton(type: .system)
-        
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
-        
-        let iconConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .medium)
-        let icon = UIImage(systemName: "magnifyingglass", withConfiguration: iconConfig)
-        
-        button.setImage(icon, for: .normal)
-        button.setTitle("Other Templates", for: .normal)
-        
-        button.setTitleColor(.black, for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .systemGray5
-        button.layer.cornerRadius = 12
-        
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
@@ -137,15 +114,14 @@ class TemplatesViewController: UIViewController {
         view.addSubview(filterStackView)
         
         filterStackView.addArrangedSubview(newTemplateButton)
-        filterStackView.addArrangedSubview(exploreButton)
         
         NSLayoutConstraint.activate([
             filterStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
             filterStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 18),
             filterStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
-            filterStackView.heightAnchor.constraint(equalToConstant: 40),
+            filterStackView.heightAnchor.constraint(equalToConstant: 50),
             
-            collectionView.topAnchor.constraint(equalTo: filterStackView.topAnchor, constant: 50),
+            collectionView.topAnchor.constraint(equalTo: filterStackView.topAnchor, constant: 60),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -90)

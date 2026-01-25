@@ -10,16 +10,12 @@ import SwiftUI
 struct HomeView: View {
     @StateObject var viewModel: HomeViewModel
     var onProfileTapped: (() -> Void)?
-    var makeMonthWorkoutsView: () -> MonthWorkoutsView
     @State var showAllActivities = false
+    @State var showMonthWorkouts = false
     let backgroundColor = Color(uiColor: .systemGray6)
     
-    init(
-        viewModel: HomeViewModel,
-        makeMonthWorkoutsView: @escaping () -> MonthWorkoutsView
-    ) {
+    init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        self.makeMonthWorkoutsView = makeMonthWorkoutsView
     }
     
     var body: some View {
@@ -127,8 +123,7 @@ struct HomeView: View {
                         
                         if !viewModel.activities.isEmpty {
                             LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                                
-                                ForEach(showAllActivities ? viewModel.activities : Array(viewModel.activities.prefix(4)), id: \.title) { activity in
+                                ForEach(showAllActivities ? viewModel.activities : Array(viewModel.activities.prefix(4))) { activity in
                                     ActivityCard(activity: activity)
                                 }
                             }
@@ -141,8 +136,8 @@ struct HomeView: View {
                             
                             Spacer()
                             
-                            NavigationLink {
-                                makeMonthWorkoutsView()
+                            Button {
+                                showMonthWorkouts = true
                             } label: {
                                 Text("Show more")
                                     .padding(.all, 10)
@@ -160,10 +155,19 @@ struct HomeView: View {
                             }
                         }
                         .padding(.bottom)
-                        
                     }
                 }
             }
+            .navigationDestination(isPresented: $showMonthWorkouts) {
+                MonthWorkoutsView(
+                    viewModel: MonthWorkoutsViewModel(
+                        healthKitActivityRepository: HealthKitActivityRepository()
+                    )
+                )
+            }
+        }
+        .onAppear {
+            viewModel.refresh()
         }
         .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)) { _ in
             viewModel.checkForNameUpdate()

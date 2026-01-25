@@ -94,12 +94,7 @@ class TabBarCoordinator: Coordinator {
         )
         
         let homeViewModel = diContainer.makeHomeViewModel()
-        let homeView = HomeView(
-            viewModel: homeViewModel,
-            makeMonthWorkoutsView: { [diContainer] in
-                MonthWorkoutsView(viewModel: diContainer.makeMonthWorkoutsViewModel())
-            }
-        )
+        let homeView = HomeView(viewModel: homeViewModel)
         let homeVc = UIHostingController(rootView: homeView)
         homeVc.tabBarItem = UITabBarItem(
             title: "Home",

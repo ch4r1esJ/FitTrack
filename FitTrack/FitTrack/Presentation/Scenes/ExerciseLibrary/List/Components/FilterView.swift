@@ -31,7 +31,6 @@ class FilterView: UIView {
         bodyPartButton.backgroundColor = .systemGray5
         bodyPartButton.setTitleColor(.label, for: .normal)
         bodyPartButton.layer.cornerRadius = 12
-        bodyPartButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         bodyPartButton.translatesAutoresizingMaskIntoConstraints = false
         bodyPartButton.showsMenuAsPrimaryAction = true
         bodyPartButton.menu = createBodyPartMenu()
@@ -41,7 +40,6 @@ class FilterView: UIView {
         equipmentButton.backgroundColor = .systemGray5
         equipmentButton.setTitleColor(.label, for: .normal)
         equipmentButton.layer.cornerRadius = 12
-        equipmentButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         equipmentButton.translatesAutoresizingMaskIntoConstraints = false
         equipmentButton.showsMenuAsPrimaryAction = true
         equipmentButton.menu = createEquipmentMenu()
