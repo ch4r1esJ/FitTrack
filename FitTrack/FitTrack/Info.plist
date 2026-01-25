@@ -14,9 +14,23 @@
 				<string>com.googleusercontent.apps.464550641512-lcgjc30idb8lgbi38jt8hrbe5dmq38ph</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>FitTrack</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fittrack</string>
+			</array>
+		</dict>
 	</array>
 	<key>GIDClientID</key>
 	<string>464550641512-lcgjc30idb8lgbi38jt8hrbe5dmq38ph.apps.googleusercontent.com</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>mailto</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -36,5 +50,10 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>fetch</string>
+	</array>
 </dict>
 </plist>
