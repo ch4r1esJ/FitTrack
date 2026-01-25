@@ -1,7 +1,8 @@
 You are looking at FitTrack, the app where you can check all the important data from your Apple's Fitness app, browse in-app exercises, even create your own, add them to custom templates, track workouts in real-time and see the history and statistics of your performance. The app's whole goal is to help you track your workout and know your progress to get better every day.
 Main Technologies Used:
 
-Project Structure: Half SwiftUI, half UIKit
+Project Structure: 
+Half SwiftUI, half UIKit
 Architecture: MVVM + Clean Architecture
 Reactive Programming: Combine
 Backend: Firebase (stores exercises, currently more than 800 of them)
@@ -11,9 +12,9 @@ Health Integration: HealthKit for activity rings, workouts, and fitness data
 Notifications: Local notifications with background support
 Widgets: Live Activity for lock screen workout tracking
 
-Features
-Authentication
+Features:
 
+Authentication
 Login
 Registration
 Forgot password
