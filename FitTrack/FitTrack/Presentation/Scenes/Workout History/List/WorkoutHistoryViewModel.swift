@@ -99,9 +99,3 @@ class WorkoutHistoryViewModel {
         self.onWorkoutsUpdated?()
     }
 }
-
-struct WorkoutSection {
-    let title: String
-    let date: Date
-    var workouts: [CompletedWorkout]
-}

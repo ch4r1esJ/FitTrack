@@ -26,24 +26,23 @@ class TemplatesViewController: UIViewController {
         return label
     }()
     
-    private var newTemplateButton: UIButton = {
-        let button = UIButton(type: .system)
+    private lazy var newTemplateButton: UIButton = {
+        var config = UIButton.Configuration.filled()
         
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        config.title = "Create Template"
+        config.baseForegroundColor = .black
+        config.background.backgroundColor = .systemGray5
+        config.background.cornerRadius = 12
         
         let iconConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .medium)
-        let icon = UIImage(systemName: "doc.text", withConfiguration: iconConfig)
+        config.image = UIImage(systemName: "doc.text", withConfiguration: iconConfig)
         
-        button.setImage(icon, for: .normal)
-        button.setTitle("Create Template", for: .normal)
+        config.imagePadding = 8
+        config.imagePlacement = .leading
         
-        button.setTitleColor(.black, for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .systemGray5
-        button.layer.cornerRadius = 12
-        
+        let button = UIButton(configuration: config, primaryAction: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(TemplatesViewController.self, action: #selector(newTemplateButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(newTemplateButtonTapped), for: .touchUpInside)
         
         return button
     }()

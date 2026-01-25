@@ -169,6 +169,7 @@ struct LockScreenLiveActivityView: View {
                     .font(.caption)
                     .monospacedDigit()
             }
+            .padding(.horizontal)
             
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
@@ -188,8 +189,9 @@ struct LockScreenLiveActivityView: View {
                 .monospacedDigit()
                 .foregroundColor(.blue)
                 .frame(maxWidth: .infinity)
+                .padding(.horizontal)
         }
-        .padding()
+        .padding(.vertical)  
     }
     
     var finishedView: some View {
