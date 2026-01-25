@@ -28,6 +28,8 @@ struct ExerciseImageView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .foregroundColor(.gray)
+                @unknown default:
+                    EmptyView()
                 }
             }
             .frame(maxWidth: .infinity)

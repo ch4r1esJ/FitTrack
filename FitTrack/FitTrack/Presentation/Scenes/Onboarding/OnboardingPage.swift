@@ -16,23 +16,24 @@ struct OnboardingPage: View {
         VStack(spacing: 40) {
             Spacer()
             
-            Image(systemName: image)
-                .font(.system(size: 100))
-                .foregroundStyle(.blue)
+            Image(image)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 300)
+                .padding(.horizontal, 40)
             
             VStack(spacing: 16) {
                 Text(title)
-                    .font(.title)
-                    .fontWeight(.bold)
+                    .font(.system(size: 32, weight: .bold))
+                    .multilineTextAlignment(.center)
                 
                 Text(description)
-                    .font(.body)
-                    .foregroundStyle(.gray)
+                    .font(.system(size: 18))
+                    .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
             }
             
-            Spacer()
             Spacer()
         }
     }
