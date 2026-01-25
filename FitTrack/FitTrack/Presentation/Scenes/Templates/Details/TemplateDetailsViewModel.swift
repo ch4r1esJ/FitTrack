@@ -135,7 +135,7 @@ class TemplateDetailsViewModel: ObservableObject {
         self.isLoading = true
         self.errorMessage = nil
         
-        let newTemplate = WorkoutTemplate(
+        let _ = WorkoutTemplate(
             id: UUID().uuidString,
             name: title,
             exercises: exercises,

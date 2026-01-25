@@ -14,7 +14,6 @@ class ExerciseDetailViewModel: ObservableObject {
     @Published var currentImageURL: String
     @Published var isAnimating: Bool = false
         
-    // MARK: - Properties
     private let exercise: Exercise
     private var currentImageIndex: Int = 0
     private var animationTimer: Timer?
@@ -72,8 +71,6 @@ class ExerciseDetailViewModel: ObservableObject {
         !exercise.instructions.isEmpty
     }
     
-    // MARK: - Init
-    
     init(exercise: Exercise) {
         self.exercise = exercise
         self.currentImageURL = Self.constructImageURL(
@@ -81,8 +78,6 @@ class ExerciseDetailViewModel: ObservableObject {
             thumbnailURL: exercise.thumbnailURL
         )
     }
-    
-    // MARK: - Methods
     
     func toggleAnimation() {
         if isAnimating {

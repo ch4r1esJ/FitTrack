@@ -1,5 +1,5 @@
 //
-//  HKWorkoutActivityType + Extension.swift
+//  HKWorkoutActivityType + Data.swift
 //  FitTrack
 //
 //  Created by Charles Janjgava on 1/21/26.

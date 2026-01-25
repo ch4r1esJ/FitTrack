@@ -9,11 +9,10 @@ import UIKit
 import SwiftUI
 
 class HistoryCoordinator: Coordinator {
-    // MARK: - Properties
+    
     var navigationController: UINavigationController
     private let diContainer: AppDIContainer
     
-    // MARK: - Init
     init(navigationController: UINavigationController, diContainer: AppDIContainer) {
         self.navigationController = navigationController
         self.diContainer = diContainer

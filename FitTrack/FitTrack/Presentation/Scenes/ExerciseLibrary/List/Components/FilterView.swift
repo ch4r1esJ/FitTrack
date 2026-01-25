@@ -8,7 +8,6 @@
 import UIKit
 
 class FilterView: UIView {
-    // MARK: - Properties
     
     private let viewModel: ExerciseViewModel
         
@@ -49,8 +48,6 @@ class FilterView: UIView {
         return stack
     }()
     
-    // MARK: - Init
-    
     init(viewModel: ExerciseViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
@@ -61,8 +58,6 @@ class FilterView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Methods
-    
     private func setupView() {
         addSubview(filterStackView)
         
@@ -70,11 +65,11 @@ class FilterView: UIView {
         filterStackView.addArrangedSubview(equipmentButton)
         
         NSLayoutConstraint.activate([
-            filterStackView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            filterStackView.topAnchor.constraint(equalTo: topAnchor),
             filterStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             filterStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            filterStackView.heightAnchor.constraint(equalToConstant: 45),
-            filterStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
+            filterStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            filterStackView.heightAnchor.constraint(equalToConstant: 45)
         ])
     }
         

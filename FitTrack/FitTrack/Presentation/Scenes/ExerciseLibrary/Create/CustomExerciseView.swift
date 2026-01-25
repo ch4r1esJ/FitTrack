@@ -301,19 +301,19 @@ struct CustomExerciseView: View {
                 }
             }
         }
-            .alert("Discard Changes?", isPresented: $showingCancelAlert) {
-                Button("Keep Editing", role: .cancel) { }
-                Button("Discard", role: .destructive) {
-                    onDismiss?()
-                }
-            } message: {
-                Text("Are you sure you want to discard this exercise?")
+        .alert("Discard Changes?", isPresented: $showingCancelAlert) {
+            Button("Keep Editing", role: .cancel) { }
+            Button("Discard", role: .destructive) {
+                onDismiss?()
             }
-            .onChange(of: viewModel.isCreated) { created in
-                if created {
-                    onDismiss?()
-                }
+        } message: {
+            Text("Are you sure you want to discard this exercise?")
+        }
+        .onChange(of: viewModel.isCreated) { created in
+            if created {
+                onDismiss?()
             }
+        }
         
     }
 }

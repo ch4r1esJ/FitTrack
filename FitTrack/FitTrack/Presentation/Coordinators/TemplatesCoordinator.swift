@@ -10,22 +10,16 @@ import SwiftUI
 
 class TemplatesCoordinator: Coordinator {
     
-    // MARK: - Properties
-    
     var navigationController: UINavigationController
     private let diContainer: AppDIContainer
     
     private var templateNavController: UINavigationController?
     private var workoutNavController: UINavigationController?
     
-    // MARK: - Init
-    
     init(navigationController: UINavigationController, diContainer: AppDIContainer) {
         self.navigationController = navigationController
         self.diContainer = diContainer
     }
-    
-    // MARK: - Methods
     
     func start() {
         let templatesVC = diContainer.makeTemplatesViewController()
@@ -242,16 +236,16 @@ class TemplatesCoordinator: Coordinator {
             sheet.prefersGrabberVisible = true
         }
         
-        if let workoutNav = workoutNavController {
+        if let workoutNav = workoutNavController, workoutNav.view.window != nil {
             workoutNav.present(hostingController, animated: true)
-        } else if let templateNav = templateNavController {
+        } else if let templateNav = templateNavController, templateNav.view.window != nil {
             templateNav.present(hostingController, animated: true)
         }
     }
     
-    private func makeExerciseViewController() -> ExerciesViewController {
+    private func makeExerciseViewController() -> ExercisesViewController {
         let viewModel = diContainer.makeExerciseViewModel()
-        let exerciseVC = ExerciesViewController(viewModel: viewModel, diContainer: diContainer)
+        let exerciseVC = ExercisesViewController(viewModel: viewModel, diContainer: diContainer)
         
         exerciseVC.onCreateExerciseTapped = { [weak self] in
             self?.showCustomExerciseCreation()
@@ -272,9 +266,9 @@ class TemplatesCoordinator: Coordinator {
         let hostingController = UIHostingController(rootView: customExerciseView)
         hostingController.modalPresentationStyle = .fullScreen
         
-        if let workoutNav = workoutNavController {
+        if let workoutNav = workoutNavController, workoutNav.view.window != nil {
             workoutNav.present(hostingController, animated: true)
-        } else if let templateNav = templateNavController {
+        } else if let templateNav = templateNavController, templateNav.view.window != nil {
             templateNav.present(hostingController, animated: true)
         }
     }

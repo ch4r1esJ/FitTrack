@@ -11,24 +11,17 @@ import FirebaseAuth
 
 class AppCoordinator: Coordinator {
     
-    // MARK: - Properties
-    
     var navigationController: UINavigationController
     
     private var cancellables = Set<AnyCancellable>()
-    
     private let diContainer: AppDIContainer
     private var authCoordinator: AuthCoordinator?
     private var tabBarCoordinator: TabBarCoordinator?
-    
-    // MARK: - Init
     
     init(navigationController: UINavigationController, diContainer: AppDIContainer) {
         self.navigationController = navigationController
         self.diContainer = diContainer
     }
-    
-    // MARK: - Methods
     
     func start() {
         if Auth.auth().currentUser != nil {

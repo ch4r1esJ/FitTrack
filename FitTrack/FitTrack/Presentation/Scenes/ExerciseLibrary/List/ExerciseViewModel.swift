@@ -9,8 +9,6 @@ import Foundation
 
 class ExerciseViewModel {
     
-    // MARK: - Properties
-    
     private(set) var selectedExercises: Set<String> = []
     private(set) var filteredExercises: [Exercise] = []
     private(set) var isLoading: Bool = false
@@ -31,14 +29,10 @@ class ExerciseViewModel {
     var onEquipmentChanged: ((String?) -> Void)?
     var onSelectionUpdated: ((Int) -> Void)?
     
-    // MARK: - Init
-    
     init(exerciseService: ExerciseRepositoryProtocol, userId: String) {
         self.exerciseService = exerciseService
         self.userId = userId
     }
-    
-    // MARK: - Methods
     
     func isSelected(_ exercise: Exercise) -> Bool {
         return selectedExercises.contains(exercise.id)

@@ -9,8 +9,6 @@ import Foundation
 
 final class AppDIContainer {
     
-    // Repositories
-    
     lazy var authRepository: AuthRepositoryProtocol = {
         FirebaseAuthRepository()
     }()
@@ -39,7 +37,9 @@ final class AppDIContainer {
         HealthKitService()
     }()
     
-    // Services
+    lazy var healthKitActivityRepository: HealthKitActivityRepositoryProtocol = {
+        HealthKitActivityRepository()
+    }()
     
     private lazy var backgroundAudioService: BackgroundAudioService = {
         BackgroundAudioService()
@@ -56,16 +56,12 @@ final class AppDIContainer {
         NotificationService()
     }()
     
-    // Observers
-    
     lazy var workoutStateObserver: WorkoutStateObserver = {
         WorkoutStateObserver(
             workoutStateRepository: workoutStateRepository,
             liveActivityService: liveActivityService
         )
     }()
-    
-    // Auth
     
     func makeLoginViewModel() -> LoginViewModel {
         LoginViewModel(authService: authRepository)
@@ -75,8 +71,6 @@ final class AppDIContainer {
         RegisterViewModel(authService: authRepository)
     }
     
-    // Exercise Library
-    
     func makeExerciseViewModel() -> ExerciseViewModel {
         let currentUserId = authRepository.currentUser?.id ?? ""
         return ExerciseViewModel(
@@ -85,9 +79,9 @@ final class AppDIContainer {
         )
     }
     
-    func makeExerciseViewController() -> ExerciesViewController {
+    func makeExerciseViewController() -> ExercisesViewController {
         let viewModel = makeExerciseViewModel()
-        return ExerciesViewController(viewModel: viewModel, diContainer: self)
+        return ExercisesViewController(viewModel: viewModel, diContainer: self)
     }
     
     func makeCustomExerciseViewModel() -> CustomExerciseViewModel {
@@ -97,8 +91,6 @@ final class AppDIContainer {
             userId: currentUserId
         )
     }
-    
-    // Templates
     
     func makeTemplatesViewModel() -> TemplatesViewModel {
         TemplatesViewModel(
@@ -119,8 +111,6 @@ final class AppDIContainer {
         )
     }
     
-    // Active Workouts
-    
     func makeActiveWorkoutViewModel() -> ActiveWorkoutViewModel {
         let restTimer = RestTimerManager(
             restTimerRepository: restTimerRepository,
@@ -137,8 +127,6 @@ final class AppDIContainer {
             restTimer: restTimer
         )
     }
-    
-    // Workout History
     
     func makeWorkoutHistoryViewModel() -> WorkoutHistoryViewModel {
         let currentUserId = authRepository.currentUser?.id ?? "No User"
@@ -166,5 +154,18 @@ final class AppDIContainer {
     func makeWorkoutStatsView() -> WorkoutStatsView {
         let viewModel = makeWorkoutStatsViewModel()
         return WorkoutStatsView(viewModel: viewModel)
+    }
+    
+    func makeHomeViewModel() -> HomeViewModel {
+        HomeViewModel(
+            healthKitActivityRepository: healthKitActivityRepository,
+            authRepository: authRepository
+        )
+    }
+    
+    func makeMonthWorkoutsViewModel() -> MonthWorkoutsViewModel {
+        MonthWorkoutsViewModel(
+            healthKitActivityRepository: healthKitActivityRepository
+        )
     }
 }

@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var viewModel = HomeViewModel()
+    @StateObject var viewModel: HomeViewModel
     var onProfileTapped: (() -> Void)?
+    var makeMonthWorkoutsView: () -> MonthWorkoutsView
     @State var showAllActivities = false
     let backgroundColor = Color(uiColor: .systemGray6)
+    
+    init(
+        viewModel: HomeViewModel,
+        makeMonthWorkoutsView: @escaping () -> MonthWorkoutsView
+    ) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.makeMonthWorkoutsView = makeMonthWorkoutsView
+    }
     
     var body: some View {
         NavigationStack {
@@ -133,7 +142,7 @@ struct HomeView: View {
                             Spacer()
                             
                             NavigationLink {
-                                MonthWorkoutsView()
+                                makeMonthWorkoutsView()
                             } label: {
                                 Text("Show more")
                                     .padding(.all, 10)

@@ -8,7 +8,6 @@
 import UIKit
 
 class ExerciseCell: UICollectionViewCell {
-    // MARK: - Properties
     
     var onDetailsTapped: (() -> Void)?
     
@@ -59,12 +58,12 @@ class ExerciseCell: UICollectionViewCell {
         let image = UIImage(named: "backButton")
         button.setImage(image, for: .normal)
         button.tintColor = .darkGray
-
+        
         button.contentHorizontalAlignment = .fill
         button.contentVerticalAlignment = .fill
         
         button.imageView?.contentMode = .scaleAspectFit
-
+        
         button.addTarget(self, action: #selector(didTapCheck), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -78,8 +77,6 @@ class ExerciseCell: UICollectionViewCell {
         return view
     }()
     
-    // MARK: - Inits
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -89,8 +86,6 @@ class ExerciseCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Lifecycle
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -99,8 +94,6 @@ class ExerciseCell: UICollectionViewCell {
         muscleTagLabel.text = nil
         equipmentTagLabel.text = nil
     }
-    
-    // MARK: - Methods
     
     @objc private func didTapCheck() {
         onDetailsTapped?()
@@ -155,7 +148,7 @@ class ExerciseCell: UICollectionViewCell {
         nameLabel.text = exercise.name
         muscleTagLabel.text = exercise.primaryMuscles.first?.capitalized ?? exercise.muscleGroup
         equipmentTagLabel.text = exercise.equipment
-                
+        
         if exercise.category == "custom" {
             exerciseImageView.image = UIImage(named: exercise.images.first ?? "exercise1")
         } else {
@@ -167,21 +160,10 @@ class ExerciseCell: UICollectionViewCell {
     
     private func changeAppearance(_ isSelected: Bool) {
         if isSelected {
-            containerview.backgroundColor = UIColor(
-                    red: 235/255.0,
-                    green: 245/255.0,
-                    blue: 255/255.0,
-                    alpha: 1.0
-                )
-            containerview.layer.borderColor = UIColor(
-                    red: 170/255.0,
-                    green: 210/255.0,
-                    blue: 255/255.0,
-                    alpha: 1.0
-                ).cgColor
-            
+            containerview.backgroundColor = UIColor(red: 235/255.0, green: 245/255.0, blue: 255/255.0, alpha: 1.0)
+            containerview.layer.borderColor = UIColor(red: 170/255.0, green: 210/255.0, blue: 255/255.0, alpha: 1.0).cgColor
             containerview.layer.borderWidth = 2
-          
+            
             layer.masksToBounds = false
             layer.shadowOpacity = 0.5
             

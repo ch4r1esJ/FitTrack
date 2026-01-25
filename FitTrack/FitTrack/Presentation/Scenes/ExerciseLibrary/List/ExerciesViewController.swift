@@ -9,9 +9,7 @@ import UIKit
 import SwiftUI
 import Combine
 
-class ExerciesViewController: UIViewController {
-    
-    // MARK: - Properties
+class ExercisesViewController: UIViewController {
     
     private let viewModel: ExerciseViewModel
     lazy var filterView = FilterView(viewModel: viewModel)
@@ -22,16 +20,12 @@ class ExerciesViewController: UIViewController {
         
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
-        
         let image = UIImage(named: "backButton")
         button.setImage(image, for: .normal)
         button.tintColor = .darkGray
-        
         button.contentHorizontalAlignment = .fill
         button.contentVerticalAlignment = .fill
-        
         button.imageView?.contentMode = .scaleAspectFit
-        
         button.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -72,18 +66,6 @@ class ExerciesViewController: UIViewController {
         return label
     }()
     
-    @objc private func didTapBack() {
-        onAddExerciseTapped?()
-    }
-    
-    private let addedExerciseCount: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .medium)
-        label.textColor = .systemGray
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     private lazy var addButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Create", for: .normal)
@@ -114,8 +96,6 @@ class ExerciesViewController: UIViewController {
         return button
     }()
     
-    // MARK: - Init
-    
     init(viewModel: ExerciseViewModel, diContainer: AppDIContainer) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -124,8 +104,6 @@ class ExerciesViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -138,25 +116,23 @@ class ExerciesViewController: UIViewController {
         navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
-    // MARK: - Methods
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-        
         viewModel.fetchExercises()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
-    
-    func updateCount(_ count: Int) {
-        addedExerciseCount.text = "(\(count))"
+    @objc private func didTapBack() {
+        onAddExerciseTapped?()
     }
     
     @objc private func didTapCreate() {
         onCreateExerciseTapped?()
+    }
+    
+    @objc private func didTapFloatingAdd() {
+        let selectedExercises = viewModel.getSelectedExercises()
+        didSelectExercises?(selectedExercises)
     }
     
     private func showError(_ message: String) {
@@ -175,10 +151,6 @@ class ExerciesViewController: UIViewController {
         }
         
         viewModel.onSelectionUpdated = { [weak self] count in
-            self?.updateCount(count)
-        }
-        
-        viewModel.onSelectionUpdated = { [weak self] _ in
             self?.updateFloatingButton()
         }
     }
@@ -206,11 +178,6 @@ class ExerciesViewController: UIViewController {
         }
     }
     
-    @objc private func didTapFloatingAdd() {
-        let selectedExercises = viewModel.getSelectedExercises()
-        didSelectExercises?(selectedExercises)
-    }
-    
     private func registerCell() {
         exerciseList.register(ExerciseCell.self, forCellWithReuseIdentifier: "ExerciseCell")
         exerciseList.dataSource = self
@@ -220,7 +187,6 @@ class ExerciesViewController: UIViewController {
     private func setupView() {
         view.addSubview(backButton)
         view.addSubview(titleLabel)
-        view.addSubview(addedExerciseCount)
         view.addSubview(addButton)
         view.addSubview(searchBar)
         view.addSubview(filterView)
@@ -237,10 +203,7 @@ class ExerciesViewController: UIViewController {
             
             titleLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 55),
-            
-            addedExerciseCount.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            addedExerciseCount.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 8),
-            
+                        
             addButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
             addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
@@ -251,7 +214,7 @@ class ExerciesViewController: UIViewController {
             filterView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 5),
             filterView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
             filterView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
-            filterView.heightAnchor.constraint(equalToConstant: 48),
+            filterView.heightAnchor.constraint(equalToConstant: 45),
             
             exerciseList.topAnchor.constraint(equalTo: filterView.bottomAnchor, constant: 8),
             exerciseList.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
@@ -268,7 +231,7 @@ class ExerciesViewController: UIViewController {
     }
 }
 
-extension ExerciesViewController: UISearchBarDelegate {
+extension ExercisesViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         viewModel.updateSearchText(searchText)
@@ -279,7 +242,7 @@ extension ExerciesViewController: UISearchBarDelegate {
     }
 }
 
-extension ExerciesViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension ExercisesViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.filteredExercises.count
     }
@@ -315,7 +278,7 @@ extension ExerciesViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 }
 
-extension ExerciesViewController: UIGestureRecognizerDelegate {
+extension ExercisesViewController: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return navigationController?.viewControllers.count ?? 0 > 1
     }

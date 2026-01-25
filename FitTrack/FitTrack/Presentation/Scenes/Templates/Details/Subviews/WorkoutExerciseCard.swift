@@ -58,7 +58,6 @@ struct WorkoutExerciseCard: View {
             
             RestTimerPicker(selection: $defaultRestTime)
                 .onChange(of: defaultRestTime) { oldValue, newValue in
-                    // Update ALL existing sets when rest time changes
                     viewModel.updateRestTime(for: exercise.id, to: newValue)
                 }
             

@@ -11,9 +11,10 @@ import HealthKit
 
 class HomeViewModel: ObservableObject {
     
-    let healthManager = HealthManager.shared
-    private let authService = FirebaseAuthRepository()
+    private let healthKitActivityRepository: HealthKitActivityRepositoryProtocol
+    private let authRepository: AuthRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
+    
     @Published var userName: String = ""
     @Published var profileImage: String = "avatar1"
     
@@ -28,21 +29,21 @@ class HomeViewModel: ObservableObject {
     @Published var activities = [Activities]()
     @Published var workouts = [Workout]()
     
-    init() {
+    init(
+        healthKitActivityRepository: HealthKitActivityRepositoryProtocol,
+        authRepository: AuthRepositoryProtocol
+    ) {
+        self.healthKitActivityRepository = healthKitActivityRepository
+        self.authRepository = authRepository
+        
         Task {
             fetchUserName()
             fetchProfileImage()
+            
             do {
-                try await healthManager.requestHealthKitAccess()
-                //                fetchTodayCalories()
-                fetchActivityRings()
-                //                fetchTodayExerciseTime()
-                //                fetchTodayStandHours()
-                fetchTodaysSteps()
-                fetchCurrentWeekActivities()
-                fetchRecentWorkouts()
+                try await healthKitActivityRepository.requestAuthorization()
+                await fetchAllHealthData()
             } catch {
-                print(error.localizedDescription)
             }
         }
     }
@@ -74,140 +75,125 @@ class HomeViewModel: ObservableObject {
     }
     
     func fetchUserName() {
-        if let user = authService.currentUser {
+        if let user = authRepository.currentUser {
             self.userName = user.name
         } else {
             self.userName = "Guest"
         }
     }
     
-    func fetchActivityRings() {
-        healthManager.startObservingActivitySummary { result in
-            switch result {
-            case .success(let summary):
-                DispatchQueue.main.async {
-                    let calValue = summary.activeEnergyBurned.doubleValue(for: .kilocalorie())
-                    let exValue = summary.appleExerciseTime.doubleValue(for: .minute())
-                    let standValue = summary.appleStandHours.doubleValue(for: .count())
+    private func fetchAllHealthData() async {
+        await fetchActivityRings()
+        await fetchTodaysSteps()
+        await fetchCurrentWeekActivities()
+        await fetchRecentWorkouts()
+    }
+    
+    private func fetchActivityRings() async {
+        do {
+            let summary = try await healthKitActivityRepository.fetchActivitySummary()
+            
+            await MainActor.run {
+                let calValue = summary.activeEnergyBurned.doubleValue(for: .kilocalorie())
+                let exValue = summary.appleExerciseTime.doubleValue(for: .minute())
+                let standValue = summary.appleStandHours.doubleValue(for: .count())
+                
+                let calGoal = summary.activeEnergyBurnedGoal.doubleValue(for: .kilocalorie())
+                let exGoal = summary.appleExerciseTimeGoal.doubleValue(for: .minute())
+                let standGoal = summary.appleStandHoursGoal.doubleValue(for: .count())
+                
+                withAnimation {
+                    self.calories = Int(calValue)
+                    self.exercise = Int(exValue)
+                    self.stand = Int(standValue)
                     
-                    let calGoal = summary.activeEnergyBurnedGoal.doubleValue(for: .kilocalorie())
-                    let exGoal = summary.appleExerciseTimeGoal.doubleValue(for: .minute())
-                    let standGoal = summary.appleStandHoursGoal.doubleValue(for: .count())
-                    
-                    withAnimation {
-                        self.calories = Int(calValue)
-                        self.exercise = Int(exValue)
-                        self.stand = Int(standValue)
-                        
-                        self.calorieGoal = Int(calGoal)
-                        self.exerciseGoal = Int(exGoal)
-                        self.standGoal = Int(standGoal)
-                    }
-                    
-                    self.activities.removeAll(where: { $0.title == "Today calories" })
-                    
-                    let activity = Activities(
-                        title: "Today calories",
-                        subtitle: "Goal: \(Int(calGoal))",
-                        image: "flame",
-                        tintColor: .red,
-                        amount: calValue.formattedNumbersString()
+                    self.calorieGoal = Int(calGoal)
+                    self.exerciseGoal = Int(exGoal)
+                    self.standGoal = Int(standGoal)
+                }
+                
+                self.activities.removeAll(where: { $0.title == "Today calories" })
+                
+                let activity = Activities(
+                    title: "Today calories",
+                    subtitle: "Goal: \(Int(calGoal))",
+                    image: "flame",
+                    tintColor: .red,
+                    amount: calValue.formattedNumbersString()
+                )
+                self.activities.append(activity)
+            }
+        } catch {
+        }
+    }
+    
+    private func fetchTodaysSteps() async {
+        do {
+            let steps = try await healthKitActivityRepository.fetchTodaySteps()
+            
+            await MainActor.run {
+                let activity = Activities(
+                    title: "Today Steps",
+                    subtitle: "Goal: 10000",
+                    image: "figure.walk",
+                    tintColor: .green,
+                    amount: steps.formattedNumbersString()
+                )
+                self.activities.append(activity)
+            }
+        } catch {
+            await MainActor.run {
+                let activity = Activities(
+                    title: "Today Steps",
+                    subtitle: "Goal: 10000",
+                    image: "figure.walk",
+                    tintColor: .green,
+                    amount: "---"
+                )
+                self.activities.append(activity)
+            }
+        }
+    }
+    
+    private func fetchCurrentWeekActivities() async {
+        do {
+            let stats = try await healthKitActivityRepository.fetchCurrentWeekWorkoutStats()
+            
+            await MainActor.run {
+                let activities = stats.map { stat -> Activities in
+                    let (title, image, color) = stat.type.displayInfo
+                    return Activities(
+                        title: title,
+                        subtitle: "This week",
+                        image: image,
+                        tintColor: color,
+                        amount: "\(stat.durationMinutes) min"
                     )
-                    self.activities.append(activity)
                 }
-                
-            case .failure(let error):
-                print("Failed to fetch summary: \(error.localizedDescription)")
+                self.activities.append(contentsOf: activities)
             }
+        } catch {
         }
     }
     
-    func fetchTodayCalories() {
-        healthManager.fetchTodayCaloriesBurned { result in
-            switch result {
-            case .success(let calories):
-                DispatchQueue.main.async {
-                    self.calories = Int(calories)
-                    let activity = Activities(title: "Today calories", subtitle: "today", image: "flame", tintColor: .red, amount: calories.formattedNumbersString())
-                    self.activities.append(activity)
+    private func fetchRecentWorkouts() async {
+        do {
+            let workoutSummaries = try await healthKitActivityRepository.fetchWorkoutsForMonth(Date())
+            
+            await MainActor.run {
+                self.workouts = Array(workoutSummaries.prefix(4)).map { summary in
+                    Workout(
+                        title: summary.title,
+                        image: summary.imageName,
+                        tintcolor: summary.color.toColor(),
+                        duration: "\(summary.durationMinutes) min",
+                        date: summary.date,
+                        calories: summary.calories.map { "\($0.formattedNumbersString()) kcal" } ?? "---",
+                        isFromFitTrack: summary.isFromFitTrack
+                    )
                 }
-                
-            case .failure(let failure):
-                DispatchQueue.main.async {
-                    let activity = Activities(title: "Today calories", subtitle: "today", image: "flame", tintColor: .red, amount: "---")
-                    self.activities.append(activity)
-                }
-                print(failure.localizedDescription)
             }
-        }
-    }
-    
-    func fetchTodayExerciseTime() {
-        healthManager.fetchTodayExerciseTime { result in
-            switch result {
-            case .success(let exercise):
-                DispatchQueue.main.async {
-                    self.exercise = Int(exercise)
-                }
-                
-            case .failure(let failure):
-                print(failure.localizedDescription)
-            }
-        }
-    }
-    
-    func fetchTodayStandHours() {
-        healthManager.fetchTodayStandHours { result in
-            switch result {
-            case .success(let hours):
-                DispatchQueue.main.async {
-                    self.stand = Int(hours)
-                }
-            case .failure(let failure):
-                print(failure.localizedDescription)
-            }
-        }
-    }
-    
-    func fetchTodaysSteps() {
-        healthManager.fetchTodaySteps { result in
-            switch result {
-            case .success(let activity):
-                DispatchQueue.main.async {
-                    self.activities.append(activity)
-                }
-            case .failure(let failure):
-                DispatchQueue.main.async {
-                    self.activities.append(Activities(title: "Today Steps", subtitle: "Goal: 10000", image: "figure.walk", tintColor: .green, amount: "---"))
-                }
-                print(failure.localizedDescription)
-            }
-        }
-    }
-    
-    func fetchCurrentWeekActivities() {
-        healthManager.fetchCurrentWeekWorkoutStats { result in
-            switch result {
-            case .success(let activities):
-                DispatchQueue.main.async {
-                    self.activities.append(contentsOf: activities)
-                }
-            case .failure(let failure):
-                print(failure.localizedDescription)
-            }
-        }
-    }
-    
-    func fetchRecentWorkouts() {
-        healthManager.fetchWorkoutsForMonth(month: Date()) { result in
-            switch result {
-            case .success(let workouts):
-                DispatchQueue.main.async {
-                    self.workouts = Array(workouts.prefix(4))
-                }
-            case .failure(let failure):
-                print(failure.localizedDescription)
-            }
+        } catch {
         }
     }
 }

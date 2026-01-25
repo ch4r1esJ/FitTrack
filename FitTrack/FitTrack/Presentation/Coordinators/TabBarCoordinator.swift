@@ -11,8 +11,6 @@ import Combine
 
 class TabBarCoordinator: Coordinator {
     
-    // MARK: - Properties
-    
     var navigationController: UINavigationController
     weak var parentCoordinator: AppCoordinator?
     
@@ -23,8 +21,6 @@ class TabBarCoordinator: Coordinator {
     
     private var childCoordinators = [Coordinator]()
     
-    // MARK: - Init
-    
     init(
         navigationController: UINavigationController,
         authRepository: AuthRepositoryProtocol,
@@ -34,8 +30,6 @@ class TabBarCoordinator: Coordinator {
         self.authRepository = authRepository
         self.diContainer = diContainer
     }
-    
-    // MARK: - Methods
     
     func start() {
         tabBarController = MainTabBarController(
@@ -99,7 +93,13 @@ class TabBarCoordinator: Coordinator {
             selectedImage: UIImage(systemName: "person.circle.fill")
         )
         
-        let homeView = HomeView()
+        let homeViewModel = diContainer.makeHomeViewModel()
+        let homeView = HomeView(
+            viewModel: homeViewModel,
+            makeMonthWorkoutsView: { [diContainer] in
+                MonthWorkoutsView(viewModel: diContainer.makeMonthWorkoutsViewModel())
+            }
+        )
         let homeVc = UIHostingController(rootView: homeView)
         homeVc.tabBarItem = UITabBarItem(
             title: "Home",

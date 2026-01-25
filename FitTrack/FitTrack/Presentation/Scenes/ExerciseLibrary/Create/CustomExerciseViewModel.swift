@@ -22,63 +22,28 @@ class CustomExerciseViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isCreated: Bool = false
     
-    // MARK: - Properties
     private let exerciseService: ExerciseRepositoryProtocol
     private let userId: String
     
     let availableImages = [
-        "exercise1",
-        "exercise2",
-        "exercise3",
-        "exercise4",
-        "exercise5",
-        "exercise6",
-        "exercise7",
-        "exercise8",
-        "exercise9",
-        "exercise10",
-        "exercise11",
-        "exercise12",
-        "exercise13",
-        "exercise14",
-        "exercise15",
-        "exercise16",
-        "exercise17",
-        "exercise18",
-        "exercise19",
-        "exercise20",
+        "exercise1", "exercise2", "exercise3", "exercise4", "exercise5",
+        "exercise6", "exercise7", "exercise8", "exercise9", "exercise10",
+        "exercise11", "exercise12", "exercise13", "exercise14", "exercise15",
+        "exercise16", "exercise17", "exercise18", "exercise19", "exercise20",
         "exercise21"
     ]
     
     let muscleGroups = [
-        "Chest",
-        "Back",
-        "Shoulders",
-        "Arms",
-        "Legs",
-        "Core",
-        "Cardio",
-        "Full Body",
-        "Other"
+        "Chest", "Back", "Shoulders", "Arms", "Legs",
+        "Core", "Cardio", "Full Body", "Other"
     ]
     
     let equipmentTypes = [
-        "Body Only",
-        "Barbell",
-        "Dumbbell",
-        "Machine",
-        "Cable",
-        "Kettlebell",
-        "Bands",
-        "Medicine Ball",
-        "Other"
+        "Body Only", "Barbell", "Dumbbell", "Machine", "Cable",
+        "Kettlebell", "Bands", "Medicine Ball", "Other"
     ]
     
-    let difficultyLevels = [
-        "Beginner",
-        "Intermediate",
-        "Expert"
-    ]
+    let difficultyLevels = ["Beginner", "Intermediate", "Expert"]
     
     var isFormValid: Bool {
         !exerciseName.trimmingCharacters(in: .whitespaces).isEmpty &&
@@ -94,13 +59,11 @@ class CustomExerciseViewModel: ObservableObject {
         instructions.contains(where: { !$0.isEmpty })
     }
     
-    // MARK: - Init
     init(exerciseService: ExerciseRepositoryProtocol, userId: String) {
         self.exerciseService = exerciseService
         self.userId = userId
     }
     
-    // MARK: - Methods
     func toggleSecondaryMuscle(_ muscle: String) {
         if let index = secondaryMuscles.firstIndex(of: muscle) {
             secondaryMuscles.remove(at: index)
@@ -131,7 +94,6 @@ class CustomExerciseViewModel: ObservableObject {
         errorMessage = nil
         
         let validInstructions = instructions.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
-        
         let exerciseId = UUID().uuidString
         
         let customExercise = Exercise(
