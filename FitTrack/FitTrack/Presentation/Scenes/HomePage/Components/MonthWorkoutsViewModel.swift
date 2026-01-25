@@ -68,11 +68,3 @@ class MonthWorkoutsViewModel: ObservableObject {
         }
     }
 }
-
-extension Date {
-    func monthAndYearFormat() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM YYYY"
-        return formatter.string(from: self)
-    }
-}

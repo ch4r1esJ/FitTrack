@@ -9,14 +9,14 @@ import Foundation
 
 class ExerciseViewModel {
     
-    private(set) var selectedExercises: Set<String> = []
-    private(set) var filteredExercises: [Exercise] = []
-    private(set) var isLoading: Bool = false
-    private(set) var errorMessage: String?
+    var selectedExercises: Set<String> = []
+    var filteredExercises: [Exercise] = []
+    var isLoading: Bool = false
+    var errorMessage: String?
     
-    private(set) var selectedMuscleGroup: String? = nil
-    private(set) var selectedEquipment: String? = nil
-    private var searchText: String = ""
+    var selectedMuscleGroup: String? = nil
+    var selectedEquipment: String? = nil
+    var searchText: String = ""
     
     private var allExercises: [Exercise] = []
     private var customExercises: [Exercise] = []
@@ -94,22 +94,22 @@ class ExerciseViewModel {
     
     func updateSearchText(_ text: String) {
         searchText = text
-        applyFilters()
+        filterExercises()
     }
     
     func selectMuscleGroup(_ value: String?) {
         selectedMuscleGroup = value
         onMuscleGroupChanged?(value)
-        applyFilters()
+        filterExercises()
     }
     
     func selectEquipment(_ value: String?) {
         selectedEquipment = value
         onEquipmentChanged?(value)
-        applyFilters()
+        filterExercises()
     }
     
-    private func applyFilters() {
+    private func filterExercises() {
         var filtered = customExercises + allExercises
         
         if !searchText.isEmpty {

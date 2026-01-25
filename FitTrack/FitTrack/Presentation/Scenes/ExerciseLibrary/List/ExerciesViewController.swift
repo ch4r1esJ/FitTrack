@@ -13,91 +13,31 @@ class ExercisesViewController: UIViewController {
     
     private let viewModel: ExerciseViewModel
     lazy var filterView = FilterView(viewModel: viewModel)
+    
     var onAddExerciseTapped: (() -> Void)?
     var didSelectExercises: (([Exercise]) -> Void)?
     var onShowExerciseDetails: ((Exercise) -> Void)?
     var onCreateExerciseTapped: (() -> Void)?
+    
+    private let backButton = UIButton(type: .custom)
+    private let searchBar = UISearchBar()
+    private let exerciseList: UICollectionView
+    private let titleLabel = UILabel()
+    private let addButton = UIButton(type: .system)
+    private let floatingAddButton = UIButton(type: .system)
+    
+    init(viewModel: ExerciseViewModel, diContainer: AppDIContainer) {
+        self.viewModel = viewModel
         
-    private lazy var backButton: UIButton = {
-        let button = UIButton(type: .custom)
-        let image = UIImage(named: "backButton")
-        button.setImage(image, for: .normal)
-        button.tintColor = .darkGray
-        button.contentHorizontalAlignment = .fill
-        button.contentVerticalAlignment = .fill
-        button.imageView?.contentMode = .scaleAspectFit
-        button.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private lazy var searchBar: UISearchBar = {
-        let sb = UISearchBar()
-        sb.placeholder = "Search exercises"
-        sb.backgroundImage = UIImage()
-        sb.searchBarStyle = .minimal
-        sb.delegate = self
-        sb.translatesAutoresizingMaskIntoConstraints = false
-        return sb
-    }()
-    
-    private let exerciseList: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 10
-        
         let screenHeight = UIScreen.main.bounds.height
         let screenWidth = UIScreen.main.bounds.width
         layout.itemSize = CGSize(width: screenWidth * 0.94, height: screenHeight * 0.12)
         
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.backgroundColor = .systemGray6
-        view.showsVerticalScrollIndicator = false
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Exercise Library"
-        label.font = .systemFont(ofSize: 24, weight: .bold)
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private lazy var addButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Create", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
-        button.setTitleColor(.systemBlue, for: .normal)
-        button.addTarget(self, action: #selector(didTapCreate), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private lazy var floatingAddButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.backgroundColor = .systemBlue
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
-        button.layer.cornerRadius = 25
+        self.exerciseList = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.3
-        button.layer.shadowOffset = CGSize(width: 0, height: 4)
-        button.layer.shadowRadius = 6
-        
-        button.alpha = 0
-        button.transform = CGAffineTransform(translationX: 0, y: 50)
-        
-        button.addTarget(self, action: #selector(didTapFloatingAdd), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    init(viewModel: ExerciseViewModel, diContainer: AppDIContainer) {
-        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -109,8 +49,8 @@ class ExercisesViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
         
-        setupView()
-        registerCell()
+        setupUI()
+        setupCollectionView()
         bindViewModel()
         viewModel.fetchExercises()
         navigationController?.interactivePopGestureRecognizer?.delegate = self
@@ -122,69 +62,52 @@ class ExercisesViewController: UIViewController {
         viewModel.fetchExercises()
     }
     
-    @objc private func didTapBack() {
-        onAddExerciseTapped?()
-    }
-    
-    @objc private func didTapCreate() {
-        onCreateExerciseTapped?()
-    }
-    
-    @objc private func didTapFloatingAdd() {
-        let selectedExercises = viewModel.getSelectedExercises()
-        didSelectExercises?(selectedExercises)
-    }
-    
-    private func showError(_ message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-    
-    private func bindViewModel() {
-        viewModel.onExercisesUpdated = { [weak self] in
-            self?.exerciseList.reloadData()
-        }
+    private func setupUI() {
+        backButton.setImage(UIImage(named: "backButton"), for: .normal)
+        backButton.tintColor = .darkGray
+        backButton.contentHorizontalAlignment = .fill
+        backButton.contentVerticalAlignment = .fill
+        backButton.imageView?.contentMode = .scaleAspectFit
+        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
         
-        viewModel.onError = { [weak self] message in
-            self?.showError(message)
-        }
+        titleLabel.text = "Exercise Library"
+        titleLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        titleLabel.textColor = .black
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        viewModel.onSelectionUpdated = { [weak self] count in
-            self?.updateFloatingButton()
-        }
-    }
-    
-    private func updateFloatingButton() {
-        let title = viewModel.addButtonTitle
-        let isVisible = viewModel.isAddButtonVisible
+        addButton.setTitle("Create", for: .normal)
+        addButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        addButton.setTitleColor(.systemBlue, for: .normal)
+        addButton.addTarget(self, action: #selector(createTapped), for: .touchUpInside)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
         
-        floatingAddButton.setTitle(title, for: .normal)
+        searchBar.placeholder = "Search exercises"
+        searchBar.backgroundImage = UIImage()
+        searchBar.searchBarStyle = .minimal
+        searchBar.delegate = self
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
         
-        UIView.animate(
-            withDuration: 0.3,
-            delay: 0,
-            usingSpringWithDamping: 0.8,
-            initialSpringVelocity: 0.5,
-            options: .curveEaseInOut
-        ) {
-            if isVisible {
-                self.floatingAddButton.alpha = 1
-                self.floatingAddButton.transform = .identity
-            } else {
-                self.floatingAddButton.alpha = 0
-                self.floatingAddButton.transform = CGAffineTransform(translationX: 0, y: 50)
-            }
-        }
-    }
-    
-    private func registerCell() {
-        exerciseList.register(ExerciseCell.self, forCellWithReuseIdentifier: "ExerciseCell")
-        exerciseList.dataSource = self
-        exerciseList.delegate = self
-    }
-    
-    private func setupView() {
+        exerciseList.backgroundColor = .systemGray6
+        exerciseList.showsVerticalScrollIndicator = false
+        exerciseList.translatesAutoresizingMaskIntoConstraints = false
+        exerciseList.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
+        
+        floatingAddButton.backgroundColor = .systemBlue
+        floatingAddButton.setTitleColor(.white, for: .normal)
+        floatingAddButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+        floatingAddButton.layer.cornerRadius = 25
+        floatingAddButton.layer.shadowColor = UIColor.black.cgColor
+        floatingAddButton.layer.shadowOpacity = 0.3
+        floatingAddButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+        floatingAddButton.layer.shadowRadius = 6
+        floatingAddButton.alpha = 0
+        floatingAddButton.transform = CGAffineTransform(translationX: 0, y: 50)
+        floatingAddButton.addTarget(self, action: #selector(floatingAddTapped), for: .touchUpInside)
+        floatingAddButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        filterView.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(addButton)
@@ -192,8 +115,6 @@ class ExercisesViewController: UIViewController {
         view.addSubview(filterView)
         view.addSubview(exerciseList)
         view.addSubview(floatingAddButton)
-        
-        filterView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
@@ -226,8 +147,68 @@ class ExercisesViewController: UIViewController {
             floatingAddButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             floatingAddButton.heightAnchor.constraint(equalToConstant: 50)
         ])
+    }
+    
+    private func setupCollectionView() {
+        exerciseList.register(ExerciseCell.self, forCellWithReuseIdentifier: "ExerciseCell")
+        exerciseList.dataSource = self
+        exerciseList.delegate = self
+    }
+    
+    private func bindViewModel() {
+        viewModel.onExercisesUpdated = { [weak self] in
+            self?.exerciseList.reloadData()
+        }
         
-        exerciseList.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
+        viewModel.onError = { [weak self] message in
+            self?.showError(message)
+        }
+        
+        viewModel.onSelectionUpdated = { [weak self] count in
+            self?.updateFloatingButton()
+        }
+    }
+    
+    @objc private func backTapped() {
+        onAddExerciseTapped?()
+    }
+    
+    @objc private func createTapped() {
+        onCreateExerciseTapped?()
+    }
+    
+    @objc private func floatingAddTapped() {
+        let selectedExercises = viewModel.getSelectedExercises()
+        didSelectExercises?(selectedExercises)
+    }
+    
+    private func showError(_ message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    private func updateFloatingButton() {
+        let title = viewModel.addButtonTitle
+        let isVisible = viewModel.isAddButtonVisible
+        
+        floatingAddButton.setTitle(title, for: .normal)
+        
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            usingSpringWithDamping: 0.8,
+            initialSpringVelocity: 0.5,
+            options: .curveEaseInOut
+        ) {
+            if isVisible {
+                self.floatingAddButton.alpha = 1
+                self.floatingAddButton.transform = .identity
+            } else {
+                self.floatingAddButton.alpha = 0
+                self.floatingAddButton.transform = CGAffineTransform(translationX: 0, y: 50)
+            }
+        }
     }
 }
 

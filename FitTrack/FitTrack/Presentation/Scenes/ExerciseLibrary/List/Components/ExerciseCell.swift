@@ -1,5 +1,5 @@
 //
-//  Exercise.swift
+//  ExerciseCell.swift
 //  FitTrack
 //
 //  Created by Charles Janjgava on 1/8/26.
@@ -11,75 +11,16 @@ class ExerciseCell: UICollectionViewCell {
     
     var onDetailsTapped: (() -> Void)?
     
-    private let exerciseImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 12
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    private let nameLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let muscleTagLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.font = .systemFont(ofSize: 12, weight: .semibold)
-        label.textColor = .systemBlue
-        label.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
-        label.layer.cornerRadius = 10
-        label.clipsToBounds = true
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let equipmentTagLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.font = .systemFont(ofSize: 12, weight: .semibold)
-        label.textColor = .systemGray
-        label.backgroundColor = UIColor.systemGray5
-        label.layer.cornerRadius = 10
-        label.clipsToBounds = true
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private lazy var checkButton: UIButton = {
-        let button = UIButton(type: .custom)
-        
-        let image = UIImage(named: "backButton")
-        button.setImage(image, for: .normal)
-        button.tintColor = .darkGray
-        
-        button.contentHorizontalAlignment = .fill
-        button.contentVerticalAlignment = .fill
-        
-        button.imageView?.contentMode = .scaleAspectFit
-        
-        button.addTarget(self, action: #selector(didTapCheck), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private let containerview: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGray6
-        view.layer.cornerRadius = 16
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    private let exerciseImageView = UIImageView()
+    private let nameLabel = UILabel()
+    private let muscleTagLabel = PaddingLabel()
+    private let equipmentTagLabel = PaddingLabel()
+    private let checkButton = UIButton(type: .custom)
+    private let containerview = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupView()
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -95,11 +36,7 @@ class ExerciseCell: UICollectionViewCell {
         equipmentTagLabel.text = nil
     }
     
-    @objc private func didTapCheck() {
-        onDetailsTapped?()
-    }
-    
-    private func setupView() {
+    private func setupUI() {
         backgroundColor = .clear
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOpacity = 0.5
@@ -107,8 +44,44 @@ class ExerciseCell: UICollectionViewCell {
         layer.shadowRadius = 4
         layer.masksToBounds = false
         
-        contentView.addSubview(containerview)
+        containerview.backgroundColor = .systemGray6
+        containerview.layer.cornerRadius = 16
+        containerview.translatesAutoresizingMaskIntoConstraints = false
         
+        exerciseImageView.contentMode = .scaleAspectFill
+        exerciseImageView.clipsToBounds = true
+        exerciseImageView.layer.cornerRadius = 12
+        exerciseImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        nameLabel.font = .systemFont(ofSize: 18, weight: .medium)
+        nameLabel.textColor = .black
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        muscleTagLabel.font = .systemFont(ofSize: 12, weight: .semibold)
+        muscleTagLabel.textColor = .systemBlue
+        muscleTagLabel.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
+        muscleTagLabel.layer.cornerRadius = 10
+        muscleTagLabel.clipsToBounds = true
+        muscleTagLabel.textAlignment = .center
+        muscleTagLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        equipmentTagLabel.font = .systemFont(ofSize: 12, weight: .semibold)
+        equipmentTagLabel.textColor = .systemGray
+        equipmentTagLabel.backgroundColor = UIColor.systemGray5
+        equipmentTagLabel.layer.cornerRadius = 10
+        equipmentTagLabel.clipsToBounds = true
+        equipmentTagLabel.textAlignment = .center
+        equipmentTagLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        checkButton.setImage(UIImage(named: "backButton"), for: .normal)
+        checkButton.tintColor = .darkGray
+        checkButton.contentHorizontalAlignment = .fill
+        checkButton.contentVerticalAlignment = .fill
+        checkButton.imageView?.contentMode = .scaleAspectFit
+        checkButton.addTarget(self, action: #selector(didTapCheck), for: .touchUpInside)
+        checkButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(containerview)
         containerview.addSubview(exerciseImageView)
         containerview.addSubview(nameLabel)
         containerview.addSubview(muscleTagLabel)
@@ -144,6 +117,10 @@ class ExerciseCell: UICollectionViewCell {
         ])
     }
     
+    @objc private func didTapCheck() {
+        onDetailsTapped?()
+    }
+    
     func configure(with exercise: Exercise, isSelected: Bool) {
         nameLabel.text = exercise.name
         muscleTagLabel.text = exercise.primaryMuscles.first?.capitalized ?? exercise.muscleGroup
@@ -155,34 +132,25 @@ class ExerciseCell: UICollectionViewCell {
             exerciseImageView.loadImage(from: exercise.thumbnailURL)
         }
         
-        changeAppearance(isSelected)
+        updateSelection(isSelected)
     }
     
-    private func changeAppearance(_ isSelected: Bool) {
+    private func updateSelection(_ isSelected: Bool) {
         if isSelected {
             containerview.backgroundColor = UIColor(red: 235/255.0, green: 245/255.0, blue: 255/255.0, alpha: 1.0)
             containerview.layer.borderColor = UIColor(red: 170/255.0, green: 210/255.0, blue: 255/255.0, alpha: 1.0).cgColor
             containerview.layer.borderWidth = 2
             
-            layer.masksToBounds = false
-            layer.shadowOpacity = 0.5
-            
-            let checkedImage = UIImage(systemName: "checkmark")
-            checkButton.setImage(checkedImage, for: .normal)
+            checkButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
             checkButton.tintColor = .systemBlue
-            
             checkButton.isUserInteractionEnabled = false
         } else {
             containerview.backgroundColor = .white
             containerview.layer.borderColor = UIColor.clear.cgColor
             containerview.layer.borderWidth = 0
-            layer.masksToBounds = false
-            layer.shadowOpacity = 0.5
             
-            let uncheckedImage = UIImage(systemName: "questionmark.circle.fill")
-            checkButton.setImage(uncheckedImage, for: .normal)
+            checkButton.setImage(UIImage(systemName: "questionmark.circle.fill"), for: .normal)
             checkButton.tintColor = .systemGray
-            
             checkButton.isUserInteractionEnabled = true
         }
     }
