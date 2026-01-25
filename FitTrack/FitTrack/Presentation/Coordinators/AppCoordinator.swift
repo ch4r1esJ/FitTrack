@@ -10,19 +10,25 @@ import Combine
 import FirebaseAuth
 
 class AppCoordinator: Coordinator {
+    
+    // MARK: - Properties
+    
     var navigationController: UINavigationController
     
     private var cancellables = Set<AnyCancellable>()
     
     private let diContainer: AppDIContainer
     private var authCoordinator: AuthCoordinator?
-    
     private var tabBarCoordinator: TabBarCoordinator?
     
-    init(navigationController: UINavigationController, authDIContainer: AppDIContainer) {
+    // MARK: - Init
+    
+    init(navigationController: UINavigationController, diContainer: AppDIContainer) {
         self.navigationController = navigationController
-        self.diContainer = authDIContainer
+        self.diContainer = diContainer
     }
+    
+    // MARK: - Methods
     
     func start() {
         if Auth.auth().currentUser != nil {
@@ -35,7 +41,7 @@ class AppCoordinator: Coordinator {
     func showAuth() {
         let authCoordinator = AuthCoordinator(
             navigationController: navigationController,
-            diContainer: diContainer 
+            diContainer: diContainer
         )
         
         authCoordinator.parentCoordinator = self
@@ -49,7 +55,7 @@ class AppCoordinator: Coordinator {
         
         let tabBarCoordinator = TabBarCoordinator(
             navigationController: navigationController,
-            authService: diContainer.authService,
+            authRepository: diContainer.authRepository,
             diContainer: diContainer
         )
         

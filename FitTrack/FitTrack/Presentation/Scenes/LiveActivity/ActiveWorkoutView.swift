@@ -105,7 +105,6 @@ struct ActiveWorkoutView: View {
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.restTimer.isActive)
         .onAppear {
             viewModel.resumeTimerIfNeeded()
-            NotificationManager.shared.requestPermission()
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             if newPhase == .active {

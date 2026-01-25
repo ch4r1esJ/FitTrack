@@ -9,7 +9,9 @@ import UIKit
 import SwiftUI
 
 class TemplatesCoordinator: Coordinator {
+    
     // MARK: - Properties
+    
     var navigationController: UINavigationController
     private let diContainer: AppDIContainer
     
@@ -17,6 +19,7 @@ class TemplatesCoordinator: Coordinator {
     private var workoutNavController: UINavigationController?
     
     // MARK: - Init
+    
     init(navigationController: UINavigationController, diContainer: AppDIContainer) {
         self.navigationController = navigationController
         self.diContainer = diContainer
@@ -98,8 +101,7 @@ class TemplatesCoordinator: Coordinator {
     }
     
     private func startWorkout(with template: WorkoutTemplate) {
-        let currentState = WorkoutManager.shared.currentState
-        if currentState != .inactive {
+        if diContainer.workoutStateRepository.hasPersistedWorkout() {
             showDiscardWorkoutAlert(for: template)
             return
         }
@@ -118,7 +120,6 @@ class TemplatesCoordinator: Coordinator {
         let hostingController = UIHostingController(rootView: activeWorkoutView)
         let navController = UINavigationController(rootViewController: hostingController)
         navController.modalPresentationStyle = .fullScreen
-        
         navController.setNavigationBarHidden(true, animated: false)
         
         self.workoutNavController = navController
@@ -134,8 +135,23 @@ class TemplatesCoordinator: Coordinator {
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alert.addAction(UIAlertAction(title: "Discard & Start New", style: .destructive) { [weak self] _ in
-            WorkoutManager.shared.discardWorkout()
-            self?.startWorkoutAfterDiscard(with: template)
+            guard let self = self else { return }
+            
+            try? self.diContainer.workoutStateRepository.clearWorkoutState()
+            
+            self.diContainer.workoutStateObserver.checkWorkoutState()
+            
+            if #available(iOS 16.1, *) {
+                Task {
+                    await self.diContainer.liveActivityService?.endAllActivitiesAndWait()
+                    
+                    await MainActor.run {
+                        self.startWorkoutAfterDiscard(with: template)
+                    }
+                }
+            } else {
+                self.startWorkoutAfterDiscard(with: template)
+            }
         })
         
         navigationController.present(alert, animated: true)
@@ -156,7 +172,6 @@ class TemplatesCoordinator: Coordinator {
         let hostingController = UIHostingController(rootView: activeWorkoutView)
         let navController = UINavigationController(rootViewController: hostingController)
         navController.modalPresentationStyle = .fullScreen
-        
         navController.setNavigationBarHidden(true, animated: false)
         
         self.workoutNavController = navController
@@ -255,7 +270,6 @@ class TemplatesCoordinator: Coordinator {
         }
         
         let hostingController = UIHostingController(rootView: customExerciseView)
-        
         hostingController.modalPresentationStyle = .fullScreen
         
         if let workoutNav = workoutNavController {
@@ -264,7 +278,7 @@ class TemplatesCoordinator: Coordinator {
             templateNav.present(hostingController, animated: true)
         }
     }
-
+    
     private func dismissCustomExerciseCreation() {
         if let workoutNav = workoutNavController {
             workoutNav.dismiss(animated: true)

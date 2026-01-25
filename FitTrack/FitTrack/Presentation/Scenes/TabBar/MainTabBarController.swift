@@ -10,11 +10,21 @@ import SwiftUI
 import Combine
 
 class MainTabBarController: UITabBarController {
-    private var miniBarHC: UIHostingController<miniWorkoutBarContainer>?
+    
+    private var miniBarHostingController: UIHostingController<MiniWorkoutTabBar>?
     private var cancellables = Set<AnyCancellable>()
-    private let workoutManager = WorkoutManager.shared
+    private let workoutStateObserver: WorkoutStateObserver
     
     var onResumeWorkout: (() -> Void)?
+    
+    init(workoutStateObserver: WorkoutStateObserver) {
+        self.workoutStateObserver = workoutStateObserver
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,9 +39,9 @@ class MainTabBarController: UITabBarController {
     }
     
     private func setupWorkoutObserver() {
-        workoutManager.statePublisher
-            .sink { [weak self] state in
-                if state == .minimized {
+        workoutStateObserver.$hasActiveWorkout
+            .sink { [weak self] hasActiveWorkout in
+                if hasActiveWorkout {
                     self?.showMinimizedBar()
                 } else {
                     self?.hideMinimizedBar()
@@ -41,9 +51,9 @@ class MainTabBarController: UITabBarController {
     }
     
     private func showMinimizedBar() {
-        guard miniBarHC == nil else { return }
+        guard miniBarHostingController == nil else { return }
         
-        let containerView = miniWorkoutBarContainer(
+        let miniBar = MiniWorkoutTabBar(
             onResume: { [weak self] in
                 self?.onResumeWorkout?()
             },
@@ -52,7 +62,7 @@ class MainTabBarController: UITabBarController {
             }
         )
         
-        let hostingController = UIHostingController(rootView: containerView)
+        let hostingController = UIHostingController(rootView: miniBar)
         hostingController.view.backgroundColor = .clear
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         
@@ -67,14 +77,14 @@ class MainTabBarController: UITabBarController {
         ])
         
         hostingController.didMove(toParent: self)
-        self.miniBarHC = hostingController
+        miniBarHostingController = hostingController
     }
     
     private func hideMinimizedBar() {
-        miniBarHC?.willMove(toParent: nil)
-        miniBarHC?.view.removeFromSuperview()
-        miniBarHC?.removeFromParent()
-        miniBarHC = nil
+        miniBarHostingController?.willMove(toParent: nil)
+        miniBarHostingController?.view.removeFromSuperview()
+        miniBarHostingController?.removeFromParent()
+        miniBarHostingController = nil
     }
     
     private func showDiscardAlert() {
@@ -86,21 +96,9 @@ class MainTabBarController: UITabBarController {
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alert.addAction(UIAlertAction(title: "Discard", style: .destructive) { [weak self] _ in
-            self?.workoutManager.discardWorkout()
+            self?.workoutStateObserver.markWorkoutDiscarded()
         })
         
         present(alert, animated: true)
-    }
-}
-
-struct miniWorkoutBarContainer: View {
-    let onResume: () -> Void
-    let onDiscard: () -> Void
-    
-    var body: some View {
-        MiniWorkoutTabBar(
-            onResume: onResume,
-            onDiscard: onDiscard
-        )
     }
 }

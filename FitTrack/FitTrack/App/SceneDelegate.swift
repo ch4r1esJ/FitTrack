@@ -29,49 +29,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         appCoordinator = AppCoordinator(
             navigationController: navController,
-            authDIContainer: authDIContainer
+            diContainer: authDIContainer
         )
         
         window?.rootViewController = navController
         window?.makeKeyAndVisible()
         
         appCoordinator?.start()
-    }
-    
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard let url = URLContexts.first?.url else { return }
-        
-        if url.scheme == "fittrack" {
-            handleDeepLink(url: url)
-        }
-    }
-    
-    private func handleDeepLink(url: URL) {
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else { return }
-        
-        switch components.host {
-        case "complete-set":
-            NotificationCenter.default.post(name: NSNotification.Name("CompleteSetFromWidget"), object: nil)
-            
-        case "adjust-rest":
-            if let adjustmentString = components.queryItems?.first(where: { $0.name == "adjustment" })?.value,
-               let adjustment = Int(adjustmentString) {
-                NotificationCenter.default.post(
-                    name: NSNotification.Name("AdjustRestTimeFromWidget"),
-                    object: nil,
-                    userInfo: ["adjustment": adjustment]
-                )
-            }
-            
-        case "skip-rest":
-            NotificationCenter.default.post(name: NSNotification.Name("SkipRestFromWidget"), object: nil)
-            
-        case "add-exercise":
-            print("Navigate to add exercise")
-            
-        default:
-            break
-        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

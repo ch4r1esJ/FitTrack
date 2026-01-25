@@ -10,65 +10,86 @@ import Combine
 import AVFoundation
 
 class RestTimerManager: ObservableObject {
+    
     @Published var isActive: Bool = false
     @Published var remainingSeconds: Int = 0
     @Published var totalSeconds: Int = 0
     
+    private let restTimerRepository: RestTimerRepositoryProtocol
+    private let notificationService: NotificationService
+    
+    // MARK: - Properties
+    
     private var timer: Timer?
     private var endTime: Date?
     private var audioPlayer: AVAudioPlayer?
-    private let notificationManager = NotificationManager.shared
     
-    init() {
+    // MARK: - Init
+    
+    init(
+        restTimerRepository: RestTimerRepositoryProtocol,
+        notificationService: NotificationService
+    ) {
+        self.restTimerRepository = restTimerRepository
+        self.notificationService = notificationService
+        
         loadPersistedTimer()
     }
+    
+    // MARK: - Methods
     
     func startRestTimer(seconds: Int) {
         guard seconds > 0 else { return }
         
-        self.totalSeconds = seconds
-        self.remainingSeconds = seconds
-        self.endTime = Date().addingTimeInterval(TimeInterval(seconds))
-        self.isActive = true
-        
-        notificationManager.scheduleRestTimerNotification(seconds: seconds)
-        
-        persistTimer()
-        
-        startTicking()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            self.totalSeconds = seconds
+            self.remainingSeconds = seconds
+            self.endTime = Date().addingTimeInterval(TimeInterval(seconds))
+            self.isActive = true
+            
+            self.notificationService.scheduleRestTimerNotification(seconds: seconds)
+            
+            self.persistTimer()
+            self.startTicking()
+        }
     }
     
     func adjustTime(by seconds: Int) {
         guard let currentEndTime = endTime else { return }
         
         let newEndTime = currentEndTime.addingTimeInterval(TimeInterval(seconds))
-        self.endTime = newEndTime
-        
         let newRemaining = Int(newEndTime.timeIntervalSinceNow)
         
         if newRemaining <= 0 {
             skip()
         } else {
-            remainingSeconds = newRemaining
-            totalSeconds = newRemaining
-            
-            persistTimer()
-            
-            notificationManager.cancelRestTimerNotification()
-            notificationManager.scheduleRestTimerNotification(seconds: newRemaining)
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                
+                self.endTime = newEndTime
+                self.remainingSeconds = newRemaining
+                self.totalSeconds = newRemaining
+                
+                self.persistTimer()
+                
+                self.notificationService.cancelRestTimerNotification()
+                self.notificationService.scheduleRestTimerNotification(seconds: newRemaining)
+            }
         }
     }
     
     func skip() {
         stop()
-        notificationManager.cancelRestTimerNotification()
-        RestTimerPersistence.clearRestTimer()
+        notificationService.cancelRestTimerNotification()
+        try? restTimerRepository.clearRestTimerState()
     }
     
     func pause() {
         timer?.invalidate()
         timer = nil
-        notificationManager.cancelRestTimerNotification()
+        notificationService.cancelRestTimerNotification()
         persistTimer()
     }
     
@@ -80,14 +101,19 @@ class RestTimerManager: ObservableObject {
         if timeRemaining <= 0 {
             finish()
         } else {
-            remainingSeconds = Int(ceil(timeRemaining))
-            notificationManager.scheduleRestTimerNotification(seconds: remainingSeconds)
-            startTicking()
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.remainingSeconds = Int(ceil(timeRemaining))
+                self.notificationService.scheduleRestTimerNotification(seconds: self.remainingSeconds)
+                self.startTicking()
+            }
         }
     }
     
     private func loadPersistedTimer() {
-        guard let persisted = RestTimerPersistence.loadRestTimer() else { return }
+        guard let persisted = try? restTimerRepository.loadRestTimerState() else {
+            return
+        }
         
         self.endTime = persisted.endTime
         self.totalSeconds = persisted.totalSeconds
@@ -97,15 +123,20 @@ class RestTimerManager: ObservableObject {
         if timeRemaining <= 0 {
             finish()
         } else {
-            self.remainingSeconds = Int(ceil(timeRemaining))
-            self.isActive = true
-            startTicking()
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.remainingSeconds = Int(ceil(timeRemaining))
+                self.isActive = true
+                self.startTicking()
+            }
         }
     }
     
     private func persistTimer() {
         guard let endTime = endTime, isActive else { return }
-        RestTimerPersistence.saveRestTimer(endTime: endTime, totalSeconds: totalSeconds)
+        
+        let state = RestTimerState(endTime: endTime, totalSeconds: totalSeconds)
+        try? restTimerRepository.saveRestTimerState(state)
     }
     
     private func startTicking() {
@@ -126,15 +157,19 @@ class RestTimerManager: ObservableObject {
         if timeRemaining <= 0 {
             finish()
         } else {
-            remainingSeconds = Int(ceil(timeRemaining))
+            DispatchQueue.main.async { [weak self] in
+                self?.remainingSeconds = Int(ceil(timeRemaining))
+            }
         }
     }
     
     private func finish() {
-        stop()
-        playSound()
-        notificationManager.cancelRestTimerNotification()
-        RestTimerPersistence.clearRestTimer()
+        DispatchQueue.main.async { [weak self] in
+            self?.stop()
+            self?.playSound()
+            self?.notificationService.cancelRestTimerNotification()
+            try? self?.restTimerRepository.clearRestTimerState()
+        }
     }
     
     private func stop() {

@@ -303,7 +303,6 @@ extension ExerciesViewController: UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let exercise = viewModel.filteredExercises[indexPath.item]
-        print("Selected: \(exercise.name)")
         
         viewModel.toggleSelection(for: exercise)
         collectionView.reloadItems(at: [indexPath])

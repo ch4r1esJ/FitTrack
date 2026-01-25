@@ -10,24 +10,37 @@ import SwiftUI
 import Combine
 
 class TabBarCoordinator: Coordinator {
+    
+    // MARK: - Properties
+    
     var navigationController: UINavigationController
     weak var parentCoordinator: AppCoordinator?
     
-    private let authService: AuthRepositoryProtocol
+    private let authRepository: AuthRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     private let diContainer: AppDIContainer
     private var tabBarController: MainTabBarController!
     
     private var childCoordinators = [Coordinator]()
     
-    init(navigationController: UINavigationController, authService: AuthRepositoryProtocol, diContainer: AppDIContainer) {
+    // MARK: - Init
+    
+    init(
+        navigationController: UINavigationController,
+        authRepository: AuthRepositoryProtocol,
+        diContainer: AppDIContainer
+    ) {
         self.navigationController = navigationController
-        self.authService = authService
+        self.authRepository = authRepository
         self.diContainer = diContainer
     }
     
+    // MARK: - Methods
+    
     func start() {
-        tabBarController = MainTabBarController()
+        tabBarController = MainTabBarController(
+            workoutStateObserver: diContainer.workoutStateObserver
+        )
         
         tabBarController.onResumeWorkout = { [weak self] in
             self?.resumeWorkout()
@@ -67,19 +80,11 @@ class TabBarCoordinator: Coordinator {
             navigationController: templatesNav,
             diContainer: diContainer
         )
-    
+        
         templatesCoordinator.start()
         childCoordinators.append(templatesCoordinator)
         
-        let exerciseVC = diContainer.makeExerciseViewController()
-        let exerciseNav = UINavigationController(rootViewController: exerciseVC)
-        exerciseVC.tabBarItem = UITabBarItem(
-            title: "Workouts",
-            image: UIImage(systemName: "figure.strengthtraining.traditional"),
-            selectedImage: UIImage(systemName: "figure.strengthtraining.traditional")
-        )
-        
-        let profileViewModel = ProfileViewModel(authService: authService)
+        let profileViewModel = ProfileViewModel(authService: authRepository)
         profileViewModel.logoutFinished
             .sink { [weak self] _ in
                 self?.didLogout()

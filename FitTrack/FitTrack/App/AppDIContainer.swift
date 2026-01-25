@@ -9,49 +9,102 @@ import Foundation
 
 final class AppDIContainer {
     
-    // Auth
-    lazy var authService: AuthRepositoryProtocol = {
+    // Repositories
+    
+    lazy var authRepository: AuthRepositoryProtocol = {
         FirebaseAuthRepository()
-        
     }()
     
+    lazy var exerciseRepository: ExerciseRepositoryProtocol = {
+        FirebaseExerciseRepository()
+    }()
+    
+    lazy var templatesRepository: TemplatesRepositoryProtocol = {
+        FirebaseTemplateRepository()
+    }()
+    
+    lazy var workoutHistoryRepository: WorkoutHistoryRepositoryProtocol = {
+        FirebaseWorkoutHistoryRepository()
+    }()
+    
+    lazy var workoutStateRepository: WorkoutStateRepositoryProtocol = {
+        UserDefaultsWorkoutStateRepository()
+    }()
+    
+    lazy var restTimerRepository: RestTimerRepositoryProtocol = {
+        UserDefaultsRestTimerRepository()
+    }()
+    
+    lazy var healthKitRepository: HealthKitRepositoryProtocol = {
+        HealthKitService()
+    }()
+    
+    // Services
+    
+    private lazy var backgroundAudioService: BackgroundAudioService = {
+        BackgroundAudioService()
+    }()
+    
+    lazy var liveActivityService: LiveActivityService? = {
+        if #available(iOS 16.1, *) {
+            return LiveActivityService()
+        }
+        return nil
+    }()
+    
+    private lazy var notificationService: NotificationService = {
+        NotificationService()
+    }()
+    
+    // Observers
+    
+    lazy var workoutStateObserver: WorkoutStateObserver = {
+        WorkoutStateObserver(
+            workoutStateRepository: workoutStateRepository,
+            liveActivityService: liveActivityService
+        )
+    }()
+    
+    // Auth
+    
     func makeLoginViewModel() -> LoginViewModel {
-        return LoginViewModel(authService: authService)
+        LoginViewModel(authService: authRepository)
     }
     
     func makeRegisterViewModel() -> RegisterViewModel {
-        return RegisterViewModel(authService: authService)
+        RegisterViewModel(authService: authRepository)
     }
     
-    // Exercise Librari
-    
-    lazy var exerciseService: ExerciseRepositoryProtocol = {
-        return FirebaseExerciseRepository()
-    }()
+    // Exercise Library
     
     func makeExerciseViewModel() -> ExerciseViewModel {
-        let currentUserId = authService.currentUser?.id ?? ""
-        return ExerciseViewModel(exerciseService: exerciseService, userId: currentUserId)
+        let currentUserId = authRepository.currentUser?.id ?? ""
+        return ExerciseViewModel(
+            exerciseService: exerciseRepository,
+            userId: currentUserId
+        )
     }
     
     func makeExerciseViewController() -> ExerciesViewController {
         let viewModel = makeExerciseViewModel()
-        return ExerciesViewController(viewModel: viewModel, diContainer: AppDIContainer())
+        return ExerciesViewController(viewModel: viewModel, diContainer: self)
     }
     
     func makeCustomExerciseViewModel() -> CustomExerciseViewModel {
-        let currentUserId = authService.currentUser?.id ?? ""
-        return CustomExerciseViewModel(exerciseService: exerciseService, userId: currentUserId)
+        let currentUserId = authRepository.currentUser?.id ?? ""
+        return CustomExerciseViewModel(
+            exerciseService: exerciseRepository,
+            userId: currentUserId
+        )
     }
     
     // Templates
     
-    lazy var templatesService: TemplatesRepositoryProtocol = {
-        return FirebaseTemplateRepository()
-    }()
-    
     func makeTemplatesViewModel() -> TemplatesViewModel {
-        return TemplatesViewModel(templatesService: templatesService, authService: authService)
+        TemplatesViewModel(
+            templatesService: templatesRepository,
+            authService: authRepository
+        )
     }
     
     func makeTemplatesViewController() -> TemplatesViewController {
@@ -59,35 +112,41 @@ final class AppDIContainer {
         return TemplatesViewController(viewModel: viewModel)
     }
     
-    // Template Details
-    
     func makeTemplateDetailsViewModel() -> TemplateDetailsViewModel {
-        return TemplateDetailsViewModel(
-            templatesService: templatesService,
-            authService: authService
+        TemplateDetailsViewModel(
+            templatesService: templatesRepository,
+            authService: authRepository
         )
     }
     
-    // Workout Session
-    
-    private lazy var workoutManager: WorkoutSessionRepositoryProtocol = {
-        return WorkoutManager()
-    }()
+    // Active Workouts
     
     func makeActiveWorkoutViewModel() -> ActiveWorkoutViewModel {
-        return ActiveWorkoutViewModel(workoutService: WorkoutManager.shared)
+        let restTimer = RestTimerManager(
+            restTimerRepository: restTimerRepository,
+            notificationService: notificationService
+        )
+        
+        return ActiveWorkoutViewModel(
+            workoutStateRepository: workoutStateRepository,
+            workoutHistoryRepository: workoutHistoryRepository,
+            healthKitRepository: healthKitRepository,
+            backgroundAudioService: backgroundAudioService,
+            liveActivityService: liveActivityService,
+            notificationService: notificationService,
+            restTimer: restTimer
+        )
     }
     
     // Workout History
     
-    lazy var workoutHistoryService: WorkoutHistoryRepositoryProtocol = {
-        return FirebaseWorkoutHistoryRepository()
-    }()
-    
     func makeWorkoutHistoryViewModel() -> WorkoutHistoryViewModel {
-        let currentUserId = authService.currentUser?.id ?? "No User"
+        let currentUserId = authRepository.currentUser?.id ?? "No User"
         
-        return WorkoutHistoryViewModel(workoutHistoryService: FirebaseWorkoutHistoryRepository(), userId: currentUserId)
+        return WorkoutHistoryViewModel(
+            workoutHistoryService: workoutHistoryRepository,
+            userId: currentUserId
+        )
     }
     
     func makeWorkoutHistoryViewController() -> WorkoutHistoryViewController {
@@ -96,14 +155,16 @@ final class AppDIContainer {
     }
     
     func makeWorkoutStatsViewModel() -> WorkoutStatsViewModel {
-        let currentUserId = authService.currentUser?.id ?? "No User"
+        let currentUserId = authRepository.currentUser?.id ?? "No User"
         
-        return WorkoutStatsViewModel(workoutHistoryService: FirebaseWorkoutHistoryRepository(), userId: currentUserId)
+        return WorkoutStatsViewModel(
+            workoutHistoryService: workoutHistoryRepository,
+            userId: currentUserId
+        )
     }
     
     func makeWorkoutStatsView() -> WorkoutStatsView {
         let viewModel = makeWorkoutStatsViewModel()
-        
         return WorkoutStatsView(viewModel: viewModel)
     }
 }
