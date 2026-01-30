@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct HomeView: View {
+    
     @StateObject var viewModel: HomeViewModel
-    var onProfileTapped: (() -> Void)?
+    
     @State var showAllActivities = false
+    
     @State var showMonthWorkouts = false
+    
+    var onProfileTapped: (() -> Void)?
+    
     let backgroundColor = Color(uiColor: .systemGray6)
     
     init(viewModel: HomeViewModel) {
@@ -23,8 +28,10 @@ struct HomeView: View {
             ZStack {
                 backgroundColor
                     .ignoresSafeArea()
+                
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading) {
+                        
                         HStack {
                             Text("Welcome, \(viewModel.userFirstName)")
                                 .font(.largeTitle)
@@ -46,42 +53,32 @@ struct HomeView: View {
                             .padding(.trailing)
                         }
                         
-                        
                         HStack {
                             Spacer()
                             
                             VStack(alignment: .leading) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Calories")
-                                        .font(.callout)
-                                        .bold()
-                                        .foregroundStyle(.red)
-                                    
-                                    Text("\(viewModel.calories) / \(viewModel.calorieGoal)")
-                                        .bold()
-                                }
+                                ActivityRingsStatistics(
+                                    title: "Calories",
+                                    color: .red,
+                                    calories: viewModel.calories,
+                                    caloriesGoal: viewModel.calorieGoal
+                                )
                                 .padding(.bottom)
                                 
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Active")
-                                        .font(.callout)
-                                        .bold()
-                                        .foregroundStyle(.green )
-                                    
-                                    Text("\(viewModel.exercise) / \(viewModel.exerciseGoal)")
-                                        .bold()
-                                }
+                                ActivityRingsStatistics(
+                                    title: "Active",
+                                    color: .green,
+                                    calories: viewModel.exercise,
+                                    caloriesGoal: viewModel.exerciseGoal
+                                )
                                 .padding(.bottom)
                                 
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Stand")
-                                        .font(.callout)
-                                        .bold()
-                                        .foregroundStyle(.blue )
-                                    
-                                    Text("\(viewModel.stand) / \(viewModel.standGoal)")
-                                        .bold()
-                                }
+                                ActivityRingsStatistics(
+                                    title: "Stand",
+                                    color: .blue,
+                                    calories: viewModel.stand,
+                                    caloriesGoal: viewModel.standGoal
+                                )
                             }
                             
                             Spacer()
@@ -123,7 +120,8 @@ struct HomeView: View {
                         
                         if !viewModel.activities.isEmpty {
                             LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                                ForEach(showAllActivities ? viewModel.activities : Array(viewModel.activities.prefix(4))) { activity in
+                                
+                                ForEach(showAllActivities ? viewModel.activities : viewModel.activities) { activity in
                                     ActivityCard(activity: activity)
                                 }
                             }
@@ -172,6 +170,25 @@ struct HomeView: View {
         .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)) { _ in
             viewModel.checkForNameUpdate()
             viewModel.checkForImageUpdate()
+        }
+    }
+}
+
+struct ActivityRingsStatistics: View {
+    var title: String
+    var color: Color
+    var calories: Int
+    var caloriesGoal: Int
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.callout)
+                .bold()
+                .foregroundStyle(color)
+            
+            Text("\(calories) / \(caloriesGoal)")
+                .bold()
         }
     }
 }
