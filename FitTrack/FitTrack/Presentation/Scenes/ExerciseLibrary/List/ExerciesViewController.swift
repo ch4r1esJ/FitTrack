@@ -16,7 +16,7 @@ class ExercisesViewController: UIViewController {
     
     var onAddExerciseTapped: (() -> Void)?
     var didSelectExercises: (([Exercise]) -> Void)?
-    var onShowExerciseDetails: ((Exercise) -> Void)?
+    var onShowExerciseDetails: ((Exercise, (() -> Void)?) -> Void)?
     var onCreateExerciseTapped: (() -> Void)?
     
     private let backButton = UIButton(type: .custom)
@@ -239,7 +239,11 @@ extension ExercisesViewController: UICollectionViewDataSource, UICollectionViewD
         cell.configure(with: exercise, isSelected: isSelected)
         
         cell.onDetailsTapped = { [weak self] in
-            self?.onShowExerciseDetails?(exercise)
+            let deleteAction: (() -> Void)? = exercise.category == "custom" ? {
+                self?.viewModel.deleteCustomExercise(exercise.id)
+            } : nil
+            
+            self?.onShowExerciseDetails?(exercise, deleteAction)
         }
         
         return cell

@@ -87,8 +87,8 @@ class TemplatesCoordinator: Coordinator {
             self?.templateNavController?.setNavigationBarHidden(false, animated: true)
         }
         
-        exerciseVC.onShowExerciseDetails = { [weak self] exercise in
-            self?.showExerciseDetails(exercise)
+        exerciseVC.onShowExerciseDetails = { [weak self] exercise, deleteAction in
+            self?.showExerciseDetails(exercise, deleteAction: deleteAction)
         }
         
         templateNavController?.pushViewController(exerciseVC, animated: true)
@@ -194,8 +194,8 @@ class TemplatesCoordinator: Coordinator {
             self?.workoutNavController?.popViewController(animated: true)
         }
         
-        exerciseVC.onShowExerciseDetails = { [weak self] exercise in
-            self?.showExerciseDetails(exercise)
+        exerciseVC.onShowExerciseDetails = { [weak self] exercise, deleteAction in
+            self?.showExerciseDetails(exercise, deleteAction: deleteAction)
         }
         
         workoutNavController?.pushViewController(exerciseVC, animated: true)
@@ -226,8 +226,19 @@ class TemplatesCoordinator: Coordinator {
         workoutNavController = nil
     }
     
-    private func showExerciseDetails(_ exercise: Exercise) {
-        let detailView = ExerciseDetailView(exercise: exercise)
+    private func showExerciseDetails(_ exercise: Exercise, deleteAction: (() -> Void)?) {
+        var detailView = ExerciseDetailView(exercise: exercise)
+        
+        detailView.onDeleteCustomExercise = { [weak self] in
+            deleteAction?()
+            
+            if let workoutNav = self?.workoutNavController, workoutNav.view.window != nil {
+                workoutNav.dismiss(animated: true)
+            } else if let templateNav = self?.templateNavController, templateNav.view.window != nil {
+                templateNav.dismiss(animated: true)
+            }
+        }
+        
         let hostingController = UIHostingController(rootView: detailView)
         hostingController.modalPresentationStyle = .pageSheet
         
