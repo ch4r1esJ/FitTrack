@@ -30,12 +30,4 @@ struct Exercise: Identifiable, Codable {
         if path.hasPrefix("http") { return path }
         return "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/" + path
     }
-    
-    enum CodingKeys: String, CodingKey {
-        case id, name
-        case primaryMuscles, secondaryMuscles, instructions, images
-        case level, category, mechanic, force, equipment
-        
-        case muscleGroup = "bodyPartCategory"
-    }
 }
