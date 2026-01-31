@@ -11,7 +11,7 @@ import Combine
 class CustomExerciseViewModel: ObservableObject {
     
     @Published var exerciseName: String = ""
-    @Published var selectedImage: String = "custom_exercise_1"
+    @Published var selectedImage: String = "exercise1"
     @Published var primaryMuscle: String = ""
     @Published var equipment: String = ""
     @Published var level: String = "Beginner"

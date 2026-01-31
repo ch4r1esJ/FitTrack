@@ -23,6 +23,7 @@ struct ExerciseDetailView: View {
                     imageURL: viewModel.currentImageURL,
                     hasMultipleImages: viewModel.hasMultipleImages,
                     isAnimating: viewModel.isAnimating,
+                    currentExercise: viewModel.exercise,
                     onToggleAnimation: viewModel.toggleAnimation
                 )
                 

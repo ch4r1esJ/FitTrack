@@ -11,30 +11,40 @@ struct ExerciseImageView: View {
     let imageURL: String
     let hasMultipleImages: Bool
     let isAnimating: Bool
+    let currentExercise: Exercise
     let onToggleAnimation: () -> Void
     
     var body: some View {
         ZStack {
-            AsyncImage(url: URL(string: imageURL)) { phase in
-                switch phase {
-                case .empty:
-                    ProgressView()
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                case .failure:
-                    Image(systemName: "figure.strengthtraining.traditional")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(.gray)
-                @unknown default:
-                    EmptyView()
+            if currentExercise.category == "custom" {
+                Image(currentExercise.images.first ?? "exercise1")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 300)
+                    .background(Color.gray.opacity(0.1))
+            } else {
+                AsyncImage(url: URL(string: imageURL)) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    case .failure:
+                        Image(systemName: "figure.strengthtraining.traditional")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundColor(.gray)
+                    @unknown default:
+                        EmptyView()
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .frame(height: 300)
+                .background(Color.gray.opacity(0.1))
             }
-            .frame(maxWidth: .infinity)
-            .frame(height: 300)
-            .background(Color.gray.opacity(0.1))
             
             if hasMultipleImages {
                 VStack {
