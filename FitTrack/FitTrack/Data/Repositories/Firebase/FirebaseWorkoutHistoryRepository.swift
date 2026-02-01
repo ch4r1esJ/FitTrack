@@ -29,8 +29,8 @@ class FirebaseWorkoutHistoryRepository: WorkoutHistoryRepositoryProtocol {
         
         let snapshot = try await query.getDocuments()
         
-        return try snapshot.documents.compactMap { doc in
-            try doc.data(as: CompletedWorkout.self)
+        return snapshot.documents.compactMap { doc in
+            try? doc.data(as: CompletedWorkout.self)
         }
     }
     
