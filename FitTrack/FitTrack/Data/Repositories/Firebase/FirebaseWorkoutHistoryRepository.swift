@@ -11,15 +11,15 @@ import FirebaseFirestore
 class FirebaseWorkoutHistoryRepository: WorkoutHistoryRepositoryProtocol {
     
     private let db = Firestore.firestore()
-    private let collectionName = "completedWorkouts"
     
     func saveCompletedWorkout(_ workout: CompletedWorkout) async throws {
-        let docRef = db.collection(collectionName).document(workout.id)
-        try docRef.setData(from: workout)
+        try db.collection("completedWorkouts")
+            .document(workout.id)
+            .setData(from: workout)
     }
     
     func fetchUserWorkoutHistory(userId: String, limit: Int? = nil) async throws -> [CompletedWorkout] {
-        var query: Query = db.collection(collectionName)
+        var query: Query = db.collection("completedWorkouts")
             .whereField("userId", isEqualTo: userId)
             .order(by: "endDate", descending: true)
         
@@ -35,12 +35,14 @@ class FirebaseWorkoutHistoryRepository: WorkoutHistoryRepositoryProtocol {
     }
     
     func fetchWorkoutById(workoutId: String) async throws -> CompletedWorkout? {
-        let docRef = db.collection(collectionName).document(workoutId)
+        let docRef = db.collection("completedWorkouts").document(workoutId)
         let snapshot = try await docRef.getDocument()
         return try snapshot.data(as: CompletedWorkout.self)
     }
     
     func deleteWorkout(workoutId: String) async throws {
-        try await db.collection(collectionName).document(workoutId).delete()
+        try await db.collection("completedWorkouts")
+            .document(workoutId)
+            .delete()
     }
 }
