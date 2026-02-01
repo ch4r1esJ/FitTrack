@@ -22,7 +22,6 @@ class RestTimerManager: ObservableObject {
     
     private var timer: Timer?
     private var endTime: Date?
-    private var audioPlayer: AVAudioPlayer?
     
     // MARK: - Init
     
@@ -99,7 +98,7 @@ class RestTimerManager: ObservableObject {
         let timeRemaining = endTime.timeIntervalSinceNow
         
         if timeRemaining <= 0 {
-            finish()
+            finish(isPlayingSound: false)
         } else {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -121,7 +120,8 @@ class RestTimerManager: ObservableObject {
         let timeRemaining = persisted.endTime.timeIntervalSinceNow
         
         if timeRemaining <= 0 {
-            finish()
+            finish(isPlayingSound: false)
+
         } else {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -163,10 +163,12 @@ class RestTimerManager: ObservableObject {
         }
     }
     
-    private func finish() {
+    private func finish(isPlayingSound: Bool = true) {
         DispatchQueue.main.async { [weak self] in
             self?.stop()
-            self?.playSound()
+            if isPlayingSound {
+                self?.playSound()
+            }
             self?.notificationService.cancelRestTimerNotification()
             try? self?.restTimerRepository.clearRestTimerState()
         }

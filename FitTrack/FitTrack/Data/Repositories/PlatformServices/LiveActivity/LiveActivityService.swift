@@ -44,6 +44,7 @@ class LiveActivityService {
         let attributes = WorkoutActivityAttributes(workoutId: workoutId)
         
         var localImagePath: String? = nil
+        
         if let url = exerciseImageUrl {
             localImagePath = await ImageManager.shared.downloadAndSaveImageAsync(from: url)
         }
