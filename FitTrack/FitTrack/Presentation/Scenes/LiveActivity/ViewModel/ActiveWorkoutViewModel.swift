@@ -225,7 +225,7 @@ class ActiveWorkoutViewModel: ObservableObject {
                 setNumber: 1,
                 targetWeightKg: nil,
                 targetReps: nil,
-                restSeconds: 60,
+                restSeconds: 0,
                 isCompleted: false
             )
             
@@ -293,7 +293,7 @@ class ActiveWorkoutViewModel: ObservableObject {
     func getDefaultRestTime(for exerciseId: String) -> Int {
         guard let exerciseIndex = currentWorkout.exercises.firstIndex(where: { $0.id == exerciseId }),
               let firstSet = currentWorkout.exercises[exerciseIndex].sets.first else {
-            return 60
+            return 0
         }
         return firstSet.restSeconds
     }
