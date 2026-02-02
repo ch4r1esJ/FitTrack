@@ -8,11 +8,13 @@
 import Combine
 import Foundation
 
+@MainActor
 class ActiveWorkoutViewModel: ObservableObject {
     
     @Published var currentWorkout: WorkoutTemplate = .empty
     @Published var isMinimised: Bool = false
     @Published var elapsedTime: String = "00:00"
+    @Published var isAuthorized = false
         
     private let workoutStateRepository: WorkoutStateRepositoryProtocol
     private let workoutHistoryRepository: WorkoutHistoryRepositoryProtocol
@@ -123,6 +125,12 @@ class ActiveWorkoutViewModel: ObservableObject {
             }
             
             await preloadExerciseImages(for: template)
+        }
+    }
+    
+    func updateAuthStatus() {
+        Task {
+            self.isAuthorized = await notificationService.checkIfAuthorized()
         }
     }
     

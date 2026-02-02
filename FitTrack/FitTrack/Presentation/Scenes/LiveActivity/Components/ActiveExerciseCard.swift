@@ -48,7 +48,7 @@ struct ActiveExerciseCard: View {
                 }
             }
             
-            RestTimerPicker(selection: $defaultRestTime)
+            RestTimerPicker(viewModel: viewModel, selection: $defaultRestTime)
                 .onChange(of: defaultRestTime) { oldValue, newValue in
                     viewModel.updateRestTime(for: exercise.id, to: newValue)
                 }

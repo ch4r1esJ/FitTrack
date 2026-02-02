@@ -56,14 +56,14 @@ struct WorkoutExerciseCard: View {
                 }
             }
             
-            RestTimerPicker(selection: $defaultRestTime)
+            RestTimerPickerSimple(selection: $defaultRestTime)
                 .onChange(of: defaultRestTime) { oldValue, newValue in
                     viewModel.updateRestTime(for: exercise.id, to: newValue)
                 }
             
             VStack(spacing: 0) {
                 HStack {
-                    Text("SET").frame(width: 30)
+                    Text("SET") .frame(width: 30)
                     Spacer()
                     Text("KG").frame(width: 60)
                     Spacer()

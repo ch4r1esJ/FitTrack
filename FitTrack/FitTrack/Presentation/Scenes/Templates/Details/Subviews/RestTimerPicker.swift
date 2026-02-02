@@ -8,8 +8,37 @@
 import SwiftUI
 
 struct RestTimerPicker: View {
+    @ObservedObject var viewModel: ActiveWorkoutViewModel
     @Binding var selection: Int
+    
+    var body: some View {
+        RestTimerPickerContent(
+            selection: $selection,
+            isAuthorized: viewModel.isAuthorized,
+            onUpdateAuth: { viewModel.updateAuthStatus() }
+        )
+    }
+}
+
+struct RestTimerPickerSimple: View {
+    @Binding var selection: Int
+    
+    var body: some View {
+        RestTimerPickerContent(
+            selection: $selection,
+            isAuthorized: true,
+            onUpdateAuth: nil
+        )
+    }
+}
+
+private struct RestTimerPickerContent: View {
+    @Binding var selection: Int
+    let isAuthorized: Bool
+    let onUpdateAuth: (() -> Void)?
+    
     @State private var showTimerSheet = false
+    @State private var showNotificationAlert = false
     
     var body: some View {
         Button(action: {
@@ -22,9 +51,36 @@ struct RestTimerPicker: View {
                 Text(formatTime(selection))
                     .contentTransition(.identity)
                     .monospacedDigit()
+                
+                if !isAuthorized {
+                    Button {
+                        showNotificationAlert = true
+                    } label: {
+                        Image("warning")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                    }
+                    .alert("Notification Permission", isPresented: $showNotificationAlert) {
+                        Button("Go to Settings") {
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        }
+                        Button("Cancel", role: .cancel) { }
+                    } message: {
+                        Text("To receive rest timer notifications when FitTrack is in the background, enable notifications in Settings.")
+                    }
+                }
             }
             .font(.caption)
             .foregroundStyle(.blue)
+        }
+        .onAppear {
+            onUpdateAuth?()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            onUpdateAuth?()
         }
         .sheet(isPresented: $showTimerSheet) {
             TimerWheelSheet(selection: $selection)
@@ -33,12 +89,12 @@ struct RestTimerPicker: View {
         }
     }
     
-    func formatTime(_ totalSeconds: Int) -> String {
+    private func formatTime(_ totalSeconds: Int) -> String {
         if totalSeconds == 0 { return "OFF" }
         let minutes = totalSeconds / 60
         let seconds = totalSeconds % 60
-        return minutes > 0 
-            ? (seconds == 0 ? "\(minutes)m" : "\(minutes)m \(seconds)s") 
+        return minutes > 0
+            ? (seconds == 0 ? "\(minutes)m" : "\(minutes)m \(seconds)s")
             : "\(seconds)s"
     }
 }

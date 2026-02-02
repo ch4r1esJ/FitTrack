@@ -25,6 +25,13 @@ class NotificationService {
         return settings.authorizationStatus
     }
     
+    func checkIfAuthorized() async -> Bool {
+        let status = await checkAuthorizationStatus()
+        print("Current Auth Status: \(status)")
+        return status == .authorized || status == .provisional || status == .ephemeral
+        
+    }
+    
     func scheduleRestTimerNotification(seconds: Int) async throws {
         let status = await checkAuthorizationStatus()
         
