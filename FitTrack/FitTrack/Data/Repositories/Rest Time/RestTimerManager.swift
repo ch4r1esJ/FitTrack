@@ -48,7 +48,9 @@ class RestTimerManager: ObservableObject {
             self.endTime = Date().addingTimeInterval(TimeInterval(seconds))
             self.isActive = true
             
-            self.notificationService.scheduleRestTimerNotification(seconds: seconds)
+            Task {
+                try? await self.notificationService.scheduleRestTimerNotification(seconds: seconds)
+            }
             
             self.persistTimer()
             self.startTicking()
@@ -74,7 +76,10 @@ class RestTimerManager: ObservableObject {
                 self.persistTimer()
                 
                 self.notificationService.cancelRestTimerNotification()
-                self.notificationService.scheduleRestTimerNotification(seconds: newRemaining)
+                
+                Task {
+                    try? await self.notificationService.scheduleRestTimerNotification(seconds: newRemaining)
+                }
             }
         }
     }
@@ -103,7 +108,10 @@ class RestTimerManager: ObservableObject {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.remainingSeconds = Int(ceil(timeRemaining))
-                self.notificationService.scheduleRestTimerNotification(seconds: self.remainingSeconds)
+                
+                Task {
+                    try? await self.notificationService.scheduleRestTimerNotification(seconds: self.remainingSeconds)
+                }
                 self.startTicking()
             }
         }

@@ -113,7 +113,10 @@ class ActiveWorkoutViewModel: ObservableObject {
             if healthKitRepository.isHealthDataAvailable() {
                 try? await healthKitRepository.requestAuthorization()
             }
-            notificationService.requestPermission()
+            
+            Task {
+                _ = try? await notificationService.requestAuthorization()
+            }
             
             if #available(iOS 16.1, *) {
                 await liveActivityHelper?.startActivity(for: template)
