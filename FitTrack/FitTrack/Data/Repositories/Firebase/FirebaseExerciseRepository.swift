@@ -59,6 +59,7 @@ class FirebaseExerciseRepository: ExerciseRepositoryProtocol {
         let snapshot = try await db.collection("user_exercises")
             .document(userId)
             .collection("exercises")
+            .order(by: "createdAt", descending: true)
             .getDocuments()
         
         return snapshot.documents.compactMap { document -> Exercise? in

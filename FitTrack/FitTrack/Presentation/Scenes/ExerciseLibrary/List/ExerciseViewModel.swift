@@ -97,6 +97,21 @@ class ExerciseViewModel {
         filterExercises()
     }
     
+    func deleteCustomExercise(_ exerciseId: String) {
+        if let index = customExercises.firstIndex(where: { $0.id == exerciseId }) {
+            customExercises.remove(at: index)
+        }
+        
+        filterExercises()
+
+        Task {
+            do {
+                try await exerciseService.deleteCustomExercise(exerciseId: exerciseId, userId: userId)
+            } catch {
+            }
+        }
+    }
+    
     func selectMuscleGroup(_ value: String?) {
         selectedMuscleGroup = value
         onMuscleGroupChanged?(value)

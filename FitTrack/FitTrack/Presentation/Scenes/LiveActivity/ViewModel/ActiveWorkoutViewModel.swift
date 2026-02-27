@@ -8,11 +8,13 @@
 import Combine
 import Foundation
 
+@MainActor
 class ActiveWorkoutViewModel: ObservableObject {
     
     @Published var currentWorkout: WorkoutTemplate = .empty
     @Published var isMinimised: Bool = false
     @Published var elapsedTime: String = "00:00"
+    @Published var isAuthorized = false
         
     private let workoutStateRepository: WorkoutStateRepositoryProtocol
     private let workoutHistoryRepository: WorkoutHistoryRepositoryProtocol
@@ -113,13 +115,22 @@ class ActiveWorkoutViewModel: ObservableObject {
             if healthKitRepository.isHealthDataAvailable() {
                 try? await healthKitRepository.requestAuthorization()
             }
-            notificationService.requestPermission()
+            
+            Task {
+                _ = try? await notificationService.requestAuthorization()
+            }
             
             if #available(iOS 16.1, *) {
                 await liveActivityHelper?.startActivity(for: template)
             }
             
             await preloadExerciseImages(for: template)
+        }
+    }
+    
+    func updateAuthStatus() {
+        Task {
+            self.isAuthorized = await notificationService.checkIfAuthorized()
         }
     }
     
@@ -222,7 +233,7 @@ class ActiveWorkoutViewModel: ObservableObject {
                 setNumber: 1,
                 targetWeightKg: nil,
                 targetReps: nil,
-                restSeconds: 60,
+                restSeconds: 0,
                 isCompleted: false
             )
             
@@ -290,7 +301,7 @@ class ActiveWorkoutViewModel: ObservableObject {
     func getDefaultRestTime(for exerciseId: String) -> Int {
         guard let exerciseIndex = currentWorkout.exercises.firstIndex(where: { $0.id == exerciseId }),
               let firstSet = currentWorkout.exercises[exerciseIndex].sets.first else {
-            return 60
+            return 0
         }
         return firstSet.restSeconds
     }

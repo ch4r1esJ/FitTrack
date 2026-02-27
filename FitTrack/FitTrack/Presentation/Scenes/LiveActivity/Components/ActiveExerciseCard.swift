@@ -11,7 +11,7 @@ struct ActiveExerciseCard: View {
     @Binding var exercise: TemplateExercise
     @ObservedObject var viewModel: ActiveWorkoutViewModel
     
-    @State private var defaultRestTime: Int = 60
+    @State private var defaultRestTime: Int = 0
     var onDelete: () -> Void
     
     var body: some View {
@@ -48,7 +48,7 @@ struct ActiveExerciseCard: View {
                 }
             }
             
-            RestTimerPicker(selection: $defaultRestTime)
+            RestTimerPicker(viewModel: viewModel, selection: $defaultRestTime)
                 .onChange(of: defaultRestTime) { oldValue, newValue in
                     viewModel.updateRestTime(for: exercise.id, to: newValue)
                 }
